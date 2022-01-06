@@ -24,4 +24,21 @@ contract MyNFT is ERC721, Ownable {
 
         return newItemId;
     }
+
+     function transferNFT(address from, address to)
+        public onlyOwner
+        returns (uint256)
+    {
+        uint256 tokenId = _tokenIds.current(); //Transfer the nft that was just created
+        address ownerAddress = ownerOf(tokenId); // Get the owner address 
+
+        require(from == ownerAddress,"Ownership mismatch");
+
+        approve(to, tokenId); // Approve the transfer
+
+        safeTransferFrom(from, to, tokenId); 
+        _tokenIds.decrement();
+
+        return tokenId;
+    }
 }
