@@ -24,7 +24,7 @@ This returns a smart contract address (the blockchain address to which the smart
 
 Set the `contractAddress` variable, in `scripts/mint-nft.js`, and run the following command:
 
-> node scripts/mint-nft.js
+> node scripts/nft_interaction.js
 
 You can set the `tokenURI` to a URL containing the JSON to be minted as an NFT. Here is an example [URL](https://gateway.pinata.cloud/ipfs/QmVfbVxXNiu8sy2wC5n6SRTsrLHSM3XL1b24mDYQ5YqbmH)
 

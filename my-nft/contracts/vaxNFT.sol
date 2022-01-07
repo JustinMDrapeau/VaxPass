@@ -29,14 +29,14 @@ contract VaxNFT is ERC721, Ownable {
     ///  expensive (it walks the entire Kitty array looking for cats belonging to owner),
     ///  but it also returns a dynamic array, which is only supported for web3 calls, and
     ///  not contract-to-contract calls.
-    function tokensOfOwner(address _owner) public returns(string[] memory) {
+    function tokensOfOwner(address _owner) public returns(TokenInfo[] memory) {
         uint256 tokenCount = balanceOf(_owner);
 
         if (tokenCount == 0) {
             // Return an empty array
-            return new string[](0);
+            return new TokenInfo[](0);
         } else {
-            string[] memory result = new string[](tokenCount);
+            TokenInfo[] memory result = new TokenInfo[](tokenCount);
             uint256 totalVaccines = _tokenIds.current();
             uint256 resultIndex = 0;
 
@@ -45,7 +45,7 @@ contract VaxNFT is ERC721, Ownable {
             uint256 vaccineId;
             for (vaccineId = 1; vaccineId <= totalVaccines; vaccineId++) {
                 if (ownerOf(vaccineId) == _owner) {
-                    result[resultIndex] = tokenURI(vaccineId);
+                    result[resultIndex] = getVaxInfo(vaccineId);
                     resultIndex++;
                 }
             }
@@ -60,11 +60,11 @@ contract VaxNFT is ERC721, Ownable {
         uint256 newItemId = _tokenIds.current();
         _mint(_msgSender(), newItemId); // user_id_address -> nft_id
         
-        // tokenIdTokenInfo[newItemId] = TokenInfo(_msgSender(),_firstName, _lastName, _manufacturer, _dosePhase);
+        tokenIdTokenInfo[newItemId] = TokenInfo(_msgSender(), _firstName, _lastName, _manufacturer, _dosePhase);
         return newItemId;
     }
 
-    function getVaxInfo(uint tokenId) public returns(address, string memory, string memory, string memory, uint) {
-        return (tokenIdTokenInfo[tokenId].mintAddress, tokenIdTokenInfo[tokenId].firstName, tokenIdTokenInfo[tokenId].lastName, tokenIdTokenInfo[tokenId].manufacturer, tokenIdTokenInfo[tokenId].dosePhase);
+    function getVaxInfo(uint tokenId) public returns (TokenInfo memory) {
+        return tokenIdTokenInfo[tokenId];
     }
 }
