@@ -7,14 +7,21 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MyNFT is ERC721, Ownable {
+contract VaxNFT is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    // Mapping from token ID to owner address
-    mapping(uint256 => address) private _ownersTEMP;
+    struct TokenInfo {
+        address mintAddress;
+        string firstName;
+        string lastName;
+        string manufacturer;
+        uint dosePhase;
+    }
 
-    constructor() public ERC721("MyNFT", "NFT") {}
+    mapping(uint256 => TokenInfo) private tokenIdTokenInfo;
+
+    constructor() public ERC721("VaxNFT", "NFT") {}
 
     /// @notice Returns a list of all Kitty IDs assigned to an address.
     /// @param _owner The owner whose Kitties we are interested in.
@@ -22,7 +29,7 @@ contract MyNFT is ERC721, Ownable {
     ///  expensive (it walks the entire Kitty array looking for cats belonging to owner),
     ///  but it also returns a dynamic array, which is only supported for web3 calls, and
     ///  not contract-to-contract calls.
-    function tokensOfOwner(address _owner) external view returns(string[] memory) {
+    function tokensOfOwner(address _owner) public returns(string[] memory) {
         uint256 tokenCount = balanceOf(_owner);
 
         if (tokenCount == 0) {
@@ -37,7 +44,7 @@ contract MyNFT is ERC721, Ownable {
             // sequentially up to the totalVaccine count.
             uint256 vaccineId;
             for (vaccineId = 1; vaccineId <= totalVaccines; vaccineId++) {
-                if (_ownersTEMP[vaccineId] == _owner) {
+                if (ownerOf(vaccineId) == _owner) {
                     result[resultIndex] = tokenURI(vaccineId);
                     resultIndex++;
                 }
@@ -47,15 +54,17 @@ contract MyNFT is ERC721, Ownable {
         }
     }
 
-    function mintNFT(address recipient, string memory tokenURI) public onlyOwner returns (uint256) {
+    function mintNFT(string memory _firstName, string memory _lastName, string memory _manufacturer, uint _dosePhase) public returns (uint256) {
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
-
-        _ownersTEMP[newItemId] = recipient;
-        _mint(recipient, newItemId); // user_id_address -> nft_id
-        _setTokenURI(newItemId, tokenURI); //nft_id -> metadata
-
+        _mint(_msgSender(), newItemId); // user_id_address -> nft_id
+        
+        // tokenIdTokenInfo[newItemId] = TokenInfo(_msgSender(),_firstName, _lastName, _manufacturer, _dosePhase);
         return newItemId;
+    }
+
+    function getVaxInfo(uint tokenId) public returns(address, string memory, string memory, string memory, uint) {
+        return (tokenIdTokenInfo[tokenId].mintAddress, tokenIdTokenInfo[tokenId].firstName, tokenIdTokenInfo[tokenId].lastName, tokenIdTokenInfo[tokenId].manufacturer, tokenIdTokenInfo[tokenId].dosePhase);
     }
 }

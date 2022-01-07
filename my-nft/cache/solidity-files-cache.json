@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/t_somash/dev/VaxPass/my-nft/contracts/vaxNFT.sol": {
-      "lastModificationDate": 1633789080915,
-      "contentHash": "79b085968baff2943c1431a3ba02d44a",
+      "lastModificationDate": 1641524272615,
+      "contentHash": "a774a3caa4d6dac5fa69b25a369b0a17",
       "sourceName": "contracts/vaxNFT.sol",
       "solcConfig": {
         "version": "0.7.3",
@@ -36,7 +36,7 @@
         "^0.7.3"
       ],
       "artifacts": [
-        "MyNFT"
+        "VaxNFT"
       ]
     },
     "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol": {

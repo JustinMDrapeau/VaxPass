@@ -6,11 +6,11 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(API_URL);
 
-const contract = require("../artifacts/contracts/vaxNFT.sol/MyNFT.json");
-const contractAddress = "0xA8C857AeA4100cfA3DaC98416407bbE55dC8BE3b";
+const contract = require("../artifacts/contracts/vaxNFT.sol/VaxNFT.json");
+const contractAddress = "0xFF63146b9B2162482848A7a60Ad0BBc240D98fEE";
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
-async function mintNFT(tokenURI) {
+async function mintNFT(firstName, lastName, manufacturer, phase) {
   const nonce = await web3.eth.getTransactionCount(PUBLIC_KEY, 'latest'); //get latest nonce
 
   //the transaction
@@ -20,7 +20,7 @@ async function mintNFT(tokenURI) {
     'nonce': nonce,
     'gas': 500000,
     'maxPriorityFeePerGas': 1999999987,
-    'data': nftContract.methods.mintNFT(PUBLIC_KEY, tokenURI).encodeABI()
+    'data': nftContract.methods.mintNFT(firstName, lastName, manufacturer, phase).encodeABI()
   };
 
 
@@ -39,4 +39,6 @@ async function mintNFT(tokenURI) {
   });
 }
 
-mintNFT("https://gateway.pinata.cloud/ipfs/QmVfbVxXNiu8sy2wC5n6SRTsrLHSM3XL1b24mDYQ5YqbmH")
+nftContract.methods.getVaxInfo(1).call().then((res) => {console.log(res)}).catch((err) => console.log(err))
+
+// mintNFT('Sharan', 'Somas', 'Pfizer', 3)
