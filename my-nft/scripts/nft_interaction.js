@@ -7,7 +7,7 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(API_URL);
 
 const contract = require("../artifacts/contracts/vaxNFT.sol/VaxNFT.json");
-const contractAddress = "0xFf1EAe5e568F4c2e7382BD64fAE29F6Ba78D64b3";
+const contractAddress = "0x17C04fd9A940eBfD3940269ff47921A35bd1D11b";
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
 async function mintNFT(firstName, lastName, manufacturer, phase) {
@@ -39,4 +39,13 @@ async function mintNFT(firstName, lastName, manufacturer, phase) {
   });
 }
 
-mintNFT('Sharan', 'Somas', 'Pfizer', 2)
+// mintNFT('Sharan', 'Somas', 'Pfizer', 2)
+
+nftContract.methods.tokenURI(1).call()
+.then((result) => {
+    base64_string = result.split(",")[1]
+    console.log(Buffer.from(base64_string, 'base64').toString('ascii'));
+})
+.catch((err) => {
+    console.log(err)
+})

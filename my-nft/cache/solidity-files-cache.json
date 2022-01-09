@@ -1,12 +1,12 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/tharseken/Development/VaxPass/my-nft/contracts/vaxNFT.sol": {
-      "lastModificationDate": 1641526305528,
-      "contentHash": "001db725f93b3355c4a094a56ef2e242",
+    "/Users/t_somash/dev/VaxPass/my-nft/contracts/vaxNFT.sol": {
+      "lastModificationDate": 1641764899862,
+      "contentHash": "fe505abc7ac32f5d545af96412b51fd2",
       "sourceName": "contracts/vaxNFT.sol",
       "solcConfig": {
-        "version": "0.7.3",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -18,8 +18,7 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
+                "evm.methodIdentifiers"
               ],
               "": [
                 "ast"
@@ -31,21 +30,23 @@
       "imports": [
         "@openzeppelin/contracts/token/ERC721/ERC721.sol",
         "@openzeppelin/contracts/utils/Counters.sol",
-        "@openzeppelin/contracts/access/Ownable.sol"
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/utils/Strings.sol",
+        "base64-sol/base64.sol"
       ],
       "versionPragmas": [
-        "^0.7.3"
+        "^0.8.0"
       ],
       "artifacts": [
         "VaxNFT"
       ]
     },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol": {
-      "lastModificationDate": 1641500401989,
-      "contentHash": "9ca69f10047ae6209618a2ebe20a3aef",
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol": {
+      "lastModificationDate": 1641764858647,
+      "contentHash": "ead7082e39cf31875ff89b22f473500d",
       "sourceName": "@openzeppelin/contracts/token/ERC721/ERC721.sol",
       "solcConfig": {
-        "version": "0.7.3",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -57,8 +58,7 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
+                "evm.methodIdentifiers"
               ],
               "": [
                 "ast"
@@ -68,31 +68,27 @@
         }
       },
       "imports": [
-        "../../GSN/Context.sol",
         "./IERC721.sol",
-        "./IERC721Metadata.sol",
-        "./IERC721Enumerable.sol",
         "./IERC721Receiver.sol",
-        "../../introspection/ERC165.sol",
-        "../../math/SafeMath.sol",
+        "./extensions/IERC721Metadata.sol",
         "../../utils/Address.sol",
-        "../../utils/EnumerableSet.sol",
-        "../../utils/EnumerableMap.sol",
-        "../../utils/Strings.sol"
+        "../../utils/Context.sol",
+        "../../utils/Strings.sol",
+        "../../utils/introspection/ERC165.sol"
       ],
       "versionPragmas": [
-        "^0.7.0"
+        "^0.8.0"
       ],
       "artifacts": [
         "ERC721"
       ]
     },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/Counters.sol": {
-      "lastModificationDate": 1641500401984,
-      "contentHash": "ebd32d219072a0232add3f1bb610731f",
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/Counters.sol": {
+      "lastModificationDate": 1641764858635,
+      "contentHash": "74654e3ae5d7f39555055dfe244dab7a",
       "sourceName": "@openzeppelin/contracts/utils/Counters.sol",
       "solcConfig": {
-        "version": "0.7.3",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -104,8 +100,7 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
+                "evm.methodIdentifiers"
               ],
               "": [
                 "ast"
@@ -114,22 +109,20 @@
           }
         }
       },
-      "imports": [
-        "../math/SafeMath.sol"
-      ],
+      "imports": [],
       "versionPragmas": [
-        "^0.7.0"
+        "^0.8.0"
       ],
       "artifacts": [
         "Counters"
       ]
     },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
-      "lastModificationDate": 1641500401991,
-      "contentHash": "42aa79d3fe22b0a94f0e7ecdd061909d",
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1641764858673,
+      "contentHash": "8398972af73b4e9e5ff3b31cad86234f",
       "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
       "solcConfig": {
-        "version": "0.7.3",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -141,8 +134,7 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
+                "evm.methodIdentifiers"
               ],
               "": [
                 "ast"
@@ -152,21 +144,21 @@
         }
       },
       "imports": [
-        "../GSN/Context.sol"
+        "../utils/Context.sol"
       ],
       "versionPragmas": [
-        "^0.7.0"
+        "^0.8.0"
       ],
       "artifacts": [
         "Ownable"
       ]
     },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/GSN/Context.sol": {
-      "lastModificationDate": 1641500401984,
-      "contentHash": "688fc161386f66688d0ea676f67dabe7",
-      "sourceName": "@openzeppelin/contracts/GSN/Context.sol",
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
+      "lastModificationDate": 1641764858683,
+      "contentHash": "9c54c6c065d9e590fdcdd72c451425b9",
+      "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
       "solcConfig": {
-        "version": "0.7.3",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -178,8 +170,7 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
+                "evm.methodIdentifiers"
               ],
               "": [
                 "ast"
@@ -190,18 +181,18 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.7.0"
+        "^0.8.0"
       ],
       "artifacts": [
-        "Context"
+        "Strings"
       ]
     },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol": {
-      "lastModificationDate": 1641500401990,
-      "contentHash": "55950cb0ba37a9730d7b5218dde7f6ea",
-      "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/base64-sol/base64.sol": {
+      "lastModificationDate": 1641764921291,
+      "contentHash": "22c37b79b2b97ee9cee2e8a5f4b9cd78",
+      "sourceName": "base64-sol/base64.sol",
       "solcConfig": {
-        "version": "0.7.3",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -213,8 +204,39 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [],
+      "artifacts": [
+        "Base64"
+      ]
+    },
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol": {
+      "lastModificationDate": 1641764858663,
+      "contentHash": "27d219ec6f69478d065fdbfa7931da68",
+      "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
               ],
               "": [
                 "ast"
@@ -224,95 +246,21 @@
         }
       },
       "imports": [
-        "../../introspection/IERC165.sol"
+        "../../utils/introspection/IERC165.sol"
       ],
       "versionPragmas": [
-        "^0.7.0"
+        "^0.8.0"
       ],
       "artifacts": [
         "IERC721"
       ]
     },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/IERC721Metadata.sol": {
-      "lastModificationDate": 1641500401991,
-      "contentHash": "7fe751b35ebe8466b56415cce55a7074",
-      "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721Metadata.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./IERC721.sol"
-      ],
-      "versionPragmas": [
-        "^0.7.0"
-      ],
-      "artifacts": [
-        "IERC721Metadata"
-      ]
-    },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/IERC721Enumerable.sol": {
-      "lastModificationDate": 1641500401991,
-      "contentHash": "889ec04fca4214581eef408fff230efa",
-      "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721Enumerable.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./IERC721.sol"
-      ],
-      "versionPragmas": [
-        "^0.7.0"
-      ],
-      "artifacts": [
-        "IERC721Enumerable"
-      ]
-    },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol": {
-      "lastModificationDate": 1641500401991,
-      "contentHash": "c269b7f725a3fbd49ccadc39666cc8eb",
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol": {
+      "lastModificationDate": 1641764858664,
+      "contentHash": "592df588492d45fdcf46b3cb608c0fbf",
       "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol",
       "solcConfig": {
-        "version": "0.7.3",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -324,8 +272,7 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
+                "evm.methodIdentifiers"
               ],
               "": [
                 "ast"
@@ -336,18 +283,18 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.7.0"
+        "^0.8.0"
       ],
       "artifacts": [
         "IERC721Receiver"
       ]
     },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/introspection/ERC165.sol": {
-      "lastModificationDate": 1641500401988,
-      "contentHash": "4a99ffe8a02866095d18c34e35c586bf",
-      "sourceName": "@openzeppelin/contracts/introspection/ERC165.sol",
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol": {
+      "lastModificationDate": 1641764858664,
+      "contentHash": "efbc0d15b80a74e34dbe8da0f3e879bb",
+      "sourceName": "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol",
       "solcConfig": {
-        "version": "0.7.3",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -359,8 +306,111 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../IERC721.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC721Metadata"
+      ]
+    },
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/Address.sol": {
+      "lastModificationDate": 1641764858633,
+      "contentHash": "4cff8b2ea0d958750786b4e3ca308445",
+      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Address"
+      ]
+    },
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1641764858635,
+      "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/introspection/ERC165.sol": {
+      "lastModificationDate": 1641764858641,
+      "contentHash": "0e7db055ce108f9da7bb6686a00287c0",
+      "sourceName": "@openzeppelin/contracts/utils/introspection/ERC165.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
               ],
               "": [
                 "ast"
@@ -373,18 +423,18 @@
         "./IERC165.sol"
       ],
       "versionPragmas": [
-        "^0.7.0"
+        "^0.8.0"
       ],
       "artifacts": [
         "ERC165"
       ]
     },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/math/SafeMath.sol": {
-      "lastModificationDate": 1641500401995,
-      "contentHash": "1d90542b583d3152a80af62d830357a0",
-      "sourceName": "@openzeppelin/contracts/math/SafeMath.sol",
+    "/Users/t_somash/dev/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+      "lastModificationDate": 1641764858659,
+      "contentHash": "03e6768535ac4da0e9756f1d8a4a018a",
+      "sourceName": "@openzeppelin/contracts/utils/introspection/IERC165.sol",
       "solcConfig": {
-        "version": "0.7.3",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -396,8 +446,7 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
+                "evm.methodIdentifiers"
               ],
               "": [
                 "ast"
@@ -408,182 +457,7 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.7.0"
-      ],
-      "artifacts": [
-        "SafeMath"
-      ]
-    },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/Address.sol": {
-      "lastModificationDate": 1641500401984,
-      "contentHash": "96b05cb023e664b2c833ec166de51d25",
-      "sourceName": "@openzeppelin/contracts/utils/Address.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.7.0"
-      ],
-      "artifacts": [
-        "Address"
-      ]
-    },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/EnumerableSet.sol": {
-      "lastModificationDate": 1641500401987,
-      "contentHash": "c7cd472e6aece24979547ce2164d99d5",
-      "sourceName": "@openzeppelin/contracts/utils/EnumerableSet.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.7.0"
-      ],
-      "artifacts": [
-        "EnumerableSet"
-      ]
-    },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/EnumerableMap.sol": {
-      "lastModificationDate": 1641500401987,
-      "contentHash": "72131b6d0aea748c596af6431f5baa59",
-      "sourceName": "@openzeppelin/contracts/utils/EnumerableMap.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.7.0"
-      ],
-      "artifacts": [
-        "EnumerableMap"
-      ]
-    },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
-      "lastModificationDate": 1641500401995,
-      "contentHash": "7a96fa37843aeb0601d1c4e7d6066dd6",
-      "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.7.0"
-      ],
-      "artifacts": [
-        "Strings"
-      ]
-    },
-    "/Users/tharseken/Development/VaxPass/my-nft/node_modules/@openzeppelin/contracts/introspection/IERC165.sol": {
-      "lastModificationDate": 1641500401990,
-      "contentHash": "253edeb099cfd6a3b0501d2620312e3e",
-      "sourceName": "@openzeppelin/contracts/introspection/IERC165.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.7.0"
+        "^0.8.0"
       ],
       "artifacts": [
         "IERC165"

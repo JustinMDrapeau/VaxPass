@@ -1,11 +1,13 @@
 //Contract based on https://docs.openzeppelin.com/contracts/3.x/erc721
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.7.3;
+pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "base64-sol/base64.sol";
 
 contract VaxNFT is ERC721, Ownable {
     using Counters for Counters.Counter;
@@ -23,12 +25,8 @@ contract VaxNFT is ERC721, Ownable {
 
     constructor() public ERC721("VaxNFT", "NFT") {}
 
-    /// @notice Returns a list of all Kitty IDs assigned to an address.
-    /// @param _owner The owner whose Kitties we are interested in.
-    /// @dev This method MUST NEVER be called by smart contract code. First, it's fairly
-    ///  expensive (it walks the entire Kitty array looking for cats belonging to owner),
-    ///  but it also returns a dynamic array, which is only supported for web3 calls, and
-    ///  not contract-to-contract calls.
+    /// @notice Returns a list of all token URIs assigned to an address.
+    /// @param _owner The owner whose VaxNFTs we are interested in.
     function tokensOfOwner(address _owner) public returns(TokenInfo[] memory) {
         uint256 tokenCount = balanceOf(_owner);
 
@@ -45,11 +43,10 @@ contract VaxNFT is ERC721, Ownable {
             uint256 vaccineId;
             for (vaccineId = 1; vaccineId <= totalVaccines; vaccineId++) {
                 if (ownerOf(vaccineId) == _owner) {
-                    result[resultIndex] = getVaxInfo(vaccineId);
+                    result[resultIndex] = tokenIdTokenInfo[vaccineId];
                     resultIndex++;
                 }
             }
-            
             return result;
         }
     }
@@ -64,7 +61,29 @@ contract VaxNFT is ERC721, Ownable {
         return newItemId;
     }
 
-    function getVaxInfo(uint tokenId) public returns (TokenInfo memory) {
-        return tokenIdTokenInfo[tokenId];
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        return string(
+            abi.encodePacked(
+            "data:application/json;base64,",
+                Base64.encode(
+                    bytes(
+                        abi.encodePacked(
+                            '{"name":"Vax NFT",',
+                            '"description":"An NFT for vaccinations", "attributes":"", "firstName":"',
+                            tokenIdTokenInfo[tokenId].firstName,
+                            '", "lastName":"',
+                            tokenIdTokenInfo[tokenId].lastName,
+                            '","manufacturer":"',
+                            tokenIdTokenInfo[tokenId].manufacturer,
+                            '", "dosePhase":"',
+                            Strings.toString(tokenIdTokenInfo[tokenId].dosePhase),
+                            '","origin":"',
+                            abi.encodePacked(tokenIdTokenInfo[tokenId].mintAddress),
+                            '"}'
+                        )
+                    )
+                )
+            )
+        );
     }
 }
