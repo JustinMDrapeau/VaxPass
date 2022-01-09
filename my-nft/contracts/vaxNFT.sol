@@ -21,7 +21,7 @@ contract VaxNFT is ERC721, Ownable {
         uint dosePhase;
     }
 
-    mapping(uint256 => TokenInfo) private tokenIdTokenInfo;
+    mapping(uint256 => TokenInfo) public tokenIdTokenInfo;
 
     constructor() public ERC721("VaxNFT", "NFT") {}
 
