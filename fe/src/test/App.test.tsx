@@ -1,5 +1,7 @@
+// https://create-react-app.dev/docs/running-tests/
+import React from 'react';
 import { render, screen } from '@testing-library/react';
-import App from './src/Components/App';
+import App from '../components/App';
 
 test('renders learn react link', () => {
   render(<App />);
