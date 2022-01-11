@@ -8,7 +8,7 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(API_URL);
 
 const contract = require("../artifacts/contracts/vaxNFT.sol/VaxNFT.json");
-const contractAddress = "0x981d49437bA0cE0fDbB18f485482252d05a7ecC0";
+const contractAddress = "0xa0036cF7af5A6aFe35343Ae6d828A280Ac8442fD";
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
 async function mintNFT(firstName, lastName, manufacturer, phase) {
@@ -69,6 +69,8 @@ async function transferNFT() {
 
 mintNFT('Sharan', 'Somas', 'Pfizer', 2)
 
+// Test that the tokenURI method returns a URL string for the newly minted NFT
+
 // nftContract.methods.tokenURI(1).call()
 // .then((result) => {
 //   console.log(result)
@@ -80,6 +82,8 @@ mintNFT('Sharan', 'Somas', 'Pfizer', 2)
 // .catch((err) => {
 //     console.log(err)
 // })
+
+// Test that the map tokenIdTokenInfo (tokenId -> NFT metadata) contains the newly minted NFT
 
 // nftContract.methods.tokenIdTokenInfo(1).call()
 // .then((result) => {
