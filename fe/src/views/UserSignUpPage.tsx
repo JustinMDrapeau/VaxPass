@@ -1,5 +1,5 @@
-import React from 'react';
-import { isValidEmail, isValidHealthNumber, isValidName, isValidPassword } from "../helpers";
+import { useState } from 'react';
+import { isValidEmail, isValidHealthNumber, isValidName, isValidPassword } from "../helpers/inputValidationHelpers";
 import { Button, Card, Container, Stack, TextField, Typography } from '@mui/material';
 import { CountryDropdown } from 'react-country-region-selector';
 import { useNavigate } from 'react-router-dom';
@@ -8,18 +8,18 @@ import UserDataService from "../services/UserDataService";
 
 
 function UserSignUp() {
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [country, setCountry] = React.useState("");
-  const [healthCardNumber, setHealthCardNumber] = React.useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [country, setCountry] = useState("");
+  const [healthCardNumber, setHealthCardNumber] = useState("");
   
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-  const [firstNameErrorMessage, setFirstNameErrorMessage] = React.useState("");
-  const [lastNameErrorMessage, setLastNameErrorMessage] = React.useState("");
-  const [healthCardErrorMessage, setHealthCardErrorMessage] = React.useState("");
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
+  const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
+  const [healthCardErrorMessage, setHealthCardErrorMessage] = useState("");
 
   const supportedCountries = ['CA'] // Array of the country shortcodes. 
   // Find short codes here: https://github.com/country-regions/country-region-data/blob/master/data.json
@@ -27,7 +27,6 @@ function UserSignUp() {
   const navigate = useNavigate();
 
   const handleFirstNameChange = (e: any) => {
-    console.log(e.target.value)
     if(isValidName(e.target.value) === true) {
       setFirstName(e.target.value)
       setFirstNameErrorMessage("")
@@ -74,10 +73,6 @@ function UserSignUp() {
     } else {
       setHealthCardErrorMessage("Please enter a health card number")
     }
-  }
-
-  const handleLogIn = () => {
-    navigate('/login')
   }
 
   const handleClose = () => {
@@ -127,7 +122,7 @@ function UserSignUp() {
 
   return (
     <div className="UserSignUp" style={{backgroundColor: '#D3D3D3', height: '100vh' }} >
-      <Container maxWidth='sm' sx={{ pt: '36px'}}>
+      <Container maxWidth='sm' sx={{ pt: '54px'}}>
         <Card style={{ padding: '24px'}}> 
           <Stack alignItems="center" spacing={2}>
             <Typography variant="h2" align="center" >
@@ -192,7 +187,6 @@ function UserSignUp() {
                 whitelist={supportedCountries} // Using whitelist prop since we're only available for Canada
                 onChange={handleCountryChange}
               />{""}
-            <Button variant="text" sx={{textTransform: 'capitalize' }} onClick={handleLogIn}>Have an account? </Button>
             </Stack>
           </Stack>
           <Stack direction="row" justifyContent="center" mt={2} spacing={2}>

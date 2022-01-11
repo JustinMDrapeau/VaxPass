@@ -1,12 +1,12 @@
-import React from 'react';
+import { useState } from 'react';
 import { Button, Card, Container, Stack, Typography } from '@mui/material';
 import LogInDialog from '../components/LogInDialog';
 import PropTypes from 'prop-types';
 
 function LandingPage(props) {
   const { isDialogOpen } = props;
-  const [open, setOpen] = React.useState(isDialogOpen);
-  const [isUser, setIsUser] = React.useState(false);
+  const [open, setOpen] = useState(isDialogOpen);
+  const [isUser, setIsUser] = useState(false);
 
   const handleClickOpenUser = () => {
     setIsUser(true);

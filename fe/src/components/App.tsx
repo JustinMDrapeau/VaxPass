@@ -12,7 +12,6 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage isDialogOpen={false} />} />
-          <Route path="/login" element={<LandingPage isDialogOpen={true} />} />
           <Route path="/user-sign-up" element={<UserSignUpPage />} />
           <Route path="/clinic-sign-up" element={<ClinicSignUpPage />} />
         </Routes>

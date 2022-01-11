@@ -1,6 +1,6 @@
-import React from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { isValidEmail, isValidPassword } from "../helpers";
+import { isValidEmail, isValidPassword } from "../helpers/inputValidationHelpers";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ClinicDataService from "../services/ClinicDataService";
@@ -10,11 +10,11 @@ import UserDataService from "../services/UserDataService";
 function LogInDialog(props) {
     const { isUser, onClose, isOpen } = props;
     const navigate = useNavigate();
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
+    const [emailErrorMessage, setEmailErrorMessage] = useState("");
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
     const handleClose = () => {
       onClose();
