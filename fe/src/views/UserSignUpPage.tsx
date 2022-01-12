@@ -112,7 +112,7 @@ function UserSignUp() {
 
       UserDataService.create(request)
         .then((response) => {
-          // navigate('/userHomePage') TODO: Update this when home page is complete
+          navigate('/userHomePage')
         })
         .catch((e: Error) => {
           console.log(e);
