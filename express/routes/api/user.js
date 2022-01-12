@@ -1,7 +1,9 @@
 const bcrypt = require ("bcryptjs");
 const express = require ("express");
+const jwt = require("jsonwebtoken");
+const keys = require("../../config/keys");
 const router = express.Router();
-const Web3 = require('web3');
+const Web3 = require("web3");
 const web3 = new Web3()
 
 const User = require("../../models/User");
@@ -11,11 +13,12 @@ const Identification = require("../../models/Identification");
 
 const httpResponse = require("../../utils/http-response-creator");
 const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
 
 // @route   POST api/user/create
 // @desc    Create user object and corresponding wallet to store NFTs 
 // @access  Public
-router.post("/", async (req, res) => {
+router.post("/create", async (req, res) => {
 
     const {errors, isValid} = validateRegisterInput(req.body);
     if (!isValid) {
@@ -63,6 +66,44 @@ router.post("/", async (req, res) => {
             .catch(() => { console.log("Failed to cleanup the created VaxPass wallet!"); })
         
         return httpResponse(res, 500, { user: null, message: "Failed to create user identification! Please try again later." });
+    }
+})
+
+// @route   POST api/user/login
+// @desc    Login to user account
+// @access  Public
+router.post("/login", async (req, res) => {
+
+    const {errors, isValid} = validateLoginInput(req.body);
+    if (!isValid) {
+        return httpResponse(res, 400, errors);
+    }
+
+    const { email, password } = req.body;
+
+    const user = await User.findOne({email});
+    if (!user) {
+        errors.email = "An account with this email does not exist in VaxPass. Please try again.";
+        return httpResponse(res, 400, errors);
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (passwordMatch) {
+        const payload = {
+            id : user.id,
+            firstName : user.firstName,
+            lastName: user.lastName,
+            email: user.lastName,
+            created: user.created
+        };
+
+        jwt.sign(payload, keys.encryptionKey, {expiresIn: 3600}, (err, token) => {
+            return httpResponse(res, 201, { success: true, token: "Bearer " + token })
+        });
+    } else {
+        errors.password = "The provided information does not match our records. Please try again.";
+        return httpResponse(res, 400, errors);
     }
 })
 
