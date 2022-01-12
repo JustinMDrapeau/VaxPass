@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
         const identification = Identification({ identificationNumber: healthCardNumber, type: "HC", user: user.id, country: country_object.id});
         await identification.save();
 
-        httpResponse(res, 201, { user, message: "Patient, Identification, and VaxPass wallet successfully created!" });
+        httpResponse(res, 201, { id: user.id, message: "Patient, Identification, and VaxPass wallet successfully created!" });
     } catch {
         User.findByIdAndDelete(user.id)
             .catch(() => { console.log("Failed to cleanup the created VaxPass user!"); })
