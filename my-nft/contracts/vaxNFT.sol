@@ -14,7 +14,7 @@ contract VaxNFT is ERC721, Ownable {
     Counters.Counter private _tokenIds;
 
     struct TokenInfo {
-        address mintAddress;
+        address mintAddress; // The clinic address
         string firstName;
         string lastName;
         string manufacturer;
@@ -55,10 +55,25 @@ contract VaxNFT is ERC721, Ownable {
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
-        _mint(_msgSender(), newItemId); // user_id_address -> nft_id
+        _mint(_msgSender(), newItemId); // clinic_address -> nft_id
         
         tokenIdTokenInfo[newItemId] = TokenInfo(_msgSender(), _firstName, _lastName, _manufacturer, _dosePhase);
         return newItemId;
+    }
+
+    function transferNFT(address toAddress) public returns (uint256) {
+        // Token being transfered from clinic address to patient address
+        uint256 tokenId = _tokenIds.current();
+        // Address of the owner of the NFT
+        address ownerAddress = ownerOf(tokenId);
+        // Assert that the owner of the NFT is the clinic (msgSender)
+        require(_msgSender() == ownerAddress, "msgSender is not the owner of the NFT");
+
+        // Change the approved for an NFT to the patient (toAddress)
+        approve(toAddress, tokenId);
+        // Transfer NFT from clinic (msgSender) to patient (toAddress)
+        safeTransferFrom(_msgSender(), toAddress, tokenId); 
+        return tokenId;
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
