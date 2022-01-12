@@ -7,7 +7,7 @@ import CreateUserRequest from '../types/CreateUserRequest';
 import UserDataService from "../services/UserDataService";
 
 
-function UserSignUp() {
+function UserSignUpPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -199,4 +199,4 @@ function UserSignUp() {
   );
 }
 
-export default UserSignUp;
+export default UserSignUpPage;
