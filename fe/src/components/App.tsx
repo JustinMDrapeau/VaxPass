@@ -5,6 +5,7 @@ import UserSignUpPage from '../views/UserSignUpPage';
 import ClinicSignUpPage from '../views/ClinicSignUpPage';
 import LandingPage from '../views/LandingPage';
 import './App.css';
+import PatientPage from '../views/PatientPage';
 
 function App() {
   return (
@@ -14,6 +15,8 @@ function App() {
           <Route path="/" element={<LandingPage isDialogOpen={false} />} />
           <Route path="/user-sign-up" element={<UserSignUpPage />} />
           <Route path="/clinic-sign-up" element={<ClinicSignUpPage />} />
+          <Route path="/patient-page" element={<PatientPage/>} />
+
         </Routes>
       </Router>
     </div>
