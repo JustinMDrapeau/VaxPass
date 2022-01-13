@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const db = require("./config/keys").mongoURI;
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const passport = require("passport");
 
 // Routes
 const profile = require("./routes/api/profile.js");
@@ -29,6 +30,12 @@ app.use(bodyParser.json());
 app.use(cors({
     origin: 'http://localhost:3000'
 }));
+
+// Passport middleware
+app.use(passport.initialize());
+
+//Passport Config
+require("./config/passport")(passport);
 
 const port = process.env.PORT || 5000
 

@@ -1,11 +1,12 @@
 const express = require ("express");
+const passport = require("passport");
 const router = express.Router();
 const { contract } = require('../../utils/contract');
 
 // @route   GET api/profile/vaccinations
 // @desc    Get all of user's vaccination NFTs
-// @access  Public                                          TODO: make this PRIVATE
-router.get("/vaccinations", (req, res) => {
+// @access  Private
+router.get("/vaccinations", passport.authenticate("jwt", {session: false}), (req, res) => {
 
     // Get user id from request body
     var userId = req.query.id;
