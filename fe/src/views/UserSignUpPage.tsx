@@ -126,7 +126,6 @@ function UserSignUpPage() {
             // Something happened in setting up the request that triggered an Error
             setCreateErrorMessage("There is an issue on our side. Try again later!")
           }
-          // console.log(e.stack);
         });
     }
   }

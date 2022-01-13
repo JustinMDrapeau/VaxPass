@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { isValidEmail, isValidPassword } from "../helpers/inputValidationHelpers";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ClinicDataService from "../services/ClinicDataService";
 import LogInRequest from '../types/LogInRequest';
@@ -15,8 +15,12 @@ function LogInDialog(props) {
 
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
     const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+    const [loginErrorMessage, setLoginErrorMessage] = useState("");
 
     const handleClose = () => {
+      setEmailErrorMessage("")
+      setPasswordErrorMessage("")
+      setLoginErrorMessage("")
       onClose();
     };
 
@@ -36,8 +40,16 @@ function LogInDialog(props) {
             .then((response: any) => {
               // navigate('/user-home-page') TODO: Update this when home page is complete
             })
-            .catch((e: Error) => {
-              console.log(e);
+            .catch((error: Error) => {
+              if (error.response) {
+                // Request made and server responded
+
+                const errorKey = Object.keys(error.response.data)[0];
+                setLoginErrorMessage(error.response.data[errorKey])
+              } else {
+                // Something happened in setting up the request that triggered an Error
+                setLoginErrorMessage("There is an issue on our side. Try again later!")
+              }
             });
         } else {
           ClinicDataService.login(request)
@@ -48,7 +60,6 @@ function LogInDialog(props) {
               console.log(e);
             });
         }
-          onClose();
       }
     };
 
@@ -102,6 +113,11 @@ function LogInDialog(props) {
             />
           </Stack>
           <Button variant="text" sx={{textTransform: 'capitalize', paddingLeft: 0.2 }} onClick={handleSignUp}>Don't have an account? </Button>
+            {loginErrorMessage && 
+            <Typography sx={{ color: 'red', margin: '10px' }} align="center" >
+              {loginErrorMessage}
+            </Typography> 
+          }
         </DialogContent>
 
         <DialogActions sx={{ paddingRight: 3 , paddingBottom: 2 }}>
