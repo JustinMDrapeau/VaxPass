@@ -34,7 +34,7 @@ function LogInDialog(props) {
         if(isUser) {
           UserDataService.login(request)
             .then((response: any) => {
-              // navigate('/userHomePage') TODO: Update this when home page is complete
+              // navigate('/user-home-page') TODO: Update this when home page is complete
             })
             .catch((e: Error) => {
               console.log(e);
@@ -42,7 +42,7 @@ function LogInDialog(props) {
         } else {
           ClinicDataService.login(request)
             .then((response: any) => {
-              // navigate('/clinicHomePage') TODO: Update this when home page is complete
+              // navigate('/clinic-home-page') TODO: Update this when home page is complete
             })
             .catch((e: Error) => {
               console.log(e);

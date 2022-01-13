@@ -7,11 +7,11 @@ import CreateUserResponse from "../types/CreateUserResponse"
 class UserDataService {
 
   create(data: CreateUserRequest) {
-    return http.post(`/user`, data);
+    return http.post<CreateUserResponse>(`/user`, data);
   }
 
   login(data: LogInRequest) {
-    return http.post<CreateUserResponse>(`/user/login`, data);
+    return http.post(`/user/login`, data);
   }
 
 }

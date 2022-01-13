@@ -14,12 +14,13 @@ function UserSignUpPage() {
   const [password, setPassword] = useState("");
   const [country, setCountry] = useState("");
   const [healthCardNumber, setHealthCardNumber] = useState("");
-  
+
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
   const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
   const [healthCardErrorMessage, setHealthCardErrorMessage] = useState("");
+  const [createErrorMessage, setCreateErrorMessage] = useState("");
 
   const supportedCountries = ['CA'] // Array of the country shortcodes. 
   // Find short codes here: https://github.com/country-regions/country-region-data/blob/master/data.json
@@ -27,7 +28,7 @@ function UserSignUpPage() {
   const navigate = useNavigate();
 
   const handleFirstNameChange = (e: any) => {
-    if(isValidName(e.target.value) === true) {
+    if (isValidName(e.target.value) === true) {
       setFirstName(e.target.value)
       setFirstNameErrorMessage("")
     } else {
@@ -36,7 +37,7 @@ function UserSignUpPage() {
   }
 
   const handleLastNameChange = (e: any) => {
-    if(isValidName(e.target.value) === true) {
+    if (isValidName(e.target.value) === true) {
       setLastName(e.target.value)
       setLastNameErrorMessage("")
     } else {
@@ -45,7 +46,7 @@ function UserSignUpPage() {
   }
 
   const handleEmailChange = (e: any) => {
-    if(isValidEmail(e.target.value) === true){
+    if (isValidEmail(e.target.value) === true) {
       setEmail(e.target.value)
       setEmailErrorMessage("")
     } else {
@@ -54,7 +55,7 @@ function UserSignUpPage() {
   }
 
   const handlePasswordChange = (e: any) => {
-    if(isValidPassword(e.target.value) === true){
+    if (isValidPassword(e.target.value) === true) {
       setPassword(e.target.value)
       setPasswordErrorMessage("")
     } else {
@@ -67,7 +68,7 @@ function UserSignUpPage() {
   }
 
   const handleHealthCardNumberChange = (e: any) => {
-    if(isValidHealthNumber(e.target.value) === true) {
+    if (isValidHealthNumber(e.target.value) === true) {
       setHealthCardNumber(e.target.value)
       setHealthCardErrorMessage("")
     } else {
@@ -80,15 +81,15 @@ function UserSignUpPage() {
   };
 
   const noMissingInformation = () => {
-    if(firstName === ""){
+    if (firstName === "") {
       setFirstNameErrorMessage("Please enter a first name")
-    } else if(lastName === "") {
+    } else if (lastName === "") {
       setLastNameErrorMessage("Please enter a last name")
-    } else if(email === "") {
+    } else if (email === "") {
       setEmailErrorMessage("Please enter an email")
-    } else if(password === "") {
+    } else if (password === "") {
       setPasswordErrorMessage("Please enter a password")
-    } else if(healthCardNumber === "") {
+    } else if (healthCardNumber === "") {
       setHealthCardErrorMessage("Please enter a health card number")
     } else {
       return true
@@ -100,30 +101,40 @@ function UserSignUpPage() {
   const handleSubmit = () => {
     let request: CreateUserRequest;
 
-    if(noMissingInformation() === true) {
-      request = { 
-        firstName, 
-        lastName, 
-        email, 
-        password, 
-        country, 
-        healthCardNumber 
+    if (noMissingInformation() === true) {
+      request = {
+        firstName,
+        lastName,
+        email,
+        password,
+        country,
+        healthCardNumber
       }
 
       UserDataService.create(request)
         .then((response) => {
+          setCreateErrorMessage("")
+          const { id } = response.data;
           // navigate('/userHomePage') TODO: Update this when home page is complete
         })
-        .catch((e: Error) => {
-          console.log(e);
+        .catch((error: Error) => {
+          if (error.response) {
+            // Request made and server responded
+            const errorKey = Object.keys(error.response.data)[0];
+            setCreateErrorMessage(error.response.data[errorKey])
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            setCreateErrorMessage("There is an issue on our side. Try again later!")
+          }
+          // console.log(e.stack);
         });
     }
   }
 
   return (
-    <div className="UserSignUp" style={{backgroundColor: '#D3D3D3', height: '100vh' }} >
-      <Container maxWidth='sm' sx={{ pt: '54px'}}>
-        <Card style={{ padding: '24px'}}> 
+    <div className="UserSignUp" style={{ backgroundColor: '#D3D3D3', height: '100vh' }} >
+      <Container maxWidth='sm' sx={{ pt: '54px' }}>
+        <Card style={{ padding: '24px' }}>
           <Stack alignItems="center" spacing={2}>
             <Typography variant="h2" align="center" >
               VaxPass
@@ -189,6 +200,11 @@ function UserSignUpPage() {
               />{""}
             </Stack>
           </Stack>
+          {createErrorMessage && 
+            <Typography sx={{ color: 'red', margin: '10px' }} align="center" >
+              {createErrorMessage}
+            </Typography> 
+          }
           <Stack direction="row" justifyContent="center" mt={2} spacing={2}>
             <Button onClick={handleClose}>CANCEL</Button>
             <Button variant="contained" onClick={handleSubmit}>SIGNUP</Button>
