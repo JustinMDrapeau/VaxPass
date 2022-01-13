@@ -22,7 +22,7 @@ This returns a smart contract address (the blockchain address to which the smart
 
 ## Mint an NFT 
 
-Set the `contractAddress` variable, in `scripts/mint-nft.js`, and run the following command:
+Set the `contractAddress` variable, in `scripts/nft_interaction.js`, and run the following command:
 
 > node scripts/nft_interaction.js
 
