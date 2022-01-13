@@ -15,10 +15,10 @@ const httpResponse = require("../../utils/http-response-creator");
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 
-// @route   POST api/user/create
+// @route   POST api/user/
 // @desc    Create user object and corresponding wallet to store NFTs 
 // @access  Public
-router.post("/create", async (req, res) => {
+router.post("/", async (req, res) => {
 
     const {errors, isValid} = validateRegisterInput(req.body);
     if (!isValid) {
