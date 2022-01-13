@@ -7,7 +7,7 @@ import CreateUserResponse from "../types/CreateUserResponse"
 class UserDataService {
 
   create(data: CreateUserRequest) {
-    return http.post(`/user/`, data);
+    return http.post(`/user`, data);
   }
 
   login(data: LogInRequest) {
