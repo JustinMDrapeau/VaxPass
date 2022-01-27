@@ -15,13 +15,22 @@ contract VaxNFT is ERC721, Ownable {
 
     struct TokenInfo {
         address mintAddress; // The clinic address
-        string firstName;
-        string lastName;
         string manufacturer;
         uint dosePhase;
     }
 
-    mapping(uint256 => TokenInfo) public tokenIdTokenInfo;
+    struct Clinic {
+        string name;
+        string p_address;
+        string email;
+    }
+
+    mapping(uint256 => TokenInfo) public tokenIdToTokenInfo;
+
+    mapping(address => string) public walletIdToPatientHash;
+
+    mapping(address => Clinic) public walletIdToClinic;
+
 
     constructor() public ERC721("VaxNFT", "NFT") {}
 
@@ -59,6 +68,16 @@ contract VaxNFT is ERC721, Ownable {
         
         tokenIdTokenInfo[newItemId] = TokenInfo(_msgSender(), _firstName, _lastName, _manufacturer, _dosePhase);
         return newItemId;
+    }
+
+    function patientSignup(string memory _hash) public returns (string) {
+        walletIdToPatientHash[_msgSender()] = _hash;
+        return walletIdToPatientHash[_msgSender()];
+    }
+
+    function clinicSignup(string memory _name, string memory _p_address, string memory _email) public returns (Clinic) {
+        walletIdToPatientHash[_msgSender()] = Clinic(_name, _p_address, _email);
+        return walletIdToPatientHash[_msgSender()];
     }
 
     function transferNFT(address toAddress) public returns (uint256) {
