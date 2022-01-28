@@ -8,7 +8,7 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(API_URL);
 
 const contract = require("../artifacts/contracts/vaxNFT.sol/VaxNFT.json");
-const contractAddress = "0xa0036cF7af5A6aFe35343Ae6d828A280Ac8442fD";
+const contractAddress = "0x0B0A8DA24d0aFd826956E85e0944C18F37De6C9E";
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
 async function mintNFT(firstName, lastName, manufacturer, phase) {
@@ -21,7 +21,7 @@ async function mintNFT(firstName, lastName, manufacturer, phase) {
     'nonce': nonce,
     'gas': 500000,
     'maxPriorityFeePerGas': 1999999987,
-    'data': nftContract.methods.mintNFT(firstName, lastName, manufacturer, phase).encodeABI()
+    'data': nftContract.methods.mintNFT(manufacturer, phase).encodeABI()
   };
 
   const signPromise = web3.eth.accounts.signTransaction(tx, PRIVATE_KEY);
@@ -67,17 +67,68 @@ async function transferNFT() {
   });
 }
 
-mintNFT('Sharan', 'Somas', 'Pfizer', 2)
+async function patientSignup(pubk, privk, hash) {
+  const nonce = await web3.eth.getTransactionCount(pubk, 'latest'); // Get latest nonce
 
-// Test that the tokenURI method returns a URL string for the newly minted NFT
+  // The transaction that connects the clinic account to the smart contract
+  const tx = {
+    'from': pubk,
+    'to': contractAddress,
+    'nonce': nonce,
+    'gas': 500000,
+    'maxPriorityFeePerGas': 1999999987,
+    'data': nftContract.methods.patientSignup(hash).encodeABI()
+  };
 
-// nftContract.methods.tokenURI(1).call()
+  const signPromise = web3.eth.accounts.signTransaction(tx, privk);
+  signPromise.then((signedTx) => {
+    web3.eth.sendSignedTransaction(signedTx.rawTransaction, function(err, hash) {
+      if (!err) {
+        console.log("The hash of your transfer transaction is: ", hash); 
+      } else {
+        console.log("Something went wrong when submitting your transfer transaction:", err)
+      }
+    });
+  }).catch((err) => {
+    console.log("Promise failed:", err);
+  });
+}
+
+async function clinicSignup(pubk, privk, name, address, email) {
+  const nonce = await web3.eth.getTransactionCount(pubk, 'latest'); // Get latest nonce
+
+  // The transaction that connects the clinic account to the smart contract
+  const tx = {
+    'from': pubk,
+    'to': contractAddress,
+    'nonce': nonce,
+    'gas': 500000,
+    'maxPriorityFeePerGas': 1999999987,
+    'data': nftContract.methods.clinicSignup(name, address, email).encodeABI()
+  };
+
+  const signPromise = web3.eth.accounts.signTransaction(tx, privk);
+  signPromise.then((signedTx) => {
+    web3.eth.sendSignedTransaction(signedTx.rawTransaction, function(err, hash) {
+      if (!err) {
+        console.log("The hash of your transfer transaction is: ", hash); 
+      } else {
+        console.log("Something went wrong when submitting your transfer transaction:", err)
+      }
+    });
+  }).catch((err) => {
+    console.log("Promise failed:", err);
+  });
+}
+
+// mintNFT('Tharse', 'Yokan', 'Pfizer', 1)
+
+// clinicSignup(PUBLIC_KEY, PRIVATE_KEY, 'Hospital of Toronto', '25 Bay Street Toronto Canada L8B93W', 'admin@torontohospital.com')
+
+
+// nftContract.methods.walletIdToClinic(PUBLIC_KEY).call()
 // .then((result) => {
 //   console.log(result)
-//   console.log(result.split(",")[0])
-//   console.log(result.split(",")[1].substring(0, result.split(",")[1].length - 2))
-//   base64_string = result.split(",")[1].substring(0, result.split(",")[1].length - 2)
-//   console.log(Buffer.from(base64_string, 'base64').toString('ascii'));
 // })
 // .catch((err) => {
 //     console.log(err)

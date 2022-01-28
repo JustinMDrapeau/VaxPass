@@ -3,7 +3,7 @@ import { Button, Card, Container, Stack, Typography } from '@mui/material';
 import LogInDialog from '../components/LogInDialog';
 import PropTypes from 'prop-types';
 
-function LandingPage(props) {
+function LandingPage(props : any) {
   const { isDialogOpen } = props;
   const [open, setOpen] = useState(isDialogOpen);
   const [isUser, setIsUser] = useState(false);

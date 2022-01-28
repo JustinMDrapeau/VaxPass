@@ -7,7 +7,7 @@ import ClinicDataService from "../services/ClinicDataService";
 import LogInRequest from '../types/LogInRequest';
 import UserDataService from "../services/UserDataService";
 
-function LogInDialog(props) {
+function LogInDialog(props : any) {
     const { isUser, onClose, isOpen } = props;
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -77,7 +77,7 @@ function LogInDialog(props) {
   
     return (
       <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={isOpen} >
-         <DialogTitle align="center" >Log In</DialogTitle>
+         <DialogTitle>Log In</DialogTitle>
          <DialogContent sx={{paddingBottom: 0 }}>
           <Stack spacing={2}>
             <TextField

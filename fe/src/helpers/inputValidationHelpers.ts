@@ -1,5 +1,5 @@
 export function isValidEmail(email: string) {
-    const regex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)
+    const regex = new RegExp(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g)
 
     // Non empty and email format
     return regex.test(email.toLowerCase())
@@ -37,6 +37,6 @@ export function isValidPostalCode(code: string) {
   const regex = new RegExp(/^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i)
 
   // Non empty && postal code format
-  return code != "" && 
+  return code !== "" && 
     regex.test(code)
 }
