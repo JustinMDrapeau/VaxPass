@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
 import UserInformationFields from '../components/UserInformationFields'
 
-function LogInDialog(props) {
+function LogInDialog(props: any) {
   const { isUser, onClose, isOpen } = props;
 
   const today = new Date()
@@ -102,7 +102,7 @@ function LogInDialog(props) {
 
   return (
     <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={isOpen} >
-      <DialogTitle align="center" >Log In</DialogTitle>
+      <DialogTitle>Log In</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <Stack spacing={2}>
           {isUser &&

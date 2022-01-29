@@ -102,7 +102,7 @@ function ClinicSignUpPage() {
   const handleSubmit = () => {
 
     if (noMissingInformation() === true) {
-      const finalAdress = concatAddress()
+      const finalAddress = concatAddress()
       // create wallet
       // navigate to clinic page
     }
