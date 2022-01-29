@@ -1,5 +1,5 @@
 export function isValidEmail(email: string) {
-  const regex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)
+  const regex = new RegExp(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g)
 
   // Non empty and email format
   return regex.test(email.toLowerCase())
@@ -34,6 +34,6 @@ export function isValidWalletAddress(walletAddress: string) {
   const regex = new RegExp(/^0x[a-fA-F0-9]{40}$/i)
 
   // Non empty && postal code format
-  return walletAddress != "" && 
+  return walletAddress !== "" && 
     regex.test(walletAddress)
 }

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 
-function ConfirmUserInformationPopup(props) {
+function ConfirmUserInformationPopup(props : any) {
     const { firstName, lastName, birthday, isOpen, onClose } = props;
 
     const handleClose = () => {
@@ -15,7 +15,7 @@ function ConfirmUserInformationPopup(props) {
 
     return (
         <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={isOpen} >
-            <DialogTitle align="center" >Confirm Your Information</DialogTitle>
+            <DialogTitle>Confirm Your Information</DialogTitle>
             <DialogContent sx={{ paddingBottom: 1, paddingTop: 1 }}>
                 <Typography align="center" >
                 First Name: <b>{firstName}</b>

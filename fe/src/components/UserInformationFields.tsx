@@ -4,7 +4,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 
-function UserInformationFields(props) {
+function UserInformationFields(props : any) {
     const { handleFirstNameChange, handleLastNameChange, handleBirthdayChange, firstNameErrorMessage, lastNameErrorMessage, birthday } = props;
 
     return (
