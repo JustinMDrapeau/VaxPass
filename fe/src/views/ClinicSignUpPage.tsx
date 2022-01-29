@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { isValidAddress, isValidEmail, isValidName, isValidPassword, isValidPostalCode } from "../helpers/inputValidationHelpers";
+import { isValidAddress, isValidEmail, isValidName, isValidPostalCode } from "../helpers/inputValidationHelpers";
 import { Button, Card, Container, Stack, TextField, Typography } from '@mui/material';
 import { CountryDropdown } from 'react-country-region-selector';
 import { useNavigate } from 'react-router-dom';
-import CreateClinicRequest from '../types/CreateClinicRequest';
-import ClinicDataService from "../services/ClinicDataService";
 
 function ClinicSignUpPage() {
   const [clinicName, setClinicName] = useState("");
@@ -12,11 +10,9 @@ function ClinicSignUpPage() {
   const [zipCode, setZipCode] = useState("");
   const [city, setCity] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [country, setCountry] = useState("");
 
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [clinicNameErrorMessage, setClinicNameErrorMessage] = useState("");
   const [addressErrorMessage, setAddressErrorMessage] = useState("");
   const [zipCodeErrorMessage, setZipCodeErrorMessage] = useState("");
@@ -73,15 +69,6 @@ function ClinicSignUpPage() {
     }
   }
 
-  const handlePasswordChange = (e: any) => {
-    if (isValidPassword(e.target.value) === true) {
-      setPassword(e.target.value)
-      setPasswordErrorMessage("")
-    } else {
-      setPasswordErrorMessage("Please enter a password")
-    }
-  }
-
   const handleCountryChange = (e: any) => {
     setCountry(e)
   }
@@ -95,8 +82,6 @@ function ClinicSignUpPage() {
       setClinicNameErrorMessage("Please enter a clinic name")
     } else if (email === "") {
       setEmailErrorMessage("Please enter an email")
-    } else if (password === "") {
-      setPasswordErrorMessage("Please enter a password")
     } else if (address === "") {
       setAddressErrorMessage("Please enter an address")
     } else if (zipCode === "") {
@@ -115,30 +100,17 @@ function ClinicSignUpPage() {
   }
 
   const handleSubmit = () => {
-    let request: CreateClinicRequest;
 
     if (noMissingInformation() === true) {
-      request = {
-        name: clinicName,
-        address: concatAddress(),
-        email,
-        password,
-        country
-      }
-
-      ClinicDataService.create(request)
-        .then((response) => {
-          // navigate('/userHomePage') TODO: Update this when home page is complete
-        })
-        .catch((e: Error) => {
-          console.log(e);
-        });
+      const finalAdress = concatAddress()
+      // create wallet
+      // navigate to clinic page
     }
   }
 
   return (
     <div className="ClinicSignUp" style={{ backgroundColor: '#D3D3D3', height: '100vh' }} >
-      <Container maxWidth='sm' sx={{ pt: '70px' }}>
+      <Container maxWidth='sm' sx={{ pt: '110px' }}>
         <Card style={{ padding: '24px' }}>
           <Stack alignItems="center" spacing={2}>
             <Typography variant="h2" align="center" >
@@ -167,16 +139,6 @@ function ClinicSignUpPage() {
                 type="email"
                 variant="filled"
                 onChange={handleEmailChange}
-              />
-              <TextField
-                required
-                error={passwordErrorMessage !== ""}
-                helperText={passwordErrorMessage}
-                id="pswd-field"
-                label="Password"
-                type="password"
-                variant="filled"
-                onChange={handlePasswordChange}
               />
               <TextField
                 required

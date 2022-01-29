@@ -1,20 +1,9 @@
 export function isValidEmail(email: string) {
-    const regex = new RegExp(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g)
+  const regex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)
 
-    // Non empty and email format
-    return regex.test(email.toLowerCase())
-    && email !== "";
-};
-
-export function isValidPassword(password: string) {
-  // Non empty
-  return password !== ""
-};
-
-export function isValidHealthNumber(healthNumber: string) {
-  // TODO: Validate the health card number format
-  // Non empty
-  return healthNumber !== ""
+  // Non empty and email format
+  return regex.test(email.toLowerCase())
+  && email !== "";
 };
 
 export function isValidName(name: string) {
@@ -39,4 +28,12 @@ export function isValidPostalCode(code: string) {
   // Non empty && postal code format
   return code !== "" && 
     regex.test(code)
+}
+
+export function isValidWalletAddress(walletAddress: string) { 
+  const regex = new RegExp(/^0x[a-fA-F0-9]{40}$/i)
+
+  // Non empty && postal code format
+  return walletAddress != "" && 
+    regex.test(walletAddress)
 }
