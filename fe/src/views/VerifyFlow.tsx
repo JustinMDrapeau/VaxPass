@@ -84,7 +84,7 @@ function VerifyFlow(props: any) {
         }
     }
 
-    const updateWhiteListLink = (e) => {
+    const updateWhiteListLink = (e: any) => {
         if (isValidLink(e.target.value) === true || e.target.value === "") {
             setWhitelistLink(e.target.value)
             setWhitelistLinkErrorMessage("")

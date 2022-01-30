@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from '@mui/material';
 import VerifyStepper from './VerifyStepper';
-import { isValidWalletAddress } from "../helpers/inputValidationHelpers";
+import { isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
 
 function VerifyFlowSubmitWalletAddress(props: any) {
     const { isOpen, updateUserInformation, handleClose } = props;
@@ -12,7 +12,7 @@ function VerifyFlowSubmitWalletAddress(props: any) {
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
-    const [birthday, setBirthday] = useState(today);
+    const [birthday, setBirthday] = useState(new Date());
 
     const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
     const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
@@ -50,19 +50,14 @@ function VerifyFlowSubmitWalletAddress(props: any) {
 
     const userNoMissingInformation = () => {
         let noMissingInfo = true;
-
-        if (isUser === true) {
-            if (firstName === "") {
-                setFirstNameErrorMessage("Please enter a first name")
-                noMissingInfo = false
-            } else if (lastName === "") {
-                setLastNameErrorMessage("Please enter a last name")
-                noMissingInfo = false
-            }
-        }
-
-        if (walletAddress === "") {
-            setWalletAddressErrorMessage("Please enter a valid address");
+        if (firstName === "") {
+            setFirstNameErrorMessage("Please enter a first name")
+            noMissingInfo = false
+        } else if (lastName === "") {
+            setLastNameErrorMessage("Please enter a last name")
+            noMissingInfo = false
+        } else if (walletAddress === "") {
+            setWalletAddressErrorMessage("Please enter a valid address")
             noMissingInfo = false
         }
 
@@ -78,6 +73,7 @@ function VerifyFlowSubmitWalletAddress(props: any) {
 
     return (
         <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={isOpen} >
+            {/* @ts-ignore */}
             <DialogTitle align="center" >
                 <VerifyStepper
                     step={2}
@@ -85,6 +81,7 @@ function VerifyFlowSubmitWalletAddress(props: any) {
             </DialogTitle>
             <DialogContent sx={{ paddingBottom: 0, marginTop: 2 }}>
                 <Stack spacing={1}>
+                    {/* @ts-ignore */}
                     <Typography variant="h7" paddingBottom="15px">Enter the patient's wallet address</Typography>
                     {/* <UserInformationFields
                         handleFirstNameChange={handleFirstNameChange}

@@ -25,6 +25,7 @@ function VerifyFlowSelector(props: any) {
 
     return (
         <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={isOpen} >
+            {/* @ts-ignore */}
             <DialogTitle align="center" >
                 <VerifyStepper
                     step={1}
@@ -32,6 +33,7 @@ function VerifyFlowSelector(props: any) {
             </DialogTitle>
             <DialogContent sx={{ paddingBottom: 0, marginTop: 2 }}>
                 <FormControl component="fieldset" sx={{ textAlign: 'center' }}>
+                    {/* @ts-ignore */}
                     <Typography variant="h7" paddingBottom="15px">Select how you want ot identify the patient:</Typography>
                     <RadioGroup
                         aria-label="gender"
@@ -43,7 +45,7 @@ function VerifyFlowSelector(props: any) {
                         <FormControlLabel value="QR" control={<Radio />} label="Scan QR" />
                         <FormControlLabel value="wallet" control={<Radio />} label="Manually enter wallet address" />
                     </RadioGroup>
-                    <FormHelperText sx={{color: "red" }}>{selectedValueErrorMessage}</FormHelperText>
+                    <FormHelperText sx={{ color: "red" }}>{selectedValueErrorMessage}</FormHelperText>
                 </FormControl>
             </DialogContent>
             <DialogActions sx={{ paddingRight: 3, paddingBottom: 2, align: "justify", marginTop: 2 }}>

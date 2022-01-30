@@ -11,6 +11,7 @@ function VerifyFlowWhitelistLinkStep(props: any) {
 
     return (
         <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={isOpen} >
+            {/* @ts-ignore */}
             <DialogTitle align="center" >
                 <VerifyStepper
                     step={0}
@@ -18,6 +19,7 @@ function VerifyFlowWhitelistLinkStep(props: any) {
             </DialogTitle>
             <DialogContent sx={{ paddingBottom: 0, marginTop: 2 }}>
                 <Stack spacing={3}>
+                    {/* @ts-ignore */}
                     <Typography variant="h7" align="center" >
                         Enter the URL of your establishment's vaccine whitelist:
                     </Typography>

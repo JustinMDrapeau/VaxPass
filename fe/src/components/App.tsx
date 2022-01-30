@@ -1,5 +1,3 @@
-import React from 'react';
-import logo from '../assets/logo.svg';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UserSignUpPage from '../views/UserSignUpPage';
 import ClinicSignUpPage from '../views/ClinicSignUpPage';

@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import { Button, Dialog, DialogActions } from '@mui/material';
 import QrReader from 'react-camera-qr'
 
-function VerifyFlowQrScan(props) {
+function VerifyFlowQrScan(props: any) {
     const {handleClose, isOpen, handleScan} = props
 
-    const handleError = err => {
+    const handleError = (err: any) => {
         console.error(err)
       }
 
