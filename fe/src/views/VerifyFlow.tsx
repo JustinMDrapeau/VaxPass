@@ -1,21 +1,27 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { isValidLink } from "../helpers/inputValidationHelpers";
+import { isValidLink, isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
 import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
 import VerifyFlowSelector from "../components/VerifyFlowSelector"
 import VerifyFlowQrScan from "../components/VerifyFlowQrScan"
 import VerifyFlowSubmitWalletAddress from "../components/VerifyFlowSubmitWalletAddress"
+import WhitelistLinkData from '../types/WhitelistLinkData';
 
 function VerifyFlow(props: any) {
     const { isOpen, handleClose } = props
 
-    const [whitelistLink, setWhitelistLink] = useState("")
-    const [whitelistLinkErrorMessage, setWhitelistLinkErrorMessage] = useState("")
+    const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
     const [isCameraOpen, setIsCameraOpen] = useState(false)
 
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
-    const [birthday, setbirthday] = useState(new Date())
+    const [birthday, setBirthday] = useState(new Date())
+    const [walletAddress, setWalletAddress] = useState("")
+
+    const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
+    const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
+    const [walletAddressErrorMessage, setWalletAddressErrorMessage] = useState("")
+
 
     const [isQR, setIsQR] = useState(false)
 
@@ -27,13 +33,63 @@ function VerifyFlow(props: any) {
         setIsStepOneOpen(isOpen);
     }, [isOpen]);
 
+    const handleFirstNameChange = (e: any) => {
+        if (isValidName(e.target.value) === true) {
+            setFirstName(e.target.value)
+            setFirstNameErrorMessage("")
+        } else {
+            setFirstNameErrorMessage("Please enter a valid first name")
+        }
+    }
+
+    const handleLastNameChange = (e: any) => {
+        if (isValidName(e.target.value) === true) {
+            setLastName(e.target.value)
+            setLastNameErrorMessage("")
+        } else {
+            setLastNameErrorMessage("Please enter a valid last name")
+        }
+    }
+
+    const handleBirthdayChange = (e: any) => {
+        setBirthday(e)
+    }
+
+    const handleWalletAddressChange = (e: any) => {
+        if (isValidWalletAddress(e.target.value) === true) {
+            setWalletAddress(e.target.value)
+            setWalletAddressErrorMessage("")
+        } else {
+            setWalletAddressErrorMessage("Please enter a valid wallet address")
+        }
+    }
+
     const updateIsQR = (value: string) => {
         setIsQR(value === "QR")
     }
 
     const handleNextStepOne = () => {
-        setIsStepTwoOpen(true)
-        setIsStepOneOpen(false)
+        let newWhitelistLinksArr: Array<WhitelistLinkData> = [...whitelistLinks]
+        if ((newWhitelistLinksArr.filter((element) => element.errorMessage !== "")).length === 0) {
+            // All fields have no errors
+
+            let noDupesWhitelistLinks = Array.from(new Set(newWhitelistLinksArr.map(a => a.link)))
+                .map(link => {
+                    return newWhitelistLinksArr.find(a => a.link === link)
+                })
+                
+            if (noDupesWhitelistLinks !== undefined){
+                if(noDupesWhitelistLinks.length > 1) {
+                    {/* @ts-ignore */}
+                    noDupesWhitelistLinks = noDupesWhitelistLinks.filter(element => element.link !== "")
+                }
+                {/* @ts-ignore */}
+                setWhitelistLinks(noDupesWhitelistLinks)
+            } 
+            
+            setIsStepTwoOpen(true)
+            setIsStepOneOpen(false)
+        }
     }
 
     const handleCloseStepOne = () => {
@@ -52,6 +108,7 @@ function VerifyFlow(props: any) {
 
     const handleSubmitStepThree = () => {
         setIsStepThreeOpen(false)
+        handleClose()
         // Navigate to user page
     }
 
@@ -70,37 +127,70 @@ function VerifyFlow(props: any) {
         setIsCameraOpen(false)
     };
 
-    const updateUserInformation = (firstName: string, lastName: string, birthday: Date) => {
-        setFirstName(firstName)
-        setLastName(lastName)
-        setbirthday(birthday)
+    const userNoMissingInformation = () => {
+        let noMissingInfo = true;
+        if (firstName === "") {
+            setFirstNameErrorMessage("Please enter a first name")
+            noMissingInfo = false
+        } else if (lastName === "") {
+            setLastNameErrorMessage("Please enter a last name")
+            noMissingInfo = false
+        } else if (walletAddress === "") {
+            setWalletAddressErrorMessage("Please enter a valid address")
+            noMissingInfo = false
+        }
+
+        return noMissingInfo
+
+    }
+
+    const handleUserInfoSubmit = () => {
+        if (userNoMissingInformation() === true) {
+            handleSubmitStepThree()
+        }
     }
 
     const handleScan = (data: any) => {
         if (data) {
             // Data represents the data extracted from the QR code
             setIsCameraOpen(false)
+            handleClose()
             //navigate to user page
         }
     }
 
-    const updateWhiteListLink = (e: any) => {
+    const updateWhiteListLink = (e: any, index: any) => {
+        let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks];
         if (isValidLink(e.target.value) === true || e.target.value === "") {
-            setWhitelistLink(e.target.value)
-            setWhitelistLinkErrorMessage("")
+            newWhiteListLinks[index].link = e.target.value;
+            newWhiteListLinks[index].errorMessage = "";
+            setWhitelistLinks(newWhiteListLinks);
         } else {
-            setWhitelistLinkErrorMessage("Please enter a valid link")
+            newWhiteListLinks[index].errorMessage = "Please ensure the link is valid";
+            setWhitelistLinks(newWhiteListLinks);
         }
     }
 
+    const handleAddWhitelistField = () => {
+        setWhitelistLinks([...whitelistLinks, { link: "", errorMessage: "" }])
+    }
+
+    const handleRemoveField = (index: any) => {
+        let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks];
+        newWhiteListLinks.splice(index, 1);
+        setWhitelistLinks(newWhiteListLinks)
+    }
+
     return (
-        <div className="LandingPage" style={{ backgroundColor: '#D3D3D3', height: '100vh' }}>
+        <div className="VerifyFlow">
             <VerifyFlowWhitelistLinkStep
                 isOpen={isStepOneOpen}
+                whiteListLinks={whitelistLinks}
                 updateWhiteListLink={updateWhiteListLink}
-                whitelistLinkErrorMessage={whitelistLinkErrorMessage}
                 handleNext={handleNextStepOne}
                 handleClose={handleCloseStepOne}
+                handleAddField={handleAddWhitelistField}
+                handleRemoveField={handleRemoveField}
             />
             <VerifyFlowSelector
                 isOpen={isStepTwoOpen}
@@ -115,8 +205,16 @@ function VerifyFlow(props: any) {
             />
             <VerifyFlowSubmitWalletAddress
                 isOpen={isStepThreeOpen}
-                updateUserInformation={updateUserInformation}
+                handleWalletAddressChange={handleWalletAddressChange}
                 handleClose={handleBackStepThree}
+                handleFirstNameChange={handleFirstNameChange}
+                handleLastNameChange={handleLastNameChange}
+                handleBirthdayChange={handleBirthdayChange}
+                handleSubmit={handleUserInfoSubmit}
+                firstNameErrorMessage={firstNameErrorMessage}
+                lastNameErrorMessage={lastNameErrorMessage}
+                walletAddressErrorMessage={walletAddressErrorMessage}
+                birthday={birthday}
             />
         </div>
     )

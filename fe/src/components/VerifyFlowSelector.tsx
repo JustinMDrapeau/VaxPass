@@ -34,7 +34,7 @@ function VerifyFlowSelector(props: any) {
             <DialogContent sx={{ paddingBottom: 0, marginTop: 2 }}>
                 <FormControl component="fieldset" sx={{ textAlign: 'center' }}>
                     {/* @ts-ignore */}
-                    <Typography variant="h7" paddingBottom="15px">Select how you want ot identify the patient:</Typography>
+                    <Typography variant="h7" paddingBottom="15px">Select how you want to identify the patient:</Typography>
                     <RadioGroup
                         aria-label="gender"
                         name="controlled-radio-buttons-group"
@@ -43,7 +43,7 @@ function VerifyFlowSelector(props: any) {
                         sx={{ alignContent: 'center' }}
                     >
                         <FormControlLabel value="QR" control={<Radio />} label="Scan QR" />
-                        <FormControlLabel value="wallet" control={<Radio />} label="Manually enter wallet address" />
+                        <FormControlLabel value="wallet" control={<Radio />} label="Manually enter patient's information" />
                     </RadioGroup>
                     <FormHelperText sx={{ color: "red" }}>{selectedValueErrorMessage}</FormHelperText>
                 </FormControl>

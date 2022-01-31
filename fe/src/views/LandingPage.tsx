@@ -33,8 +33,8 @@ function LandingPage(props: any) {
   };
 
   return (
-    <div className="LandingPage" style={{ backgroundColor: '#D3D3D3', height: '100vh' }}>
-      <Container maxWidth='xs' sx={{ pt: '192px' }}>
+    <div className="LandingPage" style={{ backgroundColor: '#D3D3D3', height: '100vh'}}>
+      <Container maxWidth='xs' sx={{ pt: '212px' }}>
         <Card style={{ padding: '24px' }}>
           <Stack alignItems="center" spacing={4}>
             <Typography variant="h2" align="center" >

@@ -1,76 +1,21 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from '@mui/material';
+import UserInformationFields from './UserInformationFields';
 import VerifyStepper from './VerifyStepper';
-import { isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
 
 function VerifyFlowSubmitWalletAddress(props: any) {
-    const { isOpen, updateUserInformation, handleClose } = props;
-
-    const [walletAddress, setWalletAddress] = useState("")
-    const [walletAddressErrorMessage, setWalletAddressErrorMessage] = useState("")
-
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [birthday, setBirthday] = useState(new Date());
-
-    const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
-    const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
-
-    const handleFirstNameChange = (e: any) => {
-        if (isValidName(e.target.value) === true) {
-            setFirstName(e.target.value)
-            setFirstNameErrorMessage("")
-        } else {
-            setFirstNameErrorMessage("Please enter a valid first name")
-        }
-    }
-
-    const handleLastNameChange = (e: any) => {
-        if (isValidName(e.target.value) === true) {
-            setLastName(e.target.value)
-            setLastNameErrorMessage("")
-        } else {
-            setLastNameErrorMessage("Please enter a valid last name")
-        }
-    }
-
-    const handleBirthdayChange = (e: any) => {
-        setBirthday(e)
-    }
-
-    const handleWalletAddressChange = (e: any) => {
-        if (isValidWalletAddress(e.target.value) === true) {
-            setWalletAddress(e.target.value)
-            setWalletAddressErrorMessage("")
-        } else {
-            setWalletAddressErrorMessage("Please enter a valid wallet address")
-        }
-    }
-
-    const userNoMissingInformation = () => {
-        let noMissingInfo = true;
-        if (firstName === "") {
-            setFirstNameErrorMessage("Please enter a first name")
-            noMissingInfo = false
-        } else if (lastName === "") {
-            setLastNameErrorMessage("Please enter a last name")
-            noMissingInfo = false
-        } else if (walletAddress === "") {
-            setWalletAddressErrorMessage("Please enter a valid address")
-            noMissingInfo = false
-        }
-
-        return noMissingInfo
-
-    }
-
-    const handleSubmit = () => {
-        if (userNoMissingInformation() === true) {
-            updateUserInformation()
-        }
-    };
-
+    const { isOpen, 
+        handleWalletAddressChange, 
+        handleClose, 
+        handleFirstNameChange, 
+        handleLastNameChange, 
+        handleBirthdayChange, 
+        handleSubmit, 
+        firstNameErrorMessage, 
+        lastNameErrorMessage, 
+        walletAddressErrorMessage, 
+        birthday 
+    } = props;
     return (
         <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={isOpen} >
             {/* @ts-ignore */}
@@ -82,15 +27,15 @@ function VerifyFlowSubmitWalletAddress(props: any) {
             <DialogContent sx={{ paddingBottom: 0, marginTop: 2 }}>
                 <Stack spacing={1}>
                     {/* @ts-ignore */}
-                    <Typography variant="h7" paddingBottom="15px">Enter the patient's wallet address</Typography>
-                    {/* <UserInformationFields
+                    <Typography variant="h7" paddingBottom="15px">Enter the patient's informations:</Typography>
+                    <UserInformationFields
                         handleFirstNameChange={handleFirstNameChange}
                         handleLastNameChange={handleLastNameChange}
                         handleBirthdayChange={handleBirthdayChange}
                         firstNameErrorMessage={firstNameErrorMessage}
                         lastNameErrorMessage={lastNameErrorMessage}
                         birthday={birthday}
-                    /> */}
+                    />
                     <TextField
                         required
                         error={walletAddressErrorMessage !== ""}
@@ -113,8 +58,16 @@ function VerifyFlowSubmitWalletAddress(props: any) {
 
 VerifyFlowSubmitWalletAddress.propTypes = {
     isOpen: PropTypes.bool.isRequired,
-    updateUserInformation: PropTypes.func.isRequired,
-    handleClose: PropTypes.func.isRequired
+    handleWalletAddressChange: PropTypes.func.isRequired,
+    handleClose: PropTypes.func.isRequired,
+    handleFirstNameChange: PropTypes.func.isRequired, 
+    handleLastNameChange: PropTypes.func.isRequired, 
+    handleBirthdayChange: PropTypes.func.isRequired, 
+    handleSubmit: PropTypes.func.isRequired, 
+    firstNameErrorMessage: PropTypes.string.isRequired, 
+    lastNameErrorMessage: PropTypes.string.isRequired, 
+    walletAddressErrorMessage: PropTypes.string.isRequired,
+    birthday: PropTypes.instanceOf(Date).isRequired
 };
 
 export default VerifyFlowSubmitWalletAddress;

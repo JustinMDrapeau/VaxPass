@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogActions } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions } from '@mui/material';
 import QrReader from 'react-camera-qr'
 
 function VerifyFlowQrScan(props: any) {
     const {handleClose, isOpen, handleScan} = props
 
-    const handleError = (err: any) => {
-        console.error(err)
+    const handleError = () => {
+        return <Alert severity="error">There was an error scanning your QR code. Scan another QR code or try again later</Alert>
       }
 
     return (

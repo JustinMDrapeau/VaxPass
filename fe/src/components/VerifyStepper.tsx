@@ -3,11 +3,6 @@ import { Box, Step, Stepper, StepLabel } from '@mui/material';
 
 function VerifyStepper(props: any) {
     const { step } = props
-    const steps = [
-        '',
-        '',
-        '',
-    ];
 
     return (
         <Box sx={{ width: '100%' }}>

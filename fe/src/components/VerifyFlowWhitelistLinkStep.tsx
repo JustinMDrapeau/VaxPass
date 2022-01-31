@@ -1,13 +1,18 @@
 import PropTypes from 'prop-types';
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@mui/material';
 import VerifyStepper from '../components/VerifyStepper';
+import WhiteListTextField from './WhiteListTextField';
 
 function VerifyFlowWhitelistLinkStep(props: any) {
-    const { isOpen, updateWhiteListLink, whitelistLinkErrorMessage, handleNext, handleClose } = props;
-
-    const handleWhitelistLinkChange = (e: any) => {
-        updateWhiteListLink(e)
-    }
+    const {
+        isOpen,
+        whiteListLinks,
+        updateWhiteListLink,
+        handleNext,
+        handleClose,
+        handleAddField,
+        handleRemoveField
+    } = props;
 
     return (
         <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={isOpen} >
@@ -23,17 +28,12 @@ function VerifyFlowWhitelistLinkStep(props: any) {
                     <Typography variant="h7" align="center" >
                         Enter the URL of your establishment's vaccine whitelist:
                     </Typography>
-                    <TextField
-                        error={whitelistLinkErrorMessage !== ""}
-                        helperText={whitelistLinkErrorMessage}
-                        id="whitelist-link-field"
-                        label="Whitelist Link"
-                        type="whitelist"
-                        variant="filled"
-                        onChange={handleWhitelistLinkChange}
-                    />
-
-                    <Alert severity="info">Leave the field empty to consider vaccines all clinics</Alert>
+                    <WhiteListTextField
+                        whitelistLinkDetails={whiteListLinks}
+                        handleAdd={handleAddField}
+                        handleRemove={handleRemoveField}
+                        updateWhiteListLinksDetails={updateWhiteListLink} />
+                    <Alert severity="info">Leave the field empty to consider vaccines from all clinics</Alert>
                 </Stack>
             </DialogContent>
             <DialogActions sx={{ paddingRight: 3, paddingBottom: 2, align: "justify", marginTop: 2 }}>
@@ -46,10 +46,12 @@ function VerifyFlowWhitelistLinkStep(props: any) {
 
 VerifyFlowWhitelistLinkStep.propTypes = {
     isOpen: PropTypes.bool.isRequired,
+    whiteListLinks: PropTypes.array.isRequired,
     updateWhiteListLink: PropTypes.func.isRequired,
-    whitelistLinkErrorMessage: PropTypes.string.isRequired,
     handleNext: PropTypes.func.isRequired,
-    handleClose: PropTypes.func.isRequired
+    handleClose: PropTypes.func.isRequired,
+    handleAddField: PropTypes.func.isRequired,
+    handleRemoveField: PropTypes.func.isRequired
 };
 
 export default VerifyFlowWhitelistLinkStep;
