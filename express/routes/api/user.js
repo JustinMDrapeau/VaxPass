@@ -1,15 +1,110 @@
+const bcrypt = require ("bcryptjs");
 const express = require ("express");
+const jwt = require("jsonwebtoken");
+const keys = require("../../config/keys");
 const router = express.Router();
+const Web3 = require("web3");
+const web3 = new Web3()
 
-const Web3 = require('web3');
+const User = require("../../models/User");
+const Wallet = require("../../models/Wallet");
+const Country = require("../../models/Country");
+const Identification = require("../../models/Identification");
 
-// @route   POST api/user/wallet
-// @desc    Create wallet for user (1 account) to store NFTs 
-// @access  Public                                          TODO: make this PRIVATE
-router.post("/wallet", (req, res) => {
-    // To interact with blockchain need to have access to ethereum node
-    web3 = new Web3()
-    res.json({wallet : web3.eth.accounts.create()});
-});
+const httpResponse = require("../../utils/http-response-creator");
+const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
+
+// @route   POST api/user/
+// @desc    Create user object and corresponding wallet to store NFTs 
+// @access  Public
+router.post("/", async (req, res) => {
+
+    const {errors, isValid} = validateRegisterInput(req.body);
+    if (!isValid) {
+        return httpResponse(res, 400, errors);
+    }
+
+    const { email, password, firstName, lastName, country, healthCardNumber } = req.body;
+
+    try {
+        var user = new User({ email, password, firstName, lastName });
+        var salt = await bcrypt.genSalt(10);
+        var hash = await bcrypt.hash(user.password, salt);
+        if (!hash) {
+            throw err;
+        }
+        user.password = hash;
+        await user.save();
+    } catch {
+        return httpResponse(res, 500, { user: null, message: "Failed to create user! Please try again later." });
+    }
+
+    try {
+        const account = web3.eth.accounts.create();
+        var wallet = new Wallet({ user: user.id, address: account.address, privateKey: account.privateKey });
+        await wallet.save();
+
+    } catch {            
+        User.findByIdAndDelete(user.id)
+            .catch(() => { console.log("Failed to cleanup the created VaxPass user!"); })
+        
+        return httpResponse(res, 500, { user: null, message: "Failed to create VaxPass wallet! Please try again later." });
+    }
+
+    try {
+        const country_object = await Country.findOne({name: country});
+        const identification = Identification({ identificationNumber: healthCardNumber, type: "HC", user: user.id, country: country_object.id});
+        await identification.save();
+
+        httpResponse(res, 201, { id: user.id, message: "Patient, Identification, and VaxPass wallet successfully created!" });
+    } catch {
+        User.findByIdAndDelete(user.id)
+            .catch(() => { console.log("Failed to cleanup the created VaxPass user!"); })
+
+        Wallet.findByIdAndDelete(wallet.id)
+            .catch(() => { console.log("Failed to cleanup the created VaxPass wallet!"); })
+        
+        return httpResponse(res, 500, { user: null, message: "Failed to create user identification! Please try again later." });
+    }
+})
+
+// @route   POST api/user/login
+// @desc    Login to user account
+// @access  Public
+router.post("/login", async (req, res) => {
+
+    const {errors, isValid} = validateLoginInput(req.body);
+    if (!isValid) {
+        return httpResponse(res, 400, errors);
+    }
+
+    const { email, password } = req.body;
+
+    const user = await User.findOne({email});
+    if (!user) {
+        errors.email = "An account with this email does not exist in VaxPass. Please try again.";
+        return httpResponse(res, 400, errors);
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (passwordMatch) {
+        const payload = {
+            id : user.id,
+            firstName : user.firstName,
+            lastName: user.lastName,
+            email: user.lastName,
+            created: user.created
+        };
+
+        jwt.sign(payload, keys.encryptionKey, {expiresIn: 3600}, (err, token) => {
+            return httpResponse(res, 201, { success: true, token: "Bearer " + token })
+        });
+    } else {
+        errors.password = "The provided information does not match our records. Please try again.";
+        return httpResponse(res, 400, errors);
+    }
+})
 
 module.exports = router;

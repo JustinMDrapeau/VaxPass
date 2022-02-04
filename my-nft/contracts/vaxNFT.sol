@@ -14,14 +14,23 @@ contract VaxNFT is ERC721, Ownable {
     Counters.Counter private _tokenIds;
 
     struct TokenInfo {
-        address mintAddress;
-        string firstName;
-        string lastName;
+        address mintAddress; // The clinic address
         string manufacturer;
         uint dosePhase;
     }
 
-    mapping(uint256 => TokenInfo) public tokenIdTokenInfo;
+    struct Clinic {
+        string name;
+        string p_address;
+        string email;
+    }
+
+    mapping(uint256 => TokenInfo) public tokenIdToTokenInfo;
+
+    mapping(address => string) public walletIdToPatientHash;
+
+    mapping(address => Clinic) public walletIdToClinic;
+
 
     constructor() public ERC721("VaxNFT", "NFT") {}
 
@@ -43,7 +52,7 @@ contract VaxNFT is ERC721, Ownable {
             uint256 vaccineId;
             for (vaccineId = 1; vaccineId <= totalVaccines; vaccineId++) {
                 if (ownerOf(vaccineId) == _owner) {
-                    result[resultIndex] = tokenIdTokenInfo[vaccineId];
+                    result[resultIndex] = tokenIdToTokenInfo[vaccineId];
                     resultIndex++;
                 }
             }
@@ -51,39 +60,64 @@ contract VaxNFT is ERC721, Ownable {
         }
     }
 
-    function mintNFT(string memory _firstName, string memory _lastName, string memory _manufacturer, uint _dosePhase) public returns (uint256) {
+    function mintNFT(string memory _manufacturer, uint _dosePhase) public returns (uint256) {
         _tokenIds.increment();
 
         uint256 newItemId = _tokenIds.current();
-        _mint(_msgSender(), newItemId); // user_id_address -> nft_id
+        _mint(_msgSender(), newItemId); // clinic_address -> nft_id
         
-        tokenIdTokenInfo[newItemId] = TokenInfo(_msgSender(), _firstName, _lastName, _manufacturer, _dosePhase);
+        tokenIdToTokenInfo[newItemId] = TokenInfo(_msgSender(),_manufacturer, _dosePhase);
         return newItemId;
     }
 
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        return string(
-            abi.encodePacked(
-            "data:application/json;base64,",
-                Base64.encode(
-                    bytes(
-                        abi.encodePacked(
-                            '{"name":"Vax NFT",',
-                            '"description":"An NFT for vaccinations", "attributes":"", "firstName":"',
-                            tokenIdTokenInfo[tokenId].firstName,
-                            '", "lastName":"',
-                            tokenIdTokenInfo[tokenId].lastName,
-                            '","manufacturer":"',
-                            tokenIdTokenInfo[tokenId].manufacturer,
-                            '", "dosePhase":"',
-                            Strings.toString(tokenIdTokenInfo[tokenId].dosePhase),
-                            '","origin":"',
-                            abi.encodePacked(tokenIdTokenInfo[tokenId].mintAddress),
-                            '"}'
-                        )
-                    )
-                )
-            )
-        );
+    function patientSignup(string memory _hash) public returns (string memory) {
+        walletIdToPatientHash[_msgSender()] = _hash;
+        return walletIdToPatientHash[_msgSender()];
     }
+
+    function clinicSignup(string memory _name, string memory _p_address, string memory _email) public returns (Clinic memory) {
+        walletIdToClinic[_msgSender()] = Clinic(_name, _p_address, _email);
+        return walletIdToClinic[_msgSender()];
+    }
+
+    function transferNFT(address toAddress) public returns (uint256) {
+        // Token being transfered from clinic address to patient address
+        uint256 tokenId = _tokenIds.current();
+        // Address of the owner of the NFT
+        address ownerAddress = ownerOf(tokenId);
+        // Assert that the owner of the NFT is the clinic (msgSender)
+        require(_msgSender() == ownerAddress, "msgSender is not the owner of the NFT");
+
+        // Change the approved for an NFT to the patient (toAddress)
+        approve(toAddress, tokenId);
+        // Transfer NFT from clinic (msgSender) to patient (toAddress)
+        safeTransferFrom(_msgSender(), toAddress, tokenId); 
+        return tokenId;
+    }
+
+    // function tokenURI(uint256 tokenId) public view override returns (string memory) {
+    //     return string(
+    //         abi.encodePacked(
+    //         "data:application/json;base64,",
+    //             Base64.encode(
+    //                 bytes(
+    //                     abi.encodePacked(
+    //                         '{"name":"Vax NFT",',
+    //                         '"description":"An NFT for vaccinations", "attributes":"", "firstName":"',
+    //                         tokenIdToTokenInfo[tokenId].firstName,
+    //                         '", "lastName":"',
+    //                         tokenIdToTokenInfo[tokenId].lastName,
+    //                         '","manufacturer":"',
+    //                         tokenIdToTokenInfo[tokenId].manufacturer,
+    //                         '", "dosePhase":"',
+    //                         Strings.toString(tokenIdToTokenInfo[tokenId].dosePhase),
+    //                         '","origin":"',
+    //                         abi.encodePacked(tokenIdToTokenInfo[tokenId].mintAddress),
+    //                         '"}'
+    //                     )
+    //                 )
+    //             )
+    //         )
+    //     );
+    // }
 }
