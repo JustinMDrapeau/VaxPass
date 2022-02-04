@@ -22,7 +22,9 @@ class ContractService {
         return this.web3.eth.getTransactionCount(publicKey, 'latest');
     }
 
-    async signTransaction(data: TransactionRequest, publicKey : string, privateKey: string) {
+    async signTransaction(data: TransactionRequest, publicKey: string, privateKey: string) {
+        data.to = process.env.REACT_APP_CONTRACT_ADDRESS
+        data.from = publicKey
         data.nonce = await this.getNonce(publicKey);
         data.gas = 500000;
         data.maxPriorityFeePerGas = 1999999987;
