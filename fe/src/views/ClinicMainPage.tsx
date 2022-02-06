@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Box,
@@ -24,31 +24,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { withStyles } from '@material-ui/core/styles';
-
-const CssTextField = withStyles({
-  root: {
-    color: 'white',
-    '& label.Mui-focused': {
-      color: 'white',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: 'yellow',
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: 'white',
-      },
-      '&:hover fieldset': {
-        borderColor: 'white',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: 'yellow',
-      },
-    },
-  },
-})(TextField);
-
-
+import ClinicDataService from "../services/ClinicDataService";
 
 
 export default function ClinicMainPage(props: any) {
@@ -73,6 +49,10 @@ export default function ClinicMainPage(props: any) {
   const [doseNumber, setDoseNumber] = useState<String | null>();
 
   const [vaccineDisabled, setVaccineDisabled] = useState<boolean| undefined>(true);
+
+  useEffect(() => {
+    ClinicDataService.getClinicInfo(clinicPublic)
+  }, []);
 
 
   return (
