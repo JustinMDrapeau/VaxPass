@@ -38,6 +38,10 @@ export default function ClinicMainPage(props: any) {
     new Date(),
   );
 
+  const [clinicName, setClinicName] = useState("");
+  const [clinicWalletAddress, setClinicWalletAddress] = useState("");
+  const [clinicPhysicalAddress, setClinicPhysicalAddress] = useState("");
+  const [clinicEmail, setClinicEmail] = useState("");
 
   const [clinicPublic, setClinicPublic] = useState("0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc")
   const [clinicPrivate, setClinicPrivate] = useState("")
@@ -51,7 +55,12 @@ export default function ClinicMainPage(props: any) {
   const [vaccineDisabled, setVaccineDisabled] = useState<boolean| undefined>(true);
 
   useEffect(() => {
-    ClinicDataService.getClinicInfo(clinicPublic).then((res: any) => console.log(res)
+    ClinicDataService.getClinicInfo(clinicPublic).then((res: any) => {
+      console.log(res);
+      setClinicName(res.name);
+      setClinicEmail(res.email);
+      setClinicPhysicalAddress(res.p_address);
+    }
     ).catch((err: any) => console.log(err))
   }, []);
 
@@ -99,13 +108,19 @@ export default function ClinicMainPage(props: any) {
                   <br/>
 
                   <Typography variant="h3" align="center">
-                    Clinic Name
+                    {clinicName}
+                  </Typography>
+                  <Typography variant="h3" align="center">
+                    {clinicEmail}
+                  </Typography>
+                  <Typography variant="h3" align="center">
+                    {clinicPhysicalAddress}
                   </Typography>
                   <Typography variant="h5" align="center">
                     Wallet Address:
                   </Typography>
                   <Typography variant="body1" align="center">
-                    0x309b99ac0CF5B956cdf5D2d1DebFEc
+                    {clinicPublic}
                   </Typography>
                   <br />
                 </Stack>
