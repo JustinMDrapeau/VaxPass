@@ -39,8 +39,8 @@ export default function ClinicMainPage(props: any) {
   );
 
 
-  const [clinicPublic, setClinicPublic] = useState(props.publicKey)
-  const [clinicPrivate, setClinicPrivate] = useState(props.privateKey)
+  const [clinicPublic, setClinicPublic] = useState("0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc")
+  const [clinicPrivate, setClinicPrivate] = useState("")
 
   const [firstName, setFirstName] = useState<String | null>();
   const [lastName, setLastName] = useState<String | null>();
@@ -51,7 +51,8 @@ export default function ClinicMainPage(props: any) {
   const [vaccineDisabled, setVaccineDisabled] = useState<boolean| undefined>(true);
 
   useEffect(() => {
-    ClinicDataService.getClinicInfo(clinicPublic)
+    ClinicDataService.getClinicInfo(clinicPublic).then((res: any) => console.log(res)
+    ).catch((err: any) => console.log(err))
   }, []);
 
 
