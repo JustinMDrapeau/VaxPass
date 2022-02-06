@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, TextField } from '@mui/material';
 import VaccineCard from './VaccineCard';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
 import UserDataService from '../services/UserDataService';
@@ -14,7 +14,7 @@ function PatientPage() {
   })
   return (
     <>
-          <div className="UserSignUp" style={{backgroundColor: '#D3D3D3', height: '100vh' }} >
+          <div className="PatientPage" style={{backgroundColor: '#D3D3D3'}} >
         <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
@@ -27,9 +27,6 @@ function PatientPage() {
           >
             <MedicalServicesIcon/>
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Patient Page
-          </Typography>
         </Toolbar>
       </AppBar>
     </Box>
@@ -57,16 +54,14 @@ function PatientPage() {
           </Grid>
           <Grid item xs={8}>
       <Container sx={{ pt: '36px'}}>
-      <Box>
-            <Box display='flex'>
+            <Box display='flex' mb={2}>
               <Typography variant='h4'>My vaccinations</Typography>
             </Box>
-            <Box display='flex' mt={3}>
+            <Box display='flex'  sx={{ flexWrap: 'wrap' }}>
               {tokens.map((token, index) => {
                 return <VaccineCard key={index} token={token}/>
               } )}
             </Box>
-          </Box>
       </Container>
           </Grid>
         </Grid>
