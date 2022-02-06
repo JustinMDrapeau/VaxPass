@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Box,
@@ -51,39 +51,28 @@ const CssTextField = withStyles({
 
 
 
-export default function ClinicMainPage() {
+export default function ClinicMainPage(props: any) {
   const [vaccineTypeErrorMessage, setVaccineTypeErrorMessage] =
     React.useState("");
 
-  const [value, setValue] = React.useState<Date | null>(
-    new Date('2014-08-18T21:11:54'),
+  const [dob, setDob] = React.useState<Date | null>(
+    new Date(),
+  );
+  const [dateAdministered, setDateAdministered] = React.useState<Date | null>(
+    new Date(),
   );
 
-  const handleVaccineTypeChange = (e: any) => {
-    console.log(e.target.value);
-    // if(isValidName(e.target.value) === true) {
-    //   setFirstName(e.target.value)
-    //   setFirstNameErrorMessage("")
-    // } else {
-    //   setFirstNameErrorMessage("Please enter a valid vaccine type.")
-    // }
-  };
 
-  const [healthCardErrorMessage, setHealthCardErrorMessage] =
-    React.useState("");
-  const handleHealthCardChanged = (e: any) => {
-    console.log(e.target.value);
-    // if(isValidName(e.target.value) === true) {
-    //   setFirstName(e.target.value)
-    //   setFirstNameErrorMessage("")
-    // } else {
-    //   setFirstNameErrorMessage("Please enter a valid vaccine type.")
-    // }
-  };
+  const [clinicPublic, setClinicPublic] = useState(props.publicKey)
+  const [clinicPrivate, setClinicPrivate] = useState(props.privateKey)
 
-  const handleChange = (newValue: Date | null) => {
-    setValue(newValue);
-  };
+  const [firstName, setFirstName] = useState<String | null>();
+  const [lastName, setLastName] = useState<String | null>();
+  const [walletAddress, setWalletAddress] = useState<String | null>();
+  const [lotNumber, setLotNumber] = useState<String | null>();
+  const [doseNumber, setDoseNumber] = useState<String | null>();
+
+  const [vaccineDisabled, setVaccineDisabled] = useState<boolean| undefined>(true);
 
 
   return (
@@ -126,71 +115,7 @@ export default function ClinicMainPage() {
                 }}
               >
                 <Stack alignItems="left" spacing={2}>
-                  <Typography variant="h6" align="left">
-                    Clinic Public Address
-                  </Typography>
-                  {/* <TextField
-                    required
-                    error={vaccineTypeErrorMessage !== ""}
-                    helperText={vaccineTypeErrorMessage}
-                    id="vaccine-type-field"
-                    label="Vaccine Type"
-                    type="text"
-                    variant="outlined"
-                    onChange={handleVaccineTypeChange}
-                    sx ={{input: {color: 'white'}}}
-                  /> */}
-                  <TextField
-                    required
-                    error={healthCardErrorMessage !== ""}
-                    helperText={healthCardErrorMessage}
-                    id="clinic-public-field"
-                    label="Clinic Public Address"
-                    type="text"
-                    variant="outlined"
-                    onChange={handleHealthCardChanged}
-                    style={{
-                      backgroundColor: "#424242",
-                      border: '1px solid black',
-                      borderRadius: '2px'
-
-                  }}
-                  InputProps={{
-                      style: {
-                          color: "white"
-                      }
-                  }}
-                  />
-
-                  <Typography variant="h6" align="left">
-                    Clinic Private Address
-                  </Typography>
-                  <TextField
-                    required
-                    error={healthCardErrorMessage !== ""}
-                    helperText={healthCardErrorMessage}
-                    id="clinic-private-field"
-                    label="Clinic Private Address"
-                    type="text"
-                    variant="outlined"
-                    onChange={handleHealthCardChanged}
-                    style={{
-                      backgroundColor: "#424242",
-                      border: '1px solid black',
-                      borderRadius: '2px'
-                  }}
-                  InputProps={{
-                      style: {
-                          color: "white"
-                      }
-                  }}
-                  />
-                  <Button variant="contained">Authenticate</Button>
-
                   <br/>
-
-
-
 
                   <Typography variant="h3" align="center">
                     Clinic Name
@@ -202,9 +127,6 @@ export default function ClinicMainPage() {
                     0x309b99ac0CF5B956cdf5D2d1DebFEc
                   </Typography>
                   <br />
-                  <Typography variant="h5" align="center">
-                    Doses Administered: 69
-                  </Typography>
                 </Stack>
               </Card>
             </Container>
@@ -233,24 +155,20 @@ export default function ClinicMainPage() {
               >
                   <TextField
                     required
-                    error={vaccineTypeErrorMessage !== ""}
-                    helperText={vaccineTypeErrorMessage}
                     id="first-name-field"
                     label="First Name"
                     type="text"
                     variant="outlined"
-                    onChange={handleVaccineTypeChange}
+                    onChange={e => setFirstName(e.target.value)}
                   />
 
                   <TextField
                     required
-                    error={vaccineTypeErrorMessage !== ""}
-                    helperText={vaccineTypeErrorMessage}
                     id="last-name-field"
                     label="Last Name"
                     type="text"
                     variant="outlined"
-                    onChange={handleVaccineTypeChange}
+                    onChange={e => setLastName(e.target.value)}
                   />
           
           <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -258,60 +176,84 @@ export default function ClinicMainPage() {
                           <DesktopDatePicker
           label="Date of Birth"
           inputFormat="MM/dd/yyyy"
-          value={value}
-          onChange={handleChange}
+          value={dob}
+          onChange={setDob}
           renderInput={(params) => <TextField {...params} />}
         />
         </LocalizationProvider>
 
                   <TextField
                     required
-                    error={vaccineTypeErrorMessage !== ""}
-                    helperText={vaccineTypeErrorMessage}
                     id="wallet-address-field"
                     label="Wallet Address"
                     type="text"
                     variant="outlined"
-                    onChange={handleVaccineTypeChange}
+                    onChange={e => setWalletAddress(e.target.value)}
                     style={{minWidth: '45%'}}
                   />
                   <Button variant="contained" style ={{minHeight: '53px'}}>Verify Patient</Button>
               </Box>
 
+              <br/>
+              <br/>
 
                 <Typography variant="h3" align="left">
                   Assign Vaccine
                 </Typography>
                 <br />
-                <Typography variant="h6" align="left">
-                  Vaccine Type
-                </Typography>
-                <Stack alignItems="left" spacing={2}>
+              <Box
+                component="form"
+                sx={{
+                  '& > :not(style)': { m: 1, width: '25ch' },
+                }}
+              >
                   <TextField
-                    disabled
-                    error={vaccineTypeErrorMessage !== ""}
-                    helperText={vaccineTypeErrorMessage}
-                    id="vaccine-type-field"
-                    label="Vaccine Type"
+                    required
+                    id="vaccine-product-field"
+                    label="Product"
                     type="text"
-                    variant="filled"
-                    onChange={handleVaccineTypeChange}
+                    variant="outlined"
+                    onChange={e => setWalletAddress(e.target.value)}
+                    style={{minWidth: '40%'}}
+                    disabled = {vaccineDisabled}
                   />
-                  <Typography variant="h6" align="left">
-                    Health Card #
-                  </Typography>
+
                   <TextField
-                    disabled
-                    error={healthCardErrorMessage !== ""}
-                    helperText={healthCardErrorMessage}
-                    id="health-card-field"
-                    label="Health Card #"
+                    required
+                    id="vaccine-lot-number"
+                    label="Lot #"
                     type="text"
-                    variant="filled"
-                    onChange={handleHealthCardChanged}
+                    variant="outlined"
+                    onChange={e => setLotNumber(e.target.value)}
+                    style={{maxWidth: '20%'}}
+                    disabled = {vaccineDisabled}
                   />
-                  <Button variant="contained">Assign</Button>
-                </Stack>
+          
+                  <TextField
+                    required
+                    id="vaccine-dose-number"
+                    label="Dose #"
+                    type="text"
+                    variant="outlined"
+                    onChange={e => setDoseNumber(e.target.value)}
+                    style={{maxWidth: '20%'}}
+                    disabled = {vaccineDisabled}
+                  />
+
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+
+                    <DesktopDatePicker
+                    label="Date Issued"
+                    inputFormat="MM/dd/yyyy"
+                    onChange={setDateAdministered}
+                    value={dateAdministered}
+                    renderInput={(params) => <TextField {...params} />}
+                    disabled = {vaccineDisabled}
+                  />
+        </LocalizationProvider>
+                  <Button variant="contained" style ={{minHeight: '53px'}}>Assign</Button>
+              </Box>
+
               </Card>
             </Container>
           </Grid>
