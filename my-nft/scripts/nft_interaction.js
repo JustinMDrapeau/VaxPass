@@ -11,7 +11,7 @@ const contract = require("../artifacts/contracts/vaxNFT.sol/VaxNFT.json");
 const contractAddress = "0xad5306305153930e6090FE430aF4573E356B6c3C";
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
-async function mintNFT(firstName, lastName, manufacturer, phase) {
+async function mintNFT(manufacturer, phase) {
   const nonce = await web3.eth.getTransactionCount(PUBLIC_KEY, 'latest'); // Get latest nonce
 
   // The transaction that connects the clinic account to the smart contract
@@ -29,8 +29,8 @@ async function mintNFT(firstName, lastName, manufacturer, phase) {
     web3.eth.sendSignedTransaction(signedTx.rawTransaction, async function(err, hash) {
       if (!err) {
         console.log("The hash of your mint transaction is: ", hash); 
-        while(await web3.eth.getTransactionReceipt(hash) == null) {}
-        transferNFT();
+        // while(await web3.eth.getTransactionReceipt(hash) == null) {}
+        // transferNFT();
       } else {
         console.log("Something went wrong when submitting your mint transaction:", err)
       }
@@ -140,7 +140,7 @@ async function clinicLogin(pubk, privk) {
   })
 }
 
-// mintNFT('Tharse', 'Yokan', 'Pfizer', 1)
+// mintNFT('Moderna', 1)
 
 // clinicSignup(PUBLIC_KEY, PRIVATE_KEY, 'Hospital of Toronto', '25 Bay Street Toronto Canada L8B93W', 'admin@torontohospital.com')
 
@@ -155,13 +155,13 @@ async function clinicLogin(pubk, privk) {
 
 // let sig = web3.eth.sign("test", PRIVATE_KEY);
 // console.log(sig)
-console.log(Wallet.fromPrivateKey(Buffer.from(PRIVATE_KEY, 'hex')).getAddress().toString('hex'));
+// console.log(Wallet.fromPrivateKey(Buffer.from(PRIVATE_KEY, 'hex')).getAddress().toString('hex'));
 // Test that the map tokenIdTokenInfo (tokenId -> NFT metadata) contains the newly minted NFT
 
-// nftContract.methods.tokenIdTokenInfo(1).call()
-// .then((result) => {
-//   console.log(result)
-// })
-// .catch((err) => {
-//     console.log(err)
-// })
+nftContract.methods.tokensOfOwner(PUBLIC_KEY).call()
+.then((result) => {
+  console.log(result)
+})
+.catch((err) => {
+    console.log(err)
+})

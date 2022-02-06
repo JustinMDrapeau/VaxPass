@@ -15,7 +15,7 @@ const bull = (
   </Box>
 );
 
-export default function BasicCard() {
+export default function VaccineCard(props: any) {
   return (
     <Box mr={3}>
       <Card sx={{ minWidth: 275 }}>
@@ -24,10 +24,10 @@ export default function BasicCard() {
             Clinic Name
           </Typography>
           <Typography variant="h5" component="div">
-            Moderna
+            {props.token.manufacturer}
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Phase: 1
+            Phase: {props.token.dosePhase}
           </Typography>
           <Typography variant="body2">
             Date: 02/16/2022

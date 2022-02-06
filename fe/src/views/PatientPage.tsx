@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
 import VaccineCard from './VaccineCard';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
+import UserDataService from '../services/UserDataService';
 
 function PatientPage() {
+  const [walletAddress, setWalletAddress] = useState('0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc')
+  const [tokens, setToken] = useState([])
+  useEffect(() => {
+    UserDataService.getUserTokens(walletAddress).then((response) => {
+      setToken(response)
+    })
+  })
   return (
     <>
           <div className="UserSignUp" style={{backgroundColor: '#D3D3D3', height: '100vh' }} >
@@ -54,10 +62,9 @@ function PatientPage() {
               <Typography variant='h4'>My vaccinations</Typography>
             </Box>
             <Box display='flex' mt={3}>
-
-            <VaccineCard />
-            <VaccineCard/>
-            <VaccineCard/>
+              {tokens.map((token, index) => {
+                return <VaccineCard key={index} token={token}/>
+              } )}
             </Box>
           </Box>
       </Container>
