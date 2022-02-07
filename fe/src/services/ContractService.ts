@@ -40,6 +40,13 @@ class ContractService {
         return this.web3.eth.getTransactionReceipt(hash)
     }
 
+    createAccount() {
+        const account = this.web3.eth.accounts.create();
+        const privateKey = account["privateKey"]
+        const publicKey = account["address"]
+        return [publicKey, privateKey];
+    }
+
 }
 
 export default new ContractService(web3, contract);

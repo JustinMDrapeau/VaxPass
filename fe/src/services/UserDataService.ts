@@ -5,6 +5,11 @@ class PatientDataService {
   async getUserTokens(patientPublicKey: string) {
     return await ContractService.getContract().methods.tokensOfOwner(patientPublicKey).call()
   }
+  
+  createAccount() {
+    return (ContractService.createAccount()[0])
+  }
+
 }
 
 export default new PatientDataService();

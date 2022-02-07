@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import UserDataService from '../services/UserDataService';
 
 function ConfirmUserInformationPopup(props : any) {
     const { firstName, lastName, birthday, isOpen, onClose } = props;
@@ -10,6 +11,7 @@ function ConfirmUserInformationPopup(props : any) {
 
     const handleSubmit = () => {
         // Create Wallet
+        console.log(UserDataService.createAccount())
         // Direct to user page
     };
 
