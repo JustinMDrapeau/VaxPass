@@ -2,7 +2,7 @@ import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import contractArtifact from "../VaxNFT.json";
 import TransactionRequest from "../types/TransactionRequest";
 
-const CONTRACT_ADDRESS = "0xad5306305153930e6090FE430aF4573E356B6c3C"
+const CONTRACT_ADDRESS = "0x438363746455ef25661f5b2F2D0FeF0F75324d2e"
 const web3 = createAlchemyWeb3(process.env.REACT_APP_ALCHEMY_API_URL as string);
 const contract = new web3.eth.Contract(contractArtifact.abi as any, CONTRACT_ADDRESS);
 

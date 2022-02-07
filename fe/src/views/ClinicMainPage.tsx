@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Box,
@@ -24,56 +24,72 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { withStyles } from '@material-ui/core/styles';
-
-const CssTextField = withStyles({
-  root: {
-    color: 'white',
-    '& label.Mui-focused': {
-      color: 'white',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: 'yellow',
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: 'white',
-      },
-      '&:hover fieldset': {
-        borderColor: 'white',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: 'yellow',
-      },
-    },
-  },
-})(TextField);
-
-
+import ClinicDataService from "../services/ClinicDataService";
+import UserDataService from "../services/UserDataService";
+import {sha256} from 'js-sha256';
 
 
 export default function ClinicMainPage(props: any) {
   const [vaccineTypeErrorMessage, setVaccineTypeErrorMessage] =
     React.useState("");
 
-  const [dob, setDob] = React.useState<Date | null>(
-    new Date(),
-  );
-  const [dateAdministered, setDateAdministered] = React.useState<Date | null>(
-    new Date(),
-  );
+  const [dob, setDob] = React.useState<Date | null>(new Date());
+  const [dateAdministered, setDateAdministered] = React.useState<Date | null>(new Date());
 
+  const [clinicName, setClinicName] = useState("");
+  const [clinicWalletAddress, setClinicWalletAddress] = useState("");
+  const [clinicPhysicalAddress, setClinicPhysicalAddress] = useState("");
+  const [clinicEmail, setClinicEmail] = useState("");
 
-  const [clinicPublic, setClinicPublic] = useState(props.publicKey)
-  const [clinicPrivate, setClinicPrivate] = useState(props.privateKey)
+  const [clinicPublic, setClinicPublic] = useState("")
+  const [clinicPrivate, setClinicPrivate] = useState("")
 
-  const [firstName, setFirstName] = useState<String | null>();
-  const [lastName, setLastName] = useState<String | null>();
-  const [walletAddress, setWalletAddress] = useState<String | null>();
-  const [lotNumber, setLotNumber] = useState<String | null>();
-  const [doseNumber, setDoseNumber] = useState<String | null>();
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [walletAddress, setWalletAddress] = useState<string>("");
+  const [product, setProduct] = useState<string>("");
+  const [lotNumber, setLotNumber] = useState<string>("");
+  const [phaseNumber, setPhaseNumber] = useState<number>(1);
 
   const [vaccineDisabled, setVaccineDisabled] = useState<boolean| undefined>(true);
 
+  useEffect(() => {
+    ClinicDataService.getClinicInfo(clinicPublic).then((res: any) => {
+      setClinicName(res.name);
+      setClinicEmail(res.email);
+      setClinicPhysicalAddress(res.p_address);
+    }
+    ).catch((err: any) => console.log(err))
+  }, []);
+
+  const computeHash = () => {
+    const hashValue = `${firstName}-${lastName}-${dob?.toISOString().slice(0,10)}`
+    return sha256(hashValue)
+  }
+
+  const verifyPatient = () => {
+    UserDataService.getPatientHash(walletAddress).then((res: any) => {
+      console.log(res);
+      // create logic for local hash
+      console.log("CHECKING HASH...");
+      // if (res == 'abcd') {
+      if (res == computeHash()) {
+        console.log("HASHES ARE EQUAL");
+        setVaccineDisabled(false);
+      } else {console.log("HASHES ARE NOT EQUAL!")}
+      
+    }).catch((err: any) => console.log(err) )
+  };
+
+
+  const handleAssign = () => {
+    const vaccineAdministeredDate = dateAdministered?.toDateString();
+    ClinicDataService.mintAndTransfer(clinicPublic, clinicPrivate, product, lotNumber, phaseNumber, vaccineAdministeredDate as string, walletAddress)
+      .then((res) => {
+        console.log(res)
+        console.log("Vaccine administered")
+      })
+  }
 
   return (
     <div
@@ -95,7 +111,7 @@ export default function ClinicMainPage(props: any) {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Clinic Page
             </Typography>
-            <Button color="inherit">Verify Clinic</Button>
+            {/* <Button color="inherit">Verify Clinic</Button> */}
           </Toolbar>
         </AppBar>
       </Box>
@@ -117,14 +133,22 @@ export default function ClinicMainPage(props: any) {
                 <Stack alignItems="left" spacing={2}>
                   <br/>
 
-                  <Typography variant="h3" align="center">
-                    Clinic Name
+                  <Typography variant="h4" align="center" style={{ wordBreak: "break-word" }}>
+                    {clinicName}
                   </Typography>
-                  <Typography variant="h5" align="center">
+                  <Typography variant="h5" align="center" style={{ wordBreak: "break-word" }}>
+                    {clinicPhysicalAddress}
+                  </Typography>
+                  <Typography variant="h5" align="center" style={{ wordBreak: "break-word" }}>
+                    {clinicEmail}
+                  </Typography>
+                  <br/>
+                  <br/>
+                  <Typography variant="h5" align="center" style={{ wordBreak: "break-word" }}>
                     Wallet Address:
                   </Typography>
-                  <Typography variant="body1" align="center">
-                    0x309b99ac0CF5B956cdf5D2d1DebFEc
+                  <Typography variant="body1" align="center" style={{ wordBreak: "break-word" }}>
+                    {clinicPublic}
                   </Typography>
                   <br />
                 </Stack>
@@ -191,7 +215,7 @@ export default function ClinicMainPage(props: any) {
                     onChange={e => setWalletAddress(e.target.value)}
                     style={{minWidth: '45%'}}
                   />
-                  <Button variant="contained" style ={{minHeight: '53px'}}>Verify Patient</Button>
+                  <Button variant="contained" style ={{minHeight: '53px'}} onClick = {verifyPatient} >Verify Patient</Button>
               </Box>
 
               <br/>
@@ -213,7 +237,7 @@ export default function ClinicMainPage(props: any) {
                     label="Product"
                     type="text"
                     variant="outlined"
-                    onChange={e => setWalletAddress(e.target.value)}
+                    onChange={e => setProduct(e.target.value)}
                     style={{minWidth: '40%'}}
                     disabled = {vaccineDisabled}
                   />
@@ -231,11 +255,11 @@ export default function ClinicMainPage(props: any) {
           
                   <TextField
                     required
-                    id="vaccine-dose-number"
-                    label="Dose #"
+                    id="vaccine-phase-number"
+                    label="Phase #"
                     type="text"
                     variant="outlined"
-                    onChange={e => setDoseNumber(e.target.value)}
+                    onChange={e => setPhaseNumber(parseInt(e.target.value))}
                     style={{maxWidth: '20%'}}
                     disabled = {vaccineDisabled}
                   />
@@ -251,7 +275,13 @@ export default function ClinicMainPage(props: any) {
                     disabled = {vaccineDisabled}
                   />
         </LocalizationProvider>
-                  <Button variant="contained" style ={{minHeight: '53px'}}>Assign</Button>
+                  <Button 
+                    variant="contained" 
+                    style ={{minHeight: '53px'}}
+                    disabled={!clinicPublic || !clinicPrivate || !product || !lotNumber || phaseNumber === null || !dateAdministered || !walletAddress} 
+                    onClick = {handleAssign}>
+                    Assign
+                  </Button>
               </Box>
 
               </Card>
