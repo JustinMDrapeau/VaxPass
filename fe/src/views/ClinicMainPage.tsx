@@ -20,25 +20,22 @@ import LogInDialog from "../components/LogInDialog";
 import PropTypes from "prop-types";
 import MenuIcon from "@mui/icons-material/Menu";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { withStyles } from '@material-ui/core/styles';
+import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { withStyles } from "@material-ui/core/styles";
 import ClinicDataService from "../services/ClinicDataService";
 import UserDataService from "../services/UserDataService";
 // import sha256 from 'crypto-js/sha256';
-import {sha256} from 'js-sha256';
-
+import { sha256 } from "js-sha256";
 
 export default function ClinicMainPage(props: any) {
   const [vaccineTypeErrorMessage, setVaccineTypeErrorMessage] =
     React.useState("");
 
-  const [dob, setDob] = React.useState<Date | null>(
-    new Date(),
-  );
+  const [dob, setDob] = React.useState<Date | null>(new Date());
   const [dateAdministered, setDateAdministered] = React.useState<Date | null>(
-    new Date(),
+    new Date()
   );
 
   const [clinicName, setClinicName] = useState("");
@@ -46,45 +43,56 @@ export default function ClinicMainPage(props: any) {
   const [clinicPhysicalAddress, setClinicPhysicalAddress] = useState("");
   const [clinicEmail, setClinicEmail] = useState("");
 
-  const [clinicPublic, setClinicPublic] = useState("0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc")
-  const [clinicPrivate, setClinicPrivate] = useState("")
+  const [clinicPublic, setClinicPublic] = useState(
+    "0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc"
+  );
+  const [clinicPrivate, setClinicPrivate] = useState("");
 
   const [firstName, setFirstName] = useState<string | null>();
   const [lastName, setLastName] = useState<string | null>();
-  const [patientWalletAddress, setPatientWalletAddress] = useState<string>("0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc");
+  const [patientWalletAddress, setPatientWalletAddress] = useState<string>(
+    "0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc"
+  );
   const [lotNumber, setLotNumber] = useState<string | null>();
   const [doseNumber, setDoseNumber] = useState<string | null>();
 
-  const [vaccineDisabled, setVaccineDisabled] = useState<boolean| undefined>(true);
+  const [vaccineDisabled, setVaccineDisabled] = useState<boolean | undefined>(
+    true
+  );
 
   useEffect(() => {
-    ClinicDataService.getClinicInfo(clinicPublic).then((res: any) => {
-      setClinicName(res.name);
-      setClinicEmail(res.email);
-      setClinicPhysicalAddress(res.p_address);
-    }
-    ).catch((err: any) => console.log(err))
+    ClinicDataService.getClinicInfo(clinicPublic)
+      .then((res: any) => {
+        setClinicName(res.name);
+        setClinicEmail(res.email);
+        setClinicPhysicalAddress(res.p_address);
+      })
+      .catch((err: any) => console.log(err));
   }, []);
 
   const computeHash = () => {
-    const hashValue = `${firstName}-${lastName}-${dob?.toISOString().slice(0,10)}`
-    return sha256(hashValue)
-  }
-
-  const verifyPatient = () => {
-    UserDataService.getPatientHash(patientWalletAddress).then((res: any) => {
-      console.log(res);
-      // create logic for local hash
-      console.log("CHECKING HASH...");
-      // if (res == 'abcd') {
-      if (res == computeHash()) {
-        console.log("HASHES ARE EQUAL");
-        setVaccineDisabled(false);
-      } else {console.log("HASHES ARE NOT EQUAL!")}
-      
-    }).catch((err: any) => console.log(err) )
+    const hashValue = `${firstName}-${lastName}-${dob
+      ?.toISOString()
+      .slice(0, 10)}`;
+    return sha256(hashValue);
   };
 
+  const verifyPatient = () => {
+    UserDataService.getPatientHash(patientWalletAddress)
+      .then((res: any) => {
+        console.log(res);
+        // create logic for local hash
+        console.log("CHECKING HASH...");
+        // if (res == 'abcd') {
+        if (res == computeHash()) {
+          console.log("HASHES ARE EQUAL");
+          setVaccineDisabled(false);
+        } else {
+          console.log("HASHES ARE NOT EQUAL!");
+        }
+      })
+      .catch((err: any) => console.log(err));
+  };
 
   return (
     <div
@@ -122,27 +130,47 @@ export default function ClinicMainPage(props: any) {
                   padding: "24px",
                   paddingTop: "5vh",
                   paddingBottom: "10vh",
-                  borderRadius: '8px'
+                  borderRadius: "8px",
                 }}
               >
                 <Stack alignItems="left" spacing={2}>
-                  <br/>
+                  <br />
 
-                  <Typography variant="h4" align="center" style={{ wordBreak: "break-word" }}>
+                  <Typography
+                    variant="h4"
+                    align="center"
+                    style={{ wordBreak: "break-word" }}
+                  >
                     {clinicName}
                   </Typography>
-                  <Typography variant="h5" align="center" style={{ wordBreak: "break-word" }}>
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    style={{ wordBreak: "break-word" }}
+                  >
                     {clinicPhysicalAddress}
                   </Typography>
-                  <Typography variant="h5" align="center" style={{ wordBreak: "break-word" }}>
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    style={{ wordBreak: "break-word" }}
+                  >
                     {clinicEmail}
                   </Typography>
-                  <br/>
-                  <br/>
-                  <Typography variant="h5" align="center" style={{ wordBreak: "break-word" }}>
+                  <br />
+                  <br />
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    style={{ wordBreak: "break-word" }}
+                  >
                     Wallet Address:
                   </Typography>
-                  <Typography variant="body1" align="center" style={{ wordBreak: "break-word" }}>
+                  <Typography
+                    variant="body1"
+                    align="center"
+                    style={{ wordBreak: "break-word" }}
+                  >
                     {clinicPublic}
                   </Typography>
                   <br />
@@ -157,28 +185,26 @@ export default function ClinicMainPage(props: any) {
                   padding: "48px",
                   paddingTop: "5vh",
                   paddingBottom: "5vh",
-                  borderRadius: '8px'
+                  borderRadius: "8px",
                 }}
               >
-              
-
                 <Typography variant="h3" align="left">
                   Verify Patient
                 </Typography>
 
-              <Box
-                component="form"
-                sx={{
-                  '& > :not(style)': { m: 1, width: '25ch' },
-                }}
-              >
+                <Box
+                  component="form"
+                  sx={{
+                    "& > :not(style)": { m: 1, width: "25ch" },
+                  }}
+                >
                   <TextField
                     required
                     id="first-name-field"
                     label="First Name"
                     type="text"
                     variant="outlined"
-                    onChange={e => setFirstName(e.target.value)}
+                    onChange={(e) => setFirstName(e.target.value)}
                   />
 
                   <TextField
@@ -187,19 +213,18 @@ export default function ClinicMainPage(props: any) {
                     label="Last Name"
                     type="text"
                     variant="outlined"
-                    onChange={e => setLastName(e.target.value)}
+                    onChange={(e) => setLastName(e.target.value)}
                   />
-          
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
 
-                          <DesktopDatePicker
-          label="Date of Birth"
-          inputFormat="MM/dd/yyyy"
-          value={dob}
-          onChange={e => setDob(e)}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DesktopDatePicker
+                      label="Date of Birth"
+                      inputFormat="MM/dd/yyyy"
+                      value={dob}
+                      onChange={(e) => setDob(e)}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
 
                   <TextField
                     required
@@ -207,34 +232,40 @@ export default function ClinicMainPage(props: any) {
                     label="Wallet Address"
                     type="text"
                     variant="outlined"
-                    onChange={e => setPatientWalletAddress(e.target.value)}
-                    style={{minWidth: '45%'}}
+                    onChange={(e) => setPatientWalletAddress(e.target.value)}
+                    style={{ minWidth: "45%" }}
                   />
-                  <Button variant="contained" style ={{minHeight: '53px'}} onClick = {verifyPatient} >Verify Patient</Button>
-              </Box>
+                  <Button
+                    variant="contained"
+                    style={{ minHeight: "53px" }}
+                    onClick={verifyPatient}
+                  >
+                    Verify Patient
+                  </Button>
+                </Box>
 
-              <br/>
-              <br/>
+                <br />
+                <br />
 
                 <Typography variant="h3" align="left">
                   Assign Vaccine
                 </Typography>
                 <br />
-              <Box
-                component="form"
-                sx={{
-                  '& > :not(style)': { m: 1, width: '25ch' },
-                }}
-              >
+                <Box
+                  component="form"
+                  sx={{
+                    "& > :not(style)": { m: 1, width: "25ch" },
+                  }}
+                >
                   <TextField
                     required
                     id="vaccine-product-field"
                     label="Product"
                     type="text"
                     variant="outlined"
-                    onChange={e => setPatientWalletAddress(e.target.value)}
-                    style={{minWidth: '40%'}}
-                    disabled = {vaccineDisabled}
+                    onChange={(e) => setPatientWalletAddress(e.target.value)}
+                    style={{ minWidth: "40%" }}
+                    disabled={vaccineDisabled}
                   />
 
                   <TextField
@@ -243,36 +274,36 @@ export default function ClinicMainPage(props: any) {
                     label="Lot #"
                     type="text"
                     variant="outlined"
-                    onChange={e => setLotNumber(e.target.value)}
-                    style={{maxWidth: '20%'}}
-                    disabled = {vaccineDisabled}
+                    onChange={(e) => setLotNumber(e.target.value)}
+                    style={{ maxWidth: "20%" }}
+                    disabled={vaccineDisabled}
                   />
-          
+
                   <TextField
                     required
                     id="vaccine-dose-number"
                     label="Dose #"
                     type="text"
                     variant="outlined"
-                    onChange={e => setDoseNumber(e.target.value)}
-                    style={{maxWidth: '20%'}}
-                    disabled = {vaccineDisabled}
+                    onChange={(e) => setDoseNumber(e.target.value)}
+                    style={{ maxWidth: "20%" }}
+                    disabled={vaccineDisabled}
                   />
 
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DesktopDatePicker
-                    label="Date Issued"
-                    inputFormat="MM/dd/yyyy"
-                    onChange={setDateAdministered}
-                    value={dateAdministered}
-                    renderInput={(params) => <TextField {...params} />}
-                    disabled = {vaccineDisabled}
-                  />
-        </LocalizationProvider>
-                  <Button variant="contained" style ={{minHeight: '53px'}}>Assign</Button>
-              </Box>
-
+                      label="Date Issued"
+                      inputFormat="MM/dd/yyyy"
+                      onChange={setDateAdministered}
+                      value={dateAdministered}
+                      renderInput={(params) => <TextField {...params} />}
+                      disabled={vaccineDisabled}
+                    />
+                  </LocalizationProvider>
+                  <Button variant="contained" style={{ minHeight: "53px" }}>
+                    Assign
+                  </Button>
+                </Box>
               </Card>
             </Container>
           </Grid>
