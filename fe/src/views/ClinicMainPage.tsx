@@ -25,6 +25,9 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { withStyles } from '@material-ui/core/styles';
 import ClinicDataService from "../services/ClinicDataService";
+import UserDataService from "../services/UserDataService";
+// import sha256 from 'crypto-js/sha256';
+import {sha256} from 'js-sha256';
 
 
 export default function ClinicMainPage(props: any) {
@@ -46,23 +49,41 @@ export default function ClinicMainPage(props: any) {
   const [clinicPublic, setClinicPublic] = useState("0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc")
   const [clinicPrivate, setClinicPrivate] = useState("")
 
-  const [firstName, setFirstName] = useState<String | null>();
-  const [lastName, setLastName] = useState<String | null>();
-  const [walletAddress, setWalletAddress] = useState<String | null>();
-  const [lotNumber, setLotNumber] = useState<String | null>();
-  const [doseNumber, setDoseNumber] = useState<String | null>();
+  const [firstName, setFirstName] = useState<string | null>();
+  const [lastName, setLastName] = useState<string | null>();
+  const [patientWalletAddress, setPatientWalletAddress] = useState<string>("0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc");
+  const [lotNumber, setLotNumber] = useState<string | null>();
+  const [doseNumber, setDoseNumber] = useState<string | null>();
 
   const [vaccineDisabled, setVaccineDisabled] = useState<boolean| undefined>(true);
 
   useEffect(() => {
     ClinicDataService.getClinicInfo(clinicPublic).then((res: any) => {
-      console.log(res);
       setClinicName(res.name);
       setClinicEmail(res.email);
       setClinicPhysicalAddress(res.p_address);
     }
     ).catch((err: any) => console.log(err))
   }, []);
+
+  const computeHash = () => {
+    const hashValue = `${firstName}-${lastName}-${dob?.toISOString().slice(0,10)}`
+    return sha256(hashValue)
+  }
+
+  const verifyPatient = () => {
+    UserDataService.getPatientHash(patientWalletAddress).then((res: any) => {
+      console.log(res);
+      // create logic for local hash
+      console.log("CHECKING HASH...");
+      // if (res == 'abcd') {
+      if (res == computeHash()) {
+        console.log("HASHES ARE EQUAL");
+        setVaccineDisabled(false);
+      } else {console.log("HASHES ARE NOT EQUAL!")}
+      
+    }).catch((err: any) => console.log(err) )
+  };
 
 
   return (
@@ -85,7 +106,7 @@ export default function ClinicMainPage(props: any) {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Clinic Page
             </Typography>
-            <Button color="inherit">Verify Clinic</Button>
+            {/* <Button color="inherit">Verify Clinic</Button> */}
           </Toolbar>
         </AppBar>
       </Box>
@@ -107,19 +128,21 @@ export default function ClinicMainPage(props: any) {
                 <Stack alignItems="left" spacing={2}>
                   <br/>
 
-                  <Typography variant="h3" align="center">
+                  <Typography variant="h4" align="center" style={{ wordBreak: "break-word" }}>
                     {clinicName}
                   </Typography>
-                  <Typography variant="h3" align="center">
-                    {clinicEmail}
-                  </Typography>
-                  <Typography variant="h3" align="center">
+                  <Typography variant="h5" align="center" style={{ wordBreak: "break-word" }}>
                     {clinicPhysicalAddress}
                   </Typography>
-                  <Typography variant="h5" align="center">
+                  <Typography variant="h5" align="center" style={{ wordBreak: "break-word" }}>
+                    {clinicEmail}
+                  </Typography>
+                  <br/>
+                  <br/>
+                  <Typography variant="h5" align="center" style={{ wordBreak: "break-word" }}>
                     Wallet Address:
                   </Typography>
-                  <Typography variant="body1" align="center">
+                  <Typography variant="body1" align="center" style={{ wordBreak: "break-word" }}>
                     {clinicPublic}
                   </Typography>
                   <br />
@@ -173,7 +196,7 @@ export default function ClinicMainPage(props: any) {
           label="Date of Birth"
           inputFormat="MM/dd/yyyy"
           value={dob}
-          onChange={setDob}
+          onChange={e => setDob(e)}
           renderInput={(params) => <TextField {...params} />}
         />
         </LocalizationProvider>
@@ -184,10 +207,10 @@ export default function ClinicMainPage(props: any) {
                     label="Wallet Address"
                     type="text"
                     variant="outlined"
-                    onChange={e => setWalletAddress(e.target.value)}
+                    onChange={e => setPatientWalletAddress(e.target.value)}
                     style={{minWidth: '45%'}}
                   />
-                  <Button variant="contained" style ={{minHeight: '53px'}}>Verify Patient</Button>
+                  <Button variant="contained" style ={{minHeight: '53px'}} onClick = {verifyPatient} >Verify Patient</Button>
               </Box>
 
               <br/>
@@ -209,7 +232,7 @@ export default function ClinicMainPage(props: any) {
                     label="Product"
                     type="text"
                     variant="outlined"
-                    onChange={e => setWalletAddress(e.target.value)}
+                    onChange={e => setPatientWalletAddress(e.target.value)}
                     style={{minWidth: '40%'}}
                     disabled = {vaccineDisabled}
                   />
