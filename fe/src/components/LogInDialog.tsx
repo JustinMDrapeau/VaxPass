@@ -108,7 +108,8 @@ function LogInDialog(props: any) {
 
   return (
     <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={isOpen} >
-      <DialogTitle>Log In</DialogTitle>
+      {/* @ts-ignore */}
+      <DialogTitle align="center" >Log In</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <Stack spacing={2}>
           {isUser &&
