@@ -1,18 +1,48 @@
 import PropTypes from 'prop-types';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import UserDataService from '../services/UserDataService';
+import {sha256} from 'js-sha256';
+import Cookies from 'universal-cookie';
 
 function ConfirmUserInformationPopup(props : any) {
     const { firstName, lastName, birthday, isOpen, onClose } = props;
+
+    const cookies = new Cookies();
+    const navigate = useNavigate();
 
     const handleClose = () => {
         onClose()
     };
 
+    const computeHash = () => {
+        const hashValue = `${firstName}-${lastName}-${birthday
+          ?.toISOString()
+          .slice(0, 10)}`;
+        return sha256(hashValue);
+    };
+
     const handleSubmit = () => {
-        // Create Wallet
-        console.log(UserDataService.createAccount())
-        // Direct to user page
+        // Create a wallet address
+        const keyPairs = UserDataService.createAccount();
+        const patientPublic = keyPairs[0]
+        const patientPrivate = keyPairs[1]
+        // Compute hash
+        const hash = computeHash();
+        // Insert hash in walletIdToPatientHash map in the smart contract
+        UserDataService.setPatientHash(patientPublic, patientPrivate, hash)
+            .then((res) => {
+                console.log(res)
+                console.log("Patient account created")
+            })
+        // Set cookies
+        cookies.set('firstName', firstName, { path: '/patient-page' });
+        cookies.set('lastName', lastName, { path: '/patient-page' });
+        cookies.set('birthday', birthday, { path: '/patient-page' });
+        cookies.set('walletAddress', patientPublic, { path: '/patient-page' });
+
+        // Direct to patient page
+        navigate('/patient-page')
     };
 
     return (

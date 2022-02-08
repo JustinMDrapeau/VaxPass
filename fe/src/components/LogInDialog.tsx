@@ -4,12 +4,16 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextF
 import { useNavigate } from 'react-router-dom';
 import { isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
 import UserInformationFields from '../components/UserInformationFields'
-import ClinicDataService from '../services/ClinicDataService';
+import UserDataService from '../services/UserDataService';
 import Wallet from 'ethereumjs-wallet'
+import {sha256} from 'js-sha256';
+import Cookies from 'universal-cookie';
+
 function LogInDialog(props: any) {
   const { isUser, onClose, isOpen } = props;
 
   const today = new Date()
+  const cookies = new Cookies();
   const navigate = useNavigate();
 
   // User properties
@@ -67,13 +71,14 @@ function LogInDialog(props: any) {
 
     if (isUser === true) {
       if (firstName === "") {
-        setFirstNameErrorMessage("Please enter a first name")
-        noMissingInfo = false
-      } else if (lastName === "") {
-        setLastNameErrorMessage("Please enter a last name")
+        setFirstNameErrorMessage("Please enter a valid first name")
         noMissingInfo = false
       }
-    } 
+      if (lastName === "") {
+        setLastNameErrorMessage("Please enter a valid last name")
+        noMissingInfo = false
+      }
+    }
 
     if (walletAddress === ""){
       setWalletAddressErrorMessage("Please enter a valid address");
@@ -84,10 +89,33 @@ function LogInDialog(props: any) {
 
   }
 
+  const computeHash = () => {
+    const hashValue = `${firstName}-${lastName}-${birthday
+      ?.toISOString()
+      .slice(0, 10)}`;
+    return sha256(hashValue);
+  };
 
   const handleSubmit = () => {
     if (isUser === true && userNoMissingInformation() === true) {
-      // Create Account
+      // Call smart contract method to retrieve patientHash from the walletIdToPatientHash map
+        UserDataService.getPatientHash(walletAddress).then((res: any) => {
+        console.log(res);
+        // Check if calculated hash matches stored hash
+        console.log("CHECKING HASH...");
+        if (res === computeHash()) {
+          console.log("HASHES ARE EQUAL");
+          // Set cookies
+          cookies.set('firstName', firstName, { path: '/patient-page' });
+          cookies.set('lastName', lastName, { path: '/patient-page' });
+          cookies.set('birthday', birthday, { path: '/patient-page' });
+          cookies.set('walletAddress', walletAddress, { path: '/patient-page' });
+          // Direct to patient page
+          navigate('/patient-page')
+        } else {
+          console.log("HASHES ARE NOT EQUAL!")
+        }
+      }).catch((err: any) => console.log(err))
     } else if (isUser === false) {
       if (isValidWalletAddress(walletAddress)) {
         if (Wallet.fromPrivateKey(Buffer.from(privateKey, 'hex')).getAddress().toString('hex') === walletAddress.toLowerCase().substring(2)){
@@ -97,8 +125,6 @@ function LogInDialog(props: any) {
         setWalletAddressErrorMessage("Please enter a valid wallet Address")
       }
     }
-
-    ClinicDataService.login(walletAddress, privateKey)
   };
 
   const handleSignUp = () => {

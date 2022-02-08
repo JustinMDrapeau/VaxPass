@@ -32,10 +32,8 @@ export default function ClinicMainPage(props: any) {
   const [vaccineTypeErrorMessage, setVaccineTypeErrorMessage] =
     React.useState("");
 
-  const [dob, setDob] = React.useState<Date | null>(new Date());
-  const [dateAdministered, setDateAdministered] = React.useState<Date | null>(
-    new Date()
-  );
+  const [birthday, setBirthday] = React.useState<Date | null>(new Date());
+  const [dateAdministered, setDateAdministered] = React.useState<Date | null>(new Date());
 
   const [clinicName, setClinicName] = useState("");
   const [clinicWalletAddress, setClinicWalletAddress] = useState("");
@@ -67,7 +65,7 @@ export default function ClinicMainPage(props: any) {
   }, []);
 
   const computeHash = () => {
-    const hashValue = `${firstName}-${lastName}-${dob
+    const hashValue = `${firstName}-${lastName}-${birthday
       ?.toISOString()
       .slice(0, 10)}`;
     return sha256(hashValue);
@@ -228,14 +226,15 @@ export default function ClinicMainPage(props: any) {
                     onChange={(e) => setLastName(e.target.value)}
                   />
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DesktopDatePicker
-                      label="Date of Birth"
-                      inputFormat="MM/dd/yyyy"
-                      value={dob}
-                      onChange={setDob}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </LocalizationProvider>
+
+                          <DesktopDatePicker
+          label="Date of Birth"
+          inputFormat="MM/dd/yyyy"
+          value={birthday}
+          onChange={setBirthday}
+          renderInput={(params) => <TextField {...params} />}
+        />
+        </LocalizationProvider>
 
                   <TextField
                     required

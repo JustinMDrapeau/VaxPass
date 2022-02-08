@@ -25,19 +25,8 @@ class ClinicDataService {
     return "done";
   }
 
-  login(clinicPublicKey: string, clinicPrivateKey: string) {
-    let loginRequest: TransactionRequest = {}
-    loginRequest.data = ContractService.getContract().methods.clinicLogin().encodeABI()
-
-    ContractService.signTransaction(loginRequest, clinicPublicKey, clinicPrivateKey).then((signedLogin: any) => {
-      ContractService.sendSignedTransaction(signedLogin.rawTransaction as string).on("receipt", (loginReceipt: any) => {
-        console.log(loginReceipt);
-      })
-    })
-  }
-
   getClinicInfo(clinicPublicKey: string) {
-    return ContractService.getContract().methods.walletIdToClinic(clinicPublicKey).call()
+    return ContractService.getContract().methods.walletIdToClinic(clinicPublicKey).call();
   }
 
   async createAccount(name: string, address: string, email: string, publicAddress: string, privateAddress: string) {
@@ -63,7 +52,7 @@ class ClinicDataService {
 
     return [publicAddress, privateAddress];
   }
-  
+
 }
 
 export default new ClinicDataService();
