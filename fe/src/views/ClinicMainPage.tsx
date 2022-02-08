@@ -74,7 +74,7 @@ export default function ClinicMainPage(props: any) {
   };
 
   const verifyPatient = () => {
-    UserDataService.getPatientHash(patientWalletAddress)
+    UserDataService.getPatientHash(walletAddress)
       .then((res: any) => {
         console.log(res);
         // create logic for local hash
