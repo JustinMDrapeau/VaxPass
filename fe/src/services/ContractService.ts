@@ -2,8 +2,9 @@ import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import contractArtifact from "../VaxNFT.json";
 import TransactionRequest from "../types/TransactionRequest";
 
+const CONTRACT_ADDRESS = "0x8d998FdD3505A1388D49230E41BEDaCDba8a6d13"
 const web3 = createAlchemyWeb3(process.env.REACT_APP_ALCHEMY_API_URL as string);
-const contract = new web3.eth.Contract(contractArtifact.abi as any, process.env.REACT_APP_CONTRACT_ADDRESS);
+const contract = new web3.eth.Contract(contractArtifact.abi as any, CONTRACT_ADDRESS);
 
 class ContractService {
     web3 : any;
@@ -22,7 +23,9 @@ class ContractService {
         return this.web3.eth.getTransactionCount(publicKey, 'latest');
     }
 
-    async signTransaction(data: TransactionRequest, publicKey : string, privateKey: string) {
+    async signTransaction(data: TransactionRequest, publicKey: string, privateKey: string) {
+        data.to = process.env.REACT_APP_CONTRACT_ADDRESS
+        data.from = publicKey
         data.nonce = await this.getNonce(publicKey);
         data.gas = 500000;
         data.maxPriorityFeePerGas = 1999999987;
@@ -35,6 +38,13 @@ class ContractService {
 
     getTransactionReceipt(hash: string) {
         return this.web3.eth.getTransactionReceipt(hash)
+    }
+
+    createAccount() {
+        const account = this.web3.eth.accounts.create();
+        const privateKey = account["privateKey"]
+        const publicKey = account["address"]
+        return [publicKey, privateKey];
     }
 
 }

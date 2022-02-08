@@ -4,7 +4,8 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextF
 import { useNavigate } from 'react-router-dom';
 import { isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
 import UserInformationFields from '../components/UserInformationFields'
-
+import ClinicDataService from '../services/ClinicDataService';
+import Wallet from 'ethereumjs-wallet'
 function LogInDialog(props: any) {
   const { isUser, onClose, isOpen } = props;
 
@@ -43,6 +44,7 @@ function LogInDialog(props: any) {
 
   // Clinic properties
   const [walletAddress, setWalletAddress] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
 
   const [walletAddressErrorMessage, setWalletAddressErrorMessage] = useState("")
 
@@ -88,11 +90,15 @@ function LogInDialog(props: any) {
       // Create Account
     } else if (isUser === false) {
       if (isValidWalletAddress(walletAddress)) {
-        // User account page
+        if (Wallet.fromPrivateKey(Buffer.from(privateKey, 'hex')).getAddress().toString('hex') === walletAddress.toLowerCase().substring(2)){
+          console.log("logged in")
+        }
       } else {
         setWalletAddressErrorMessage("Please enter a valid wallet Address")
       }
     }
+
+    ClinicDataService.login(walletAddress, privateKey)
   };
 
   const handleSignUp = () => {
@@ -126,6 +132,16 @@ function LogInDialog(props: any) {
             variant="filled"
             onChange={handleWalletAddressChange}
           />
+          {!isUser && 
+            <TextField
+              required
+              id="private-key-field"
+              label="Private Key"
+              type="password"
+              variant="filled"
+              onChange={(e) => {setPrivateKey(e.target.value)}}
+            />
+          }
         </Stack>
         <Button variant="text" sx={{ textTransform: 'capitalize', paddingLeft: 0.2 }} onClick={handleSignUp}>Don't have an account? </Button>
       </DialogContent>

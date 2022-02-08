@@ -2,7 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UserSignUpPage from '../views/UserSignUpPage';
 import ClinicSignUpPage from '../views/ClinicSignUpPage';
 import LandingPage from '../views/LandingPage';
+import ClinicMainPage from "../views/ClinicMainPage";
 import './App.css';
+import PatientPage from '../views/PatientPage';
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
           <Route path="/" element={<LandingPage isDialogOpen={false} />} />
           <Route path="/user-sign-up" element={<UserSignUpPage />} />
           <Route path="/clinic-sign-up" element={<ClinicSignUpPage />} />
+          <Route path="/patient-page" element={<PatientPage/>} />
+          <Route path="/clinic-main-page" element={<ClinicMainPage/>} />
         </Routes>
       </Router>
     </div>

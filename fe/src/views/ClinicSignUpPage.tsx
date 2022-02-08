@@ -4,6 +4,8 @@ import { Button, Card, Container, Stack, TextField, Typography } from '@mui/mate
 import { CountryDropdown } from 'react-country-region-selector';
 import { useNavigate } from 'react-router-dom';
 
+import ClinicDataService from '../services/ClinicDataService';
+
 function ClinicSignUpPage() {
   const [clinicName, setClinicName] = useState("");
   const [address, setAddress] = useState("");
@@ -103,12 +105,34 @@ function ClinicSignUpPage() {
 
     if (noMissingInformation() === true) {
       const finalAddress = concatAddress()
+      console.log(ClinicDataService.createAccount())
       // create wallet
       // navigate to clinic page
     }
   }
 
-  return (
+  const handleMail = () => {
+
+    // ClinicDataService.getClinicInfo("0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc")
+    //   .then((res :any ) => {
+    //     console.log(res)
+    //   })
+    //   .catch((err : any) => {
+    //     console.log(err)
+    //   })
+
+    const SUBJECT = "VaxPass Clinic Approval Request"
+    const CLINIC_NAME = "Clinic Name"
+    const CLINIC_EMAIL = "clinic@email.com"
+    const CLINIC_ADDRESS = "123 Test Street"
+    const BODY = `To whom it may concern,\n\nOur clinic ${CLINIC_NAME} would like to be added to your govenment's vaccination approval list. Here is our clinic's information: \n\nClinic Name: ${CLINIC_NAME}\nClinic Location/Address: ${CLINIC_ADDRESS}\nClinic Email: ${CLINIC_EMAIL}\nPublic Wallet Address: 0x123...\n\nThanks,\n${CLINIC_NAME}`
+
+    const mailString = `mailto:?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(BODY)}`
+    
+    window.open(mailString, '_blank');
+  }
+
+return (
     <div className="ClinicSignUp" style={{ backgroundColor: '#D3D3D3', height: '100vh' }} >
       <Container maxWidth='sm' sx={{ pt: '110px' }}>
         <Card style={{ padding: '24px' }}>
@@ -182,6 +206,9 @@ function ClinicSignUpPage() {
           <Stack direction="row" justifyContent="center" mt={2} spacing={2}>
             <Button onClick={handleClose}>CANCEL</Button>
             <Button variant="contained" onClick={handleSubmit}>SIGNUP</Button>
+            <Button variant="contained" onClick={handleMail}>
+              TEMP BUTTON
+            </Button>
           </Stack>
         </Card>
       </Container>
