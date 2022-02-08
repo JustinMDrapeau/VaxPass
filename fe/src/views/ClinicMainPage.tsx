@@ -26,23 +26,24 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { withStyles } from "@material-ui/core/styles";
 import ClinicDataService from "../services/ClinicDataService";
 import UserDataService from "../services/UserDataService";
-import {sha256} from 'js-sha256';
-
+import { sha256 } from "js-sha256";
 
 export default function ClinicMainPage(props: any) {
   const [vaccineTypeErrorMessage, setVaccineTypeErrorMessage] =
     React.useState("");
 
   const [dob, setDob] = React.useState<Date | null>(new Date());
-  const [dateAdministered, setDateAdministered] = React.useState<Date | null>(new Date());
+  const [dateAdministered, setDateAdministered] = React.useState<Date | null>(
+    new Date()
+  );
 
   const [clinicName, setClinicName] = useState("");
   const [clinicWalletAddress, setClinicWalletAddress] = useState("");
   const [clinicPhysicalAddress, setClinicPhysicalAddress] = useState("");
   const [clinicEmail, setClinicEmail] = useState("");
 
-  const [clinicPublic, setClinicPublic] = useState("")
-  const [clinicPrivate, setClinicPrivate] = useState("")
+  const [clinicPublic, setClinicPublic] = useState("");
+  const [clinicPrivate, setClinicPrivate] = useState("");
 
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -73,28 +74,37 @@ export default function ClinicMainPage(props: any) {
   };
 
   const verifyPatient = () => {
-    UserDataService.getPatientHash(walletAddress).then((res: any) => {
-      console.log(res);
-      // create logic for local hash
-      console.log("CHECKING HASH...");
-      // if (res == 'abcd') {
-      if (res == computeHash()) {
-        console.log("HASHES ARE EQUAL");
-        setVaccineDisabled(false);
-      } else {console.log("HASHES ARE NOT EQUAL!")}
-      
-    }).catch((err: any) => console.log(err) )
+    UserDataService.getPatientHash(patientWalletAddress)
+      .then((res: any) => {
+        console.log(res);
+        // create logic for local hash
+        console.log("CHECKING HASH...");
+        if (res == "abcd") {
+          // if (res == computeHash()) {
+          console.log("HASHES ARE EQUAL");
+          setVaccineDisabled(false);
+        } else {
+          console.log("HASHES ARE NOT EQUAL!");
+        }
+      })
+      .catch((err: any) => console.log(err));
   };
-
 
   const handleAssign = () => {
     const vaccineAdministeredDate = dateAdministered?.toDateString();
-    ClinicDataService.mintAndTransfer(clinicPublic, clinicPrivate, product, lotNumber, phaseNumber, vaccineAdministeredDate as string, walletAddress)
-      .then((res) => {
-        console.log(res)
-        console.log("Vaccine administered")
-      })
-  }
+    ClinicDataService.mintAndTransfer(
+      clinicPublic,
+      clinicPrivate,
+      product,
+      lotNumber,
+      phaseNumber,
+      vaccineAdministeredDate as string,
+      walletAddress
+    ).then((res) => {
+      console.log(res);
+      console.log("Vaccine administered");
+    });
+  };
 
   return (
     <div
@@ -218,15 +228,14 @@ export default function ClinicMainPage(props: any) {
                     onChange={(e) => setLastName(e.target.value)}
                   />
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
-
-                          <DesktopDatePicker
-          label="Date of Birth"
-          inputFormat="MM/dd/yyyy"
-          value={dob}
-          onChange={setDob}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        </LocalizationProvider>
+                    <DesktopDatePicker
+                      label="Date of Birth"
+                      inputFormat="MM/dd/yyyy"
+                      value={dob}
+                      onChange={setDob}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
 
                   <TextField
                     required
@@ -234,8 +243,8 @@ export default function ClinicMainPage(props: any) {
                     label="Wallet Address"
                     type="text"
                     variant="outlined"
-                    onChange={e => setWalletAddress(e.target.value)}
-                    style={{minWidth: '45%'}}
+                    onChange={(e) => setWalletAddress(e.target.value)}
+                    style={{ minWidth: "45%" }}
                   />
                   <Button
                     variant="contained"
@@ -265,9 +274,9 @@ export default function ClinicMainPage(props: any) {
                     label="Product"
                     type="text"
                     variant="outlined"
-                    onChange={e => setProduct(e.target.value)}
-                    style={{minWidth: '40%'}}
-                    disabled = {vaccineDisabled}
+                    onChange={(e) => setProduct(e.target.value)}
+                    style={{ minWidth: "40%" }}
+                    disabled={vaccineDisabled}
                   />
 
                   <TextField
@@ -287,30 +296,38 @@ export default function ClinicMainPage(props: any) {
                     label="Phase #"
                     type="text"
                     variant="outlined"
-                    onChange={e => setPhaseNumber(parseInt(e.target.value))}
-                    style={{maxWidth: '20%'}}
-                    disabled = {vaccineDisabled}
+                    onChange={(e) => setPhaseNumber(parseInt(e.target.value))}
+                    style={{ maxWidth: "20%" }}
+                    disabled={vaccineDisabled}
                   />
 
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DesktopDatePicker
-                    label="Date Issued"
-                    inputFormat="MM/dd/yyyy"
-                    onChange={setDateAdministered}
-                    value={dateAdministered}
-                    renderInput={(params) => <TextField {...params} />}
-                    disabled = {vaccineDisabled}
-                  />
-        </LocalizationProvider>
-                  <Button 
-                    variant="contained" 
-                    style ={{minHeight: '53px'}}
-                    disabled={!clinicPublic || !clinicPrivate || !product || !lotNumber || phaseNumber === null || !dateAdministered || !walletAddress} 
-                    onClick = {handleAssign}>
+                      label="Date Issued"
+                      inputFormat="MM/dd/yyyy"
+                      onChange={setDateAdministered}
+                      value={dateAdministered}
+                      renderInput={(params) => <TextField {...params} />}
+                      disabled={vaccineDisabled}
+                    />
+                  </LocalizationProvider>
+                  <Button
+                    variant="contained"
+                    style={{ minHeight: "53px" }}
+                    disabled={
+                      !clinicPublic ||
+                      !clinicPrivate ||
+                      !product ||
+                      !lotNumber ||
+                      phaseNumber === null ||
+                      !dateAdministered ||
+                      !walletAddress
+                    }
+                    onClick={handleAssign}
+                  >
                     Assign
                   </Button>
-              </Box>
-
+                </Box>
               </Card>
             </Container>
           </Grid>
