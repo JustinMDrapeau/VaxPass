@@ -33,6 +33,7 @@ contract VaxNFT is ERC721, Ownable {
 
     mapping(address => Clinic) public walletIdToClinic;
 
+    event Vaccine(uint256 tokenId);
 
     constructor() public ERC721("VaxNFT", "NFT") {}
 
@@ -69,6 +70,9 @@ contract VaxNFT is ERC721, Ownable {
         _mint(_msgSender(), newItemId);
         
         tokenIdToTokenInfo[newItemId] = TokenInfo(_msgSender(), _product, _lot, _phase, _date);
+
+        emit Vaccine(newItemId);
+
         return newItemId;
     }
 

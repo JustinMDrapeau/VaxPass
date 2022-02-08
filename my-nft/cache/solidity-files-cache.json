@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/tharseken/Development/VaxPass/my-nft/contracts/vaxNFT.sol": {
-      "lastModificationDate": 1644180296169,
-      "contentHash": "1fe542576db3695db162d8703d166e55",
+      "lastModificationDate": 1644280005060,
+      "contentHash": "84487b6a4338ca613f4a781656f054f0",
       "sourceName": "contracts/vaxNFT.sol",
       "solcConfig": {
         "version": "0.8.0",
