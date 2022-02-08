@@ -105,6 +105,7 @@ function ClinicSignUpPage() {
 
     if (noMissingInformation() === true) {
       const finalAddress = concatAddress()
+      console.log(ClinicDataService.createAccount())
       // create wallet
       // navigate to clinic page
     }

@@ -9,6 +9,10 @@ class PatientDataService {
   getPatientHash(patientPublicKey: string) {
     return ContractService.getContract().methods.walletIdToPatientHash(patientPublicKey).call()
   }
+  
+  createAccount() {
+    return (ContractService.createAccount()[0])
+  }
 }
 
 export default new PatientDataService();

@@ -36,6 +36,11 @@ class ClinicDataService {
   getClinicInfo(clinicPublicKey: string) {
     return ContractService.getContract().methods.walletIdToClinic(clinicPublicKey).call()
   }
+
+  createAccount() {
+    return (ContractService.createAccount())
+  }
+  
 }
 
 export default new ClinicDataService();
