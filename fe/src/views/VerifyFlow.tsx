@@ -1,13 +1,19 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isValidLink, isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
+import PatientInfo from '../types/PatientInfo';
 import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
 import VerifyFlowSelector from "../components/VerifyFlowSelector"
 import VerifyFlowQrScan from "../components/VerifyFlowQrScan"
 import VerifyFlowSubmitWalletAddress from "../components/VerifyFlowSubmitWalletAddress"
 import WhitelistLinkData from '../types/WhitelistLinkData';
+import Cookies from 'universal-cookie';
+import { useNavigate } from 'react-router-dom';
 
 function VerifyFlow(props: any) {
+    const cookies = new Cookies();
+    const navigate = useNavigate();
+
     const { isOpen, handleClose } = props
 
     const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
@@ -21,7 +27,6 @@ function VerifyFlow(props: any) {
     const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
     const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
     const [walletAddressErrorMessage, setWalletAddressErrorMessage] = useState("")
-
 
     const [isQR, setIsQR] = useState(false)
 
@@ -77,16 +82,16 @@ function VerifyFlow(props: any) {
                 .map(link => {
                     return newWhitelistLinksArr.find(a => a.link === link)
                 })
-                
-            if (noDupesWhitelistLinks !== undefined){
-                if(noDupesWhitelistLinks.length > 1) {
-                    {/* @ts-ignore */}
+
+            if (noDupesWhitelistLinks !== undefined) {
+                if (noDupesWhitelistLinks.length > 1) {
+                    {/* @ts-ignore */ }
                     noDupesWhitelistLinks = noDupesWhitelistLinks.filter(element => element.link !== "")
                 }
-                {/* @ts-ignore */}
+                {/* @ts-ignore */ }
                 setWhitelistLinks(noDupesWhitelistLinks)
-            } 
-            
+            }
+
             setIsStepTwoOpen(true)
             setIsStepOneOpen(false)
         }
@@ -153,9 +158,17 @@ function VerifyFlow(props: any) {
     const handleScan = (data: any) => {
         if (data) {
             // Data represents the data extracted from the QR code
+            const patientInfo: PatientInfo = JSON.parse(data)
+            cookies.set('firstName', patientInfo.firstName, { path: 'patient-page' });
+            cookies.set('lastName', patientInfo.lastName, { path: 'patient-page' });
+            cookies.set('birthday', patientInfo.birthday, { path: 'patient-page' });
+            cookies.set('walletAddress', patientInfo.walletAddress, { path: 'patient-page' });
+
             setIsCameraOpen(false)
             handleClose()
+
             //navigate to user page
+            navigate('/patient-page')
         }
     }
 

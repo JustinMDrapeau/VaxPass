@@ -42,7 +42,7 @@ export default function ClinicMainPage(props: any) {
   const [clinicPhysicalAddress, setClinicPhysicalAddress] = useState("");
   const [clinicEmail, setClinicEmail] = useState("");
 
-  const [clinicPublic, setClinicPublic] = useState("");
+  const [clinicPublic, setClinicPublic] = useState("0x438363746455ef25661f5b2F2D0FeF0F75324d2e");
   const [clinicPrivate, setClinicPrivate] = useState("");
 
   const [firstName, setFirstName] = useState<string>("");
