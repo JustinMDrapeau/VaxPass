@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { isValidAddress, isValidEmail, isValidName, isValidPostalCode } from "../helpers/inputValidationHelpers";
-import { Button, Card, Container, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, Checkbox, Container, FormGroup, FormControlLabel, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { CountryDropdown } from 'react-country-region-selector';
 import { useNavigate } from 'react-router-dom';
+import InfoIcon from '@mui/icons-material/Info';
 
 import ClinicDataService from '../services/ClinicDataService';
+import ClinicAccountCreationPopup from '../components/ClinicAccountCreationPopup';
 
 function ClinicSignUpPage() {
   const [clinicName, setClinicName] = useState("");
@@ -13,12 +16,22 @@ function ClinicSignUpPage() {
   const [city, setCity] = useState("");
   const [email, setEmail] = useState("");
   const [country, setCountry] = useState("");
+  const [publicAddress, setPublicAddress] = useState("");
+  const [privateAddress, setPrivateAddress] = useState("");
+  const [walletExists, setWalletExists] = useState(false);
 
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [clinicNameErrorMessage, setClinicNameErrorMessage] = useState("");
   const [addressErrorMessage, setAddressErrorMessage] = useState("");
   const [zipCodeErrorMessage, setZipCodeErrorMessage] = useState("");
   const [cityErrorMessage, setCityErrorMessage] = useState("");
+  const [countryErrorMessage, setCountryErrorMessage] = useState("");
+  const [publicAddressErrorMessage, setPublicAddressErrorMessage] = useState("");
+  const [privateAddressErrorMessage, setPrivateAddressErrorMessage] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [accountCreated, setAccountCreated] = useState(false);
+  const [creationErrorMessage, setCreationErrorMessage] = useState("");
 
   const supportedCountries = ['CA'] // Array of the country shortcodes. 
   // Find short codes here: https://github.com/country-regions/country-region-data/blob/master/data.json
@@ -72,7 +85,16 @@ function ClinicSignUpPage() {
   }
 
   const handleCountryChange = (e: any) => {
+    setCountryErrorMessage("");
     setCountry(e)
+  }
+
+  const handlePublicAddressChange = (e: any) => {
+    setPublicAddress(e.target.value)
+  }
+
+  const handlePrivateAddressChange = (e: any) => {
+    setPrivateAddress(e.target.value)
   }
 
   const handleClose = () => {
@@ -90,6 +112,12 @@ function ClinicSignUpPage() {
       setZipCodeErrorMessage("Please enter a zip code")
     } else if (city === "") {
       setCityErrorMessage("Please enter a city")
+    } else if (walletExists && publicAddress === "") {
+      setPublicAddressErrorMessage("Please enter the wallet's public address")
+    } else if (walletExists && privateAddress === "") {
+      setPrivateAddressErrorMessage("Please enter the wallet's private address")
+    } else if (country === "") {
+      setCountryErrorMessage("Please select a country")
     } else {
       return true
     }
@@ -101,35 +129,27 @@ function ClinicSignUpPage() {
     return address.trim()+", "+city.trim()+" "+zipCode
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
+    setLoading(true);
 
-    if (noMissingInformation() === true) {
-      const finalAddress = concatAddress()
-      console.log(ClinicDataService.createAccount())
-      // create wallet
-      // navigate to clinic page
+    if (!noMissingInformation()) {
+      setLoading(false);
+      return;
     }
-  }
+    const finalAddress = concatAddress()
 
-  const handleMail = () => {
+    const res = await ClinicDataService.createAccount(clinicName, finalAddress, email, publicAddress, privateAddress)
 
-    // ClinicDataService.getClinicInfo("0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc")
-    //   .then((res :any ) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err : any) => {
-    //     console.log(err)
-    //   })
+    if (res.length === 1) {
+      setCreationErrorMessage(res[0]);
+      setLoading(false);
+      return;
+    }
 
-    const SUBJECT = "VaxPass Clinic Approval Request"
-    const CLINIC_NAME = "Clinic Name"
-    const CLINIC_EMAIL = "clinic@email.com"
-    const CLINIC_ADDRESS = "123 Test Street"
-    const BODY = `To whom it may concern,\n\nOur clinic ${CLINIC_NAME} would like to be added to your govenment's vaccination approval list. Here is our clinic's information: \n\nClinic Name: ${CLINIC_NAME}\nClinic Location/Address: ${CLINIC_ADDRESS}\nClinic Email: ${CLINIC_EMAIL}\nPublic Wallet Address: 0x123...\n\nThanks,\n${CLINIC_NAME}`
-
-    const mailString = `mailto:?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(BODY)}`
-    
-    window.open(mailString, '_blank');
+    setLoading(false);
+    setPublicAddress(res[0]);
+    setPrivateAddress(res[1]);
+    setAccountCreated(true);
   }
 
 return (
@@ -200,18 +220,68 @@ return (
                 value={country}
                 whitelist={supportedCountries} // Using whitelist prop since we're only available for Canada
                 onChange={handleCountryChange}
-              />{""}
+              />
+              {countryErrorMessage && (
+                <Alert sx={{marginTop: 2}} severity="error">{countryErrorMessage}</Alert>
+              )}
+              <Box display="flex">
+                <FormGroup>
+                  <FormControlLabel 
+                    control={<Checkbox value={walletExists} onClick={() => {setWalletExists(!walletExists)}} />} 
+                    label="My Clinic Already Has A Wallet"
+                  />
+                </FormGroup>
+                <Box display="flex" alignItems="center">
+                  <Tooltip title="If you do not have a wallet, VaxPass will create a wallet for you, which you or a government organization can then fund.">
+                    <InfoIcon />
+                  </Tooltip> 
+                </Box> 
+              </Box>
+              {walletExists &&
+                <Stack justifyContent="center" mt={2} spacing={2}>
+                  <TextField
+                    required
+                    error={publicAddressErrorMessage !== ""}
+                    helperText={publicAddressErrorMessage}
+                    id="clinic-public-address"
+                    label="Wallet Public Address"
+                    type="text"
+                    variant="filled"
+                    onChange={handlePublicAddressChange}
+                  />
+                  <TextField
+                    required
+                    error={privateAddressErrorMessage !== ""}
+                    helperText={privateAddressErrorMessage}
+                    id="clinic-private-address"
+                    label="Wallet Private Address"
+                    type="text"
+                    variant="filled"
+                    onChange={handlePrivateAddressChange}
+                  />
+                </Stack>
+              }
             </Stack>
           </Stack>
           <Stack direction="row" justifyContent="center" mt={2} spacing={2}>
             <Button onClick={handleClose}>CANCEL</Button>
-            <Button variant="contained" onClick={handleSubmit}>SIGNUP</Button>
-            <Button variant="contained" onClick={handleMail}>
-              TEMP BUTTON
-            </Button>
+            <LoadingButton loading={loading} variant="contained" onClick={handleSubmit}>
+              SIGNUP
+            </LoadingButton>
           </Stack>
+          {creationErrorMessage && (
+            <Alert sx={{marginTop: 2}} severity="error">{creationErrorMessage}</Alert>
+          )}
         </Card>
       </Container>
+      <ClinicAccountCreationPopup 
+        clinicName={clinicName}
+        address={concatAddress()}
+        email={email}
+        publicAddress={publicAddress}
+        privateAddress={privateAddress}
+        isOpen={accountCreated}
+      />
     </div>
   );
 }

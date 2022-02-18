@@ -81,9 +81,9 @@ contract VaxNFT is ERC721, Ownable {
         return walletIdToPatientHash[_msgSender()];
     }
 
-    function clinicSignup(string memory _name, string memory _p_address, string memory _email) public returns (Clinic memory) {
-        walletIdToClinic[_msgSender()] = Clinic(_name, _p_address, _email);
-        return walletIdToClinic[_msgSender()];
+    function clinicSignup(string memory _name, string memory _p_address, string memory _email, address _walletId) public returns (Clinic memory) {
+        walletIdToClinic[_walletId] = Clinic(_name, _p_address, _email);
+        return walletIdToClinic[_walletId];
     }
 
 }
