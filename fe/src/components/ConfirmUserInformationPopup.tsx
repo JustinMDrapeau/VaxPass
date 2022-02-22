@@ -1,15 +1,15 @@
+import {useState} from 'react'
 import PropTypes from 'prop-types';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import LoadingButton from '@mui/lab/LoadingButton';
 import UserDataService from '../services/UserDataService';
 import {sha256} from 'js-sha256';
 import Cookies from 'universal-cookie';
 
 function ConfirmUserInformationPopup(props : any) {
     const { firstName, lastName, birthday, isOpen, onClose } = props;
-
+    const [loading, setLoading]= useState(false);
     const cookies = new Cookies();
-    const navigate = useNavigate();
 
     const handleClose = () => {
         onClose()
@@ -24,25 +24,26 @@ function ConfirmUserInformationPopup(props : any) {
 
     const handleSubmit = () => {
         // Create a wallet address
+        setLoading(true);
         const keyPairs = UserDataService.createAccount();
         const patientPublic = keyPairs[0]
-        const patientPrivate = keyPairs[1]
+        const clinicPublic = cookies.get("clinicPublic")
+        const clinicPrivate = cookies.get("clinicPrivate")
         // Compute hash
         const hash = computeHash();
+        console.log("hash: " + hash)
         // Insert hash in walletIdToPatientHash map in the smart contract
-        UserDataService.setPatientHash(patientPublic, patientPrivate, hash)
+        UserDataService.setPatientHash(patientPublic, clinicPublic, clinicPrivate, hash)
             .then((res) => {
+                console.log("Patient account created:")
                 console.log(res)
-                console.log("Patient account created")
+                props.setBirthday(birthday)
+                props.setFirstName(firstName)
+                props.setLastName(lastName)
+                props.setWalletAddress(patientPublic);
+                setLoading(false);
+                handleClose();
             })
-        // Set cookies
-        cookies.set('firstName', firstName, { path: '/patient-page' });
-        cookies.set('lastName', lastName, { path: '/patient-page' });
-        cookies.set('birthday', birthday, { path: '/patient-page' });
-        cookies.set('walletAddress', patientPublic, { path: '/patient-page' });
-
-        // Direct to patient page
-        navigate('/patient-page')
     };
 
     return (
@@ -64,13 +65,17 @@ function ConfirmUserInformationPopup(props : any) {
             </DialogContent>
             <DialogActions sx={{ paddingRight: 3, paddingBottom: 2 }}>
                 <Button onClick={handleClose}>CANCEL</Button>
-                <Button variant="contained" onClick={handleSubmit}>CONFIRM</Button>
+                <LoadingButton loading={loading} variant="contained" onClick={handleSubmit}>CONFIRM</LoadingButton>
             </DialogActions>
         </Dialog>
     )
 }
 
 ConfirmUserInformationPopup.propTypes = {
+    setBirthday: PropTypes.func.isRequired,
+    setFirstName: PropTypes.func.isRequired,
+    setLastName: PropTypes.func.isRequired,
+    setWalletAddress: PropTypes.func.isRequired,
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
     birthday: PropTypes.instanceOf(Date).isRequired,

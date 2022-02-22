@@ -1,12 +1,18 @@
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import Cookies from 'universal-cookie';
 
 function ClinicAccountCreationPopup(props : any) {
     const { clinicName, address, email, publicAddress, privateAddress, isOpen } = props;
+
+    const cookies = new Cookies();
     const navigate = useNavigate();
 
     const handleSubmit = () => {
+        cookies.set('clinicPublic', publicAddress);
+        cookies.set('clinicPrivate', privateAddress);
+
         navigate('/clinic-main-page');
     };
 

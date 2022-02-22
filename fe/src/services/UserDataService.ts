@@ -11,13 +11,15 @@ class PatientDataService {
     return ContractService.getContract().methods.walletIdToPatientHash(patientPublicKey).call();
   }
 
-  async setPatientHash(patientPublicKey: string, patientPrivateKey: string, patientHash: string) {
+  async setPatientHash(patientPublicKey: string, clinicPublicKey: string, clinicPrivateKey: string, patientHash: string) {
+    console.log("In setPatientHash")
     let setPatientHashRequest: TransactionRequest = {}
-    setPatientHashRequest.data = ContractService.getContract().methods.patientSignup(patientHash).encodeABI()
-
-    const signedTransaction = await ContractService.signTransaction(setPatientHashRequest, patientPublicKey, patientPrivateKey);
+    setPatientHashRequest.data = ContractService.getContract().methods.patientSignup(patientHash, patientPublicKey).encodeABI()
+    console.log("setPatientHashRequest: " + JSON.stringify(setPatientHashRequest, null, 4))
+    const signedTransaction = await ContractService.signTransaction(setPatientHashRequest, clinicPublicKey, clinicPrivateKey);
+    console.log("signedTransaction complete")
     const receipt = await ContractService.sendSignedTransaction(signedTransaction.rawTransaction as string).on("receipt", (receipt : any)=>{});
-
+    console.log("receipt complete")
     return "done";
   }
 

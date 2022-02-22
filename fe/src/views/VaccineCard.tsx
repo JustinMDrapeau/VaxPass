@@ -12,17 +12,17 @@ export default function VaccineCard(props: any) {
     <Box mr={3} mb={4}>
       <Card sx={{ minWidth: 275 }}>
         <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Clinic Name
-          </Typography>
           <Typography variant="h5" component="div">
-            {props.token.manufacturer}
+            {props.token.product}
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Phase: {props.token.dosePhase}
+            Phase: {props.token.phase}
           </Typography>
           <Typography variant="body2">
-            Date: 02/16/2022
+            Date: {props.token.date}
+          </Typography>
+          <Typography variant="body2">
+            Lot: {props.token.lot}
           </Typography>
         </CardContent>
         <CardActions>
