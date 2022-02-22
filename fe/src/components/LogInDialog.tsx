@@ -111,10 +111,10 @@ function LogInDialog(props: any) {
         if (res === computeHash()) {
           console.log("Hashes are equal");
           // Set cookies
-          cookies.set('firstName', firstName, { path: 'patient-page' });
-          cookies.set('lastName', lastName, { path: 'patient-page' });
-          cookies.set('birthday', birthday, { path: 'patient-page' });
-          cookies.set('walletAddress', walletAddress, { path: 'patient-page' });
+          cookies.set('firstName', firstName);
+          cookies.set('lastName', lastName);
+          cookies.set('birthday', birthday);
+          cookies.set('walletAddress', walletAddress);
           // Direct to patient page
           navigate('/patient-page')
         } else {
