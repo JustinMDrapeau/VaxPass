@@ -2,7 +2,7 @@ import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import contractArtifact from "../VaxNFT.json";
 import TransactionRequest from "../types/TransactionRequest";
 
-const CONTRACT_ADDRESS = "0x840a0877Ff1741e5B246f8D1bEc42CE99702C2e0"
+const CONTRACT_ADDRESS = "0x9B88B4cCFfEbFEEaF0394E97097fD669f5FB768c"
 const web3 = createAlchemyWeb3("https://eth-ropsten.alchemyapi.io/v2/YP1lq3MVFwDLVAD5jz2dqU0gDTDzWBGp");
 const contract = new web3.eth.Contract(contractArtifact.abi as any, CONTRACT_ADDRESS);
 
@@ -31,6 +31,7 @@ class ContractService {
         data.nonce = await this.getNonce(publicKey);
         data.gas = 500000;
         data.maxPriorityFeePerGas = 1999999987;
+        console.log("Calling contract: " + JSON.stringify(data, null, 4))
         return this.web3.eth.accounts.signTransaction(data, privateKey)
     }
 
