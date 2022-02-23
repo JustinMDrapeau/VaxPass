@@ -7,19 +7,28 @@ import UserDataService from '../services/UserDataService';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import WhitelistLinkData from '../types/WhitelistLinkData';
 import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
+import Cookies from 'universal-cookie';
 
 function PatientPage() {
-  const [walletAddress, setWalletAddress] = useState('0x4CBA51c5FA1847B208eD0D753eeA2000D82943Bc')
+  console.log("Patient Page")
+  const cookies = new Cookies();
+
+  const [walletAddress, setWalletAddress] = useState(cookies.get('walletAddress'))
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
-
   const [tokens, setToken] = useState([])
+
+  console.log(cookies.get('firstName'))
+  console.log(cookies.get('lastName'))
+  console.log(cookies.get('birthday'))
+  console.log(cookies.get('walletAddress'))
 
   useEffect(() => {
     UserDataService.getUserTokens(walletAddress).then((response) => {
       setToken(response)
+      console.log(response)
     })
-  })
+  }, [])
 
   const updateWhiteListLink = (e: any, index: any) => {
     let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks];
@@ -80,16 +89,13 @@ function PatientPage() {
               <Card style={{ padding: '24px', height: '100%' }}>
                 <Stack alignItems="center" spacing={2}>
                   <Typography variant="h2" align="center" >
-                    John Doe
+                    {cookies.get('firstName')} {cookies.get('lastName')}
                   </Typography>
                   <Typography variant="h6" align="center" >
-                    H/C: 1234567890
+                    {cookies.get('walletAddress')}
                   </Typography>
                   <Typography variant="h6" align="center" >
-                    Birth Date: 02/16/1999
-                  </Typography>
-                  <Typography variant="h6" align="center" >
-                    Detail Three
+                    {cookies.get('birthday')}
                   </Typography>
                 </Stack>
               </Card>
