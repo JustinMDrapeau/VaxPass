@@ -6,6 +6,10 @@ import VerifyFlowSelector from "../components/VerifyFlowSelector"
 import VerifyFlowQrScan from "../components/VerifyFlowQrScan"
 import VerifyFlowSubmitWalletAddress from "../components/VerifyFlowSubmitWalletAddress"
 import WhitelistLinkData from '../types/WhitelistLinkData';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import UserDataService from '../services/UserDataService';
+import {sha256} from 'js-sha256';
 
 function VerifyFlow(props: any) {
     const { isOpen, handleClose } = props
@@ -28,6 +32,9 @@ function VerifyFlow(props: any) {
     const [isStepOneOpen, setIsStepOneOpen] = useState(isOpen)
     const [isStepTwoOpen, setIsStepTwoOpen] = useState(false)
     const [isStepThreeOpen, setIsStepThreeOpen] = useState(false)
+
+    const navigate = useNavigate()
+    const cookies = new Cookies();
 
     useEffect(() => {
         setIsStepOneOpen(isOpen);
@@ -67,6 +74,13 @@ function VerifyFlow(props: any) {
     const updateIsQR = (value: string) => {
         setIsQR(value === "QR")
     }
+
+    const computeHash = () => {
+      const hashValue = `${firstName}-${lastName}-${birthday
+        ?.toISOString()
+        .slice(0, 10)}`;
+      return sha256(hashValue);
+    };
 
     const handleNextStepOne = () => {
         let newWhitelistLinksArr: Array<WhitelistLinkData> = [...whitelistLinks]
@@ -110,7 +124,25 @@ function VerifyFlow(props: any) {
         setIsStepThreeOpen(false)
         handleClose()
         // Navigate to user page
-    }
+        UserDataService.getPatientHash(walletAddress).then((res: any) => {
+          console.log(res);
+          // Check if calculated hash matches stored hash
+          console.log("Checking hash...");
+          if (res === computeHash()) {
+            console.log("Hashes are equal");
+            // Set cookies
+            cookies.set('firstName', firstName);
+            cookies.set('lastName', lastName);
+            cookies.set('birthday', birthday);
+            cookies.set('walletAddress', walletAddress);
+            // Direct to patient page
+            navigate('/patient-page')
+          } else {
+            // setAlert(true);
+            console.log("Hashes are not equal!")
+          }
+        })
+    };
 
     const handleBackStepTwo = () => {
         setIsStepOneOpen(true)
