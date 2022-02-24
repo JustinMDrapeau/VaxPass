@@ -10,10 +10,10 @@ import QRCode from 'react-qr-code'
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import WhitelistLinkData from '../types/WhitelistLinkData';
 import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
+import axios from 'axios';
 
 function PatientPage() {
   const { patientInfo } = useParams()
-
   const decryptedPatientInfo: PatientInfo = patientInfo === undefined ?
     {
       firstName: "",
@@ -28,18 +28,35 @@ function PatientPage() {
   const url = JSON.stringify(window.location.origin + "/patient-page/" + Buffer.from(JSON.stringify(decryptedPatientInfo)).toString('base64'));
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
-  const [tokens, setToken] = useState([])
+  const [tokens, setToken] = useState<any[]>(Array())
+
+  const [whitelistAddresses, setWhitelistAddresses] = useState(Array());
+
+  // console.log(cookies.get('firstName'))
+  // console.log(cookies.get('lastName'))
+  // console.log(cookies.get('birthday'))
+  // console.log(cookies.get('walletAddress'))
 
   useEffect(() => {
+    getTokens()
+  }, [])
+
+  const getTokens = () => {
     UserDataService.getUserTokens(walletAddress).then((response) => {
       setToken(response)
+      console.log("THESE ARE THE TOKENS")
       console.log(response)
+      console.log("WHITELISTLINKS")
+      console.log(whitelistLinks)
+      if (whitelistLinks.length >= 1) {
+        console.log("THIS HAPPENS")
+        fetchWhitelistClinicAddresses()
+      }
     })
-
-  }, [walletAddress])
+  }
 
   const updateWhiteListLink = (e: any, index: any) => {
-    let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks];
+    let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks]; // an array of whitelist links
     if (isValidLink(e.target.value) === true || e.target.value === "") {
       newWhiteListLinks[index].link = e.target.value;
       newWhiteListLinks[index].errorMessage = "";
@@ -48,6 +65,9 @@ function PatientPage() {
       newWhiteListLinks[index].errorMessage = "Please ensure the link is valid";
       setWhitelistLinks(newWhiteListLinks);
     }
+
+    // get the whitelist addresses and store it in the state
+
   }
 
   const handleAddWhitelistField = () => {
@@ -71,6 +91,43 @@ function PatientPage() {
   const handleSubmitFilter = () => {
     // Do something with whitelistLinks (Justin and Russell's part)
     setIsWhitelistFilterOpen(false)
+    console.log(whitelistLinks)
+    getTokens()
+  }
+
+  const fetchWhitelistClinicAddresses = () => {
+    console.log("GETTING THE ADDRESSES")
+    // axios.get("https://api.npoint.io/febe0ed13744ce28a5a0").then(res => console.log(res)).catch()
+    // setWhitelistAddresses(Array())
+    let tempArray = Array()
+    // whitelistLinks.forEach((url) => {
+    for (const url of whitelistLinks){
+      if (url.link === "") return;
+      axios.get(url.link).then(res => {
+        tempArray.push(...res.data.addresses)
+        console.log("temp array is: ")
+        console.log(tempArray)
+        setWhitelistAddresses(tempArray)
+        console.log("WHITE LIST ADDRESSES IS: ")
+        console.log(whitelistAddresses)
+        filterTokensUsingWhitelist(tempArray)})
+        .catch(err => console.log(err))
+    }
+
+  }
+
+  const filterTokensUsingWhitelist = (vaccines: any) => {
+    // check if this vaccine is within the whitelist
+    // go through the tokens and filter if they are not in the list
+    console.log("FILTERING THE TOKENS")
+    if (vaccines.length === 0){
+      console.log("LENGTH IS 0")
+      return;
+    } 
+    const newTokens = tokens.filter(token => vaccines.includes(token.issuer))
+    setToken(newTokens)
+    console.log("THE TOKENS ARE")
+    console.log(tokens)
   }
 
   return (

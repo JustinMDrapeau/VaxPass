@@ -7,6 +7,9 @@ import VerifyFlowQrScan from "../components/VerifyFlowQrScan"
 import VerifyFlowSubmitWalletAddress from "../components/VerifyFlowSubmitWalletAddress"
 import WhitelistLinkData from '../types/WhitelistLinkData';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import UserDataService from '../services/UserDataService';
+import {sha256} from 'js-sha256';
 
 function VerifyFlow(props: any) {
     const navigate = useNavigate();
@@ -30,6 +33,9 @@ function VerifyFlow(props: any) {
     const [isStepOneOpen, setIsStepOneOpen] = useState(isOpen)
     const [isStepTwoOpen, setIsStepTwoOpen] = useState(false)
     const [isStepThreeOpen, setIsStepThreeOpen] = useState(false)
+
+    const navigate = useNavigate()
+    const cookies = new Cookies();
 
     useEffect(() => {
         setIsStepOneOpen(isOpen);
@@ -69,6 +75,13 @@ function VerifyFlow(props: any) {
     const updateIsQR = (value: string) => {
         setIsQR(value === "QR")
     }
+
+    const computeHash = () => {
+      const hashValue = `${firstName}-${lastName}-${birthday
+        ?.toISOString()
+        .slice(0, 10)}`;
+      return sha256(hashValue);
+    };
 
     const handleNextStepOne = () => {
         let newWhitelistLinksArr: Array<WhitelistLinkData> = [...whitelistLinks]
