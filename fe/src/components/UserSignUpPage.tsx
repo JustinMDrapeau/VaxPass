@@ -4,8 +4,6 @@ import { isValidName } from "../helpers/inputValidationHelpers";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import UserInformationFields from './UserInformationFields'
 import ConfirmUserInformationPopup from './ConfirmUserInformationPopup'
-import { useNavigate } from 'react-router-dom';
-
 
 function UserSignUpPage(props: any){
   const today = new Date()
@@ -17,8 +15,6 @@ function UserSignUpPage(props: any){
 
   const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
   const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
-
-  const navigate = useNavigate();
 
   const handleFirstNameChange = (e: any) => {
     if (isValidName(e.target.value) === true) {

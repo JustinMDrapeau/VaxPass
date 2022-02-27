@@ -18,7 +18,7 @@ class PatientDataService {
     console.log("setPatientHashRequest: " + JSON.stringify(setPatientHashRequest, null, 4))
     const signedTransaction = await ContractService.signTransaction(setPatientHashRequest, clinicPublicKey, clinicPrivateKey);
     console.log("signedTransaction complete")
-    const receipt = await ContractService.sendSignedTransaction(signedTransaction.rawTransaction as string).on("receipt", (receipt : any)=>{});
+    await ContractService.sendSignedTransaction(signedTransaction.rawTransaction as string).on("receipt", (receipt : any)=>{});
     console.log("receipt complete")
     return "done";
   }

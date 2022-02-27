@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, TextField, Tooltip } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { AppBar, Box, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, Tooltip } from '@mui/material';
 import { isValidLink } from "../helpers/inputValidationHelpers";
 import VaccineCard from './VaccineCard';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
@@ -13,7 +13,7 @@ function PatientPage() {
   console.log("Patient Page")
   const cookies = new Cookies();
 
-  const [walletAddress, setWalletAddress] = useState(cookies.get('walletAddress'))
+  const walletAddress = cookies.get('walletAddress')
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
   const [tokens, setToken] = useState([])
@@ -28,7 +28,7 @@ function PatientPage() {
       setToken(response)
       console.log(response)
     })
-  }, [])
+  }, [walletAddress])
 
   const updateWhiteListLink = (e: any, index: any) => {
     let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks];

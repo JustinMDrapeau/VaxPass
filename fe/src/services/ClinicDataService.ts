@@ -20,7 +20,7 @@ class ClinicDataService {
     transferRequest.data = ContractService.getContract().methods.transferFrom(clinicPublicKey, patientPublicKey, parseInt(transactionLog.data)).encodeABI()
 
     const transferSignedTransaction = await ContractService.signTransaction(transferRequest, clinicPublicKey, clinicPrivateKey);
-    const transferReceipt = await ContractService.sendSignedTransaction(transferSignedTransaction.rawTransaction as string).on("receipt", (receipt : any) => {});
+    await ContractService.sendSignedTransaction(transferSignedTransaction.rawTransaction as string).on("receipt", (receipt : any) => {});
 
     return "done";
   }
@@ -48,7 +48,7 @@ class ClinicDataService {
     clinicCreationRequest.data = ContractService.getContract().methods.clinicSignup(name, address, email, publicAddress).encodeABI();
     
     const clinicCreationSignedTransaction = await ContractService.signTransaction(clinicCreationRequest, transactionPublicAddress, transactionPrivateAddress);
-    const clinicCreationReceipt = await ContractService.sendSignedTransaction(clinicCreationSignedTransaction.rawTransaction as string).on("receipt", (receipt : any) => {});
+    await ContractService.sendSignedTransaction(clinicCreationSignedTransaction.rawTransaction as string).on("receipt", (receipt : any) => {});
 
     return [publicAddress, privateAddress];
   }
