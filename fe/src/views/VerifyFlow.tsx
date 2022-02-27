@@ -80,10 +80,10 @@ function VerifyFlow(props: any) {
                 
             if (noDupesWhitelistLinks !== undefined){
                 if(noDupesWhitelistLinks.length > 1) {
-                    {/* @ts-ignore */}
+                    /* @ts-ignore */
                     noDupesWhitelistLinks = noDupesWhitelistLinks.filter(element => element.link !== "")
                 }
-                {/* @ts-ignore */}
+                /* @ts-ignore */
                 setWhitelistLinks(noDupesWhitelistLinks)
             } 
             

@@ -1,25 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  AppBar,
-  Box,
-  Button,
-  Card,
-  Container,
-  CssBaseline,
-  Grid,
-  IconButton,
-  Stack,
-  styled,
-  TextField,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, TextField, Toolbar, Typography } from "@mui/material";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { withStyles } from "@material-ui/core/styles";
 import ClinicDataService from "../services/ClinicDataService";
 import UserDataService from "../services/UserDataService";
 import { sha256 } from "js-sha256";
@@ -28,8 +12,6 @@ import UserSignUpPage from "../components/UserSignUpPage";
 
 export default function ClinicMainPage(props: any) {
   const cookies = new Cookies();
-  const [vaccineTypeErrorMessage, setVaccineTypeErrorMessage] =
-    React.useState("");
 
   const [birthday, setBirthday] = React.useState<Date | null>(new Date());
   const [dateAdministered, setDateAdministered] = React.useState<Date | null>(new Date());
@@ -38,8 +20,8 @@ export default function ClinicMainPage(props: any) {
   const [clinicPhysicalAddress, setClinicPhysicalAddress] = useState("");
   const [clinicEmail, setClinicEmail] = useState("");
 
-  const [clinicPublic, setClinicPublic] = useState(cookies.get("clinicPublic"));
-  const [clinicPrivate, setClinicPrivate] = useState(cookies.get("clinicPrivate"));
+  const clinicPublic = cookies.get("clinicPublic");
+  const clinicPrivate = cookies.get("clinicPrivate");
 
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -48,9 +30,7 @@ export default function ClinicMainPage(props: any) {
   const [lotNumber, setLotNumber] = useState<string>("");
   const [phaseNumber, setPhaseNumber] = useState<number>(1);
 
-  const [vaccineDisabled, setVaccineDisabled] = useState<boolean | undefined>(
-    true
-  );
+  const [vaccineDisabled, setVaccineDisabled] = useState<boolean | undefined>(true);
 
   const [signUpPatientOpen, setSignUpPatientOpen] = useState(false);
 
@@ -62,7 +42,7 @@ export default function ClinicMainPage(props: any) {
         setClinicPhysicalAddress(res.p_address);
       })
       .catch((err: any) => console.log(err));
-  }, []);
+  }, [clinicPublic]);
 
   const computeHash = () => {
     const hashValue = `${firstName}-${lastName}-${birthday
@@ -77,7 +57,7 @@ export default function ClinicMainPage(props: any) {
         console.log(res);
         // create logic for local hash
         console.log("CHECKING HASH...");
-        if (res == computeHash()) {
+        if (res === computeHash()) {
           // if (res == computeHash()) {
           console.log("HASHES ARE EQUAL");
           setVaccineDisabled(false);
