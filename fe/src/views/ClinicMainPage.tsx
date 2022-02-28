@@ -1,49 +1,27 @@
 import React, { useEffect, useState } from "react";
-import {
-  AppBar,
-  Box,
-  Button,
-  Card,
-  Container,
-  CssBaseline,
-  Grid,
-  IconButton,
-  Stack,
-  styled,
-  TextField,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import Paper from "@mui/material/Paper";
-import LogInDialog from "../components/LogInDialog";
-import PropTypes from "prop-types";
-import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, TextField, Toolbar, Typography } from "@mui/material";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { withStyles } from "@material-ui/core/styles";
 import ClinicDataService from "../services/ClinicDataService";
 import UserDataService from "../services/UserDataService";
 import { sha256 } from "js-sha256";
+import Cookies from 'universal-cookie';
+import UserSignUpPage from "../components/UserSignUpPage";
 
 export default function ClinicMainPage(props: any) {
-  const [vaccineTypeErrorMessage, setVaccineTypeErrorMessage] =
-    React.useState("");
+  const cookies = new Cookies();
 
-  const [dob, setDob] = React.useState<Date | null>(new Date());
-  const [dateAdministered, setDateAdministered] = React.useState<Date | null>(
-    new Date()
-  );
+  const [birthday, setBirthday] = React.useState<Date | null>(new Date());
+  const [dateAdministered, setDateAdministered] = React.useState<Date | null>(new Date());
 
   const [clinicName, setClinicName] = useState("");
-  const [clinicWalletAddress, setClinicWalletAddress] = useState("");
   const [clinicPhysicalAddress, setClinicPhysicalAddress] = useState("");
   const [clinicEmail, setClinicEmail] = useState("");
 
-  const [clinicPublic, setClinicPublic] = useState("0x438363746455ef25661f5b2F2D0FeF0F75324d2e");
-  const [clinicPrivate, setClinicPrivate] = useState("");
+  const clinicPublic = cookies.get("clinicPublic");
+  const clinicPrivate = cookies.get("clinicPrivate");
 
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -52,9 +30,9 @@ export default function ClinicMainPage(props: any) {
   const [lotNumber, setLotNumber] = useState<string>("");
   const [phaseNumber, setPhaseNumber] = useState<number>(1);
 
-  const [vaccineDisabled, setVaccineDisabled] = useState<boolean | undefined>(
-    true
-  );
+  const [vaccineDisabled, setVaccineDisabled] = useState<boolean | undefined>(true);
+
+  const [signUpPatientOpen, setSignUpPatientOpen] = useState(false);
 
   useEffect(() => {
     ClinicDataService.getClinicInfo(clinicPublic)
@@ -64,10 +42,10 @@ export default function ClinicMainPage(props: any) {
         setClinicPhysicalAddress(res.p_address);
       })
       .catch((err: any) => console.log(err));
-  }, []);
+  }, [clinicPublic]);
 
   const computeHash = () => {
-    const hashValue = `${firstName}-${lastName}-${dob
+    const hashValue = `${firstName}-${lastName}-${birthday
       ?.toISOString()
       .slice(0, 10)}`;
     return sha256(hashValue);
@@ -79,7 +57,7 @@ export default function ClinicMainPage(props: any) {
         console.log(res);
         // create logic for local hash
         console.log("CHECKING HASH...");
-        if (res == "abcd") {
+        if (res === computeHash()) {
           // if (res == computeHash()) {
           console.log("HASHES ARE EQUAL");
           setVaccineDisabled(false);
@@ -89,6 +67,10 @@ export default function ClinicMainPage(props: any) {
       })
       .catch((err: any) => console.log(err));
   };
+
+  const handleClose = () => {
+    setSignUpPatientOpen(false);
+  }
 
   const handleAssign = () => {
     const vaccineAdministeredDate = dateAdministered?.toDateString();
@@ -108,7 +90,7 @@ export default function ClinicMainPage(props: any) {
 
   return (
     <div
-      className="UserSignUp"
+      className="ClinicMainPage"
       style={{ backgroundColor: "#D3D3D3", height: "100vh" }}
     >
       <Box sx={{ flexGrow: 1 }}>
@@ -213,6 +195,7 @@ export default function ClinicMainPage(props: any) {
                   <TextField
                     required
                     id="first-name-field"
+                    value={firstName}
                     label="First Name"
                     type="text"
                     variant="outlined"
@@ -222,25 +205,28 @@ export default function ClinicMainPage(props: any) {
                   <TextField
                     required
                     id="last-name-field"
+                    value={lastName}
                     label="Last Name"
                     type="text"
                     variant="outlined"
                     onChange={(e) => setLastName(e.target.value)}
                   />
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DesktopDatePicker
-                      label="Date of Birth"
-                      inputFormat="MM/dd/yyyy"
-                      value={dob}
-                      onChange={setDob}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </LocalizationProvider>
+
+                          <DesktopDatePicker
+          label="Date of Birth"
+          inputFormat="MM/dd/yyyy"
+          value={birthday}
+          onChange={setBirthday}
+          renderInput={(params) => <TextField {...params} />}
+        />
+        </LocalizationProvider>
 
                   <TextField
                     required
                     id="wallet-address-field"
                     label="Wallet Address"
+                    value={walletAddress}
                     type="text"
                     variant="outlined"
                     onChange={(e) => setWalletAddress(e.target.value)}
@@ -253,6 +239,21 @@ export default function ClinicMainPage(props: any) {
                   >
                     Verify Patient
                   </Button>
+                  <Button
+                    variant="contained"
+                    style={{ minHeight: "53px" }}
+                    onClick={()=>setSignUpPatientOpen(true)}
+                  >
+                    Signup Patient
+                  </Button>
+                  <UserSignUpPage
+                    setBirthday={setBirthday}
+                    setFirstName={setFirstName}
+                    setLastName={setLastName}
+                    setWalletAddress={setWalletAddress}
+                    onClose={handleClose}
+                    isOpen={signUpPatientOpen}
+                  />
                 </Box>
 
                 <br />

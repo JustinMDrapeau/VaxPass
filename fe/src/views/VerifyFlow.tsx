@@ -82,13 +82,13 @@ function VerifyFlow(props: any) {
                 .map(link => {
                     return newWhitelistLinksArr.find(a => a.link === link)
                 })
-
-            if (noDupesWhitelistLinks !== undefined) {
-                if (noDupesWhitelistLinks.length > 1) {
-                    {/* @ts-ignore */ }
+                
+            if (noDupesWhitelistLinks !== undefined){
+                if(noDupesWhitelistLinks.length > 1) {
+                    /* @ts-ignore */
                     noDupesWhitelistLinks = noDupesWhitelistLinks.filter(element => element.link !== "")
                 }
-                {/* @ts-ignore */ }
+                /* @ts-ignore */
                 setWhitelistLinks(noDupesWhitelistLinks)
             }
 

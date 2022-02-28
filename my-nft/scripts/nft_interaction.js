@@ -8,7 +8,7 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(API_URL);
 
 const contract = require("../artifacts/contracts/vaxNFT.sol/VaxNFT.json");
-const contractAddress = "0xad5306305153930e6090FE430aF4573E356B6c3C";
+const contractAddress = "0x840a0877Ff1741e5B246f8D1bEc42CE99702C2e0";
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
 async function mintNFT(manufacturer, phase) {
@@ -104,7 +104,7 @@ async function clinicSignup(pubk, privk, name, address, email) {
     'nonce': nonce,
     'gas': 500000,
     'maxPriorityFeePerGas': 1999999987,
-    'data': nftContract.methods.clinicSignup(name, address, email).encodeABI()
+    'data': nftContract.methods.clinicSignup(name, address, email, pubk).encodeABI()
   };
 
   const signPromise = web3.eth.accounts.signTransaction(tx, privk);
@@ -142,26 +142,25 @@ async function clinicLogin(pubk, privk) {
 
 // mintNFT('Moderna', 1)
 
-// clinicSignup(PUBLIC_KEY, PRIVATE_KEY, 'Hospital of Toronto', '25 Bay Street Toronto Canada L8B93W', 'admin@torontohospital.com')
+// clinicSignup(PUBLIC_KEY, PRIVATE_KEY, 'Shisheer Hospital', '25 Bay Street Waterloo Canada N2L3W6', 'admin@torontohospital.com')
 
-// clinicLogin(PUBLIC_KEY, PRIVATE_KEY)
-// nftContract.methods.walletIdToClinic(PUBLIC_KEY).call()
-// .then((result) => {
-//   console.log(result)
-// })
-// .catch((err) => {
-//     console.log(err)
-// })
-
-// let sig = web3.eth.sign("test", PRIVATE_KEY);
-// console.log(sig)
-// console.log(Wallet.fromPrivateKey(Buffer.from(PRIVATE_KEY, 'hex')).getAddress().toString('hex'));
-// Test that the map tokenIdTokenInfo (tokenId -> NFT metadata) contains the newly minted NFT
-
-nftContract.methods.tokensOfOwner(PUBLIC_KEY).call()
+nftContract.methods.walletIdToClinic(PUBLIC_KEY).call()
 .then((result) => {
   console.log(result)
 })
 .catch((err) => {
     console.log(err)
 })
+
+// let sig = web3.eth.sign("test", PRIVATE_KEY);
+// console.log(sig)
+// console.log(Wallet.fromPrivateKey(Buffer.from(PRIVATE_KEY, 'hex')).getAddress().toString('hex'));
+// Test that the map tokenIdTokenInfo (tokenId -> NFT metadata) contains the newly minted NFT
+
+// nftContract.methods.tokensOfOwner(PUBLIC_KEY).call()
+// .then((result) => {
+//   console.log(result)
+// })
+// .catch((err) => {
+//     console.log(err)
+// })
