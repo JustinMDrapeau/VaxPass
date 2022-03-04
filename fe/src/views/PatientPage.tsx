@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AppBar, Box, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, Tooltip } from '@mui/material';
+import { AppBar, Box, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, Tooltip, useMediaQuery } from '@mui/material';
 import { isValidLink } from "../helpers/inputValidationHelpers";
 import VaccineCard from './VaccineCard';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
@@ -48,6 +48,8 @@ function PatientPage() {
   // console.log(cookies.get('birthday'))
   // console.log(cookies.get('walletAddress'))
   const location = useLocation();
+
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
 
   useEffect(() => {
     const state = location.state === null ? [{ link: "", errorMessage: ""}] : location.state
@@ -156,7 +158,7 @@ function PatientPage() {
   }
 
   return (
-    <div className="PatientPage" style={{ backgroundColor: '#D3D3D3' }} >
+    <div className="PatientPage" style={{ backgroundColor: '#D3D3D3', height: "100vh", width: "100vw" }} >
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
