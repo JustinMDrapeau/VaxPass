@@ -15,6 +15,7 @@ import {useLocation} from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
+import moment from 'moment';
 
 function PatientPage() {
   const { patientInfo } = useParams()
@@ -39,6 +40,8 @@ function PatientPage() {
   const [fetched, setFetched] = useState(false)
 
   const [whitelistAddresses, setWhitelistAddresses] = useState(Array());
+
+  const formattedBirthday = moment(birthday).format('MMMM Do YYYY')
 
   // console.log(cookies.get('firstName'))
   // console.log(cookies.get('lastName'))
@@ -176,14 +179,14 @@ function PatientPage() {
               <Card style={{ padding: '24px', height: '100%' }}>
                 <Stack alignItems="center" spacing={2}>
                   <QRCode value={url} />
-                  <Typography variant="h2" align="center" >
+                  <Typography variant="h2" align="center" style={{ wordBreak: "break-word" }} >
                     {firstName.charAt(0).toUpperCase() + firstName.toLowerCase().slice(1)} {lastName.charAt(0).toUpperCase() + lastName.toLowerCase().slice(1)}
                   </Typography>
-                  <Typography variant="h6" align="center" >
+                  <Typography variant="body1" align="center" style={{ wordBreak: "break-word" }} >
                     {walletAddress}
                   </Typography>
-                  <Typography variant="h6" align="center" >
-                    {birthday}
+                  <Typography variant="h6" align="center" style={{ wordBreak: "break-word" }} >
+                    {formattedBirthday}
                   </Typography>
                 </Stack>
               </Card>

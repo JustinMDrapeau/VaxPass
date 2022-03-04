@@ -25,9 +25,6 @@ export default function VaccineCard(props: any) {
             Lot: {props.token.lot}
           </Typography>
         </CardContent>
-        <CardActions>
-          <Button size="small">Learn More</Button>
-        </CardActions>
       </Card>
     </Box>
   );
