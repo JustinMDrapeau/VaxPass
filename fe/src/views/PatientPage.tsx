@@ -14,16 +14,18 @@ import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkSt
 function PatientPage() {
   const { patientInfo } = useParams()
 
-  const decryptedPatientInfo: PatientInfo = patientInfo === undefined ? 
-    { firstName: "", 
-    lastName: "", 
-    birthday: "", 
-    walletAddress: "" } : 
+  const decryptedPatientInfo: PatientInfo = patientInfo === undefined ?
+    {
+      firstName: "",
+      lastName: "",
+      birthday: "",
+      walletAddress: ""
+    } :
     JSON.parse(Buffer.from(patientInfo, 'base64').toString('ascii')) as PatientInfo;
-    
+
   const { firstName, lastName, birthday, walletAddress } = decryptedPatientInfo
 
-  const url = JSON.stringify(window.location.origin+"/patient-page/"+Buffer.from(JSON.stringify(decryptedPatientInfo)).toString('base64'));
+  const url = JSON.stringify(window.location.origin + "/patient-page/" + Buffer.from(JSON.stringify(decryptedPatientInfo)).toString('base64'));
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
   const [tokens, setToken] = useState([])
@@ -34,7 +36,7 @@ function PatientPage() {
       console.log(response)
     })
 
-} , [walletAddress])
+  }, [walletAddress])
 
   const updateWhiteListLink = (e: any, index: any) => {
     let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks];
@@ -96,7 +98,7 @@ function PatientPage() {
                 <Stack alignItems="center" spacing={2}>
                   <QRCode value={url} />
                   <Typography variant="h2" align="center" >
-                    {firstName.toLowerCase().charAt(0).toUpperCase()+firstName.slice(1)} { lastName.toLowerCase().charAt(0).toUpperCase()+lastName.slice(1)}
+                    {firstName.charAt(0).toUpperCase() + firstName.toLowerCase().slice(1)} {lastName.charAt(0).toUpperCase() + lastName.toLowerCase().slice(1)}
                   </Typography>
                   <Typography variant="h6" align="center" >
                     {walletAddress}

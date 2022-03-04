@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Alert, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
+import { computeHash } from "../helpers/hashingHelper"
 import UserInformationFields from '../components/UserInformationFields'
 import UserDataService from '../services/UserDataService';
 import Wallet from 'ethereumjs-wallet'
-import { sha256 } from 'js-sha256';
 import Cookies from 'universal-cookie';
 
 function LogInDialog(props: any) {
@@ -94,13 +94,6 @@ function LogInDialog(props: any) {
 
   }
 
-  const computeHash = () => {
-    const hashValue = `${firstName.toUpperCase()}-${lastName.toUpperCase()}-${birthday
-      ?.toISOString()
-      .slice(0, 10)}`;
-    return sha256(hashValue);
-  };
-
   const handleSubmit = () => {
     if (isUser === true && userNoMissingInformation() === true) {
       // Call smart contract method to retrieve patientHash from the walletIdToPatientHash map
@@ -108,7 +101,7 @@ function LogInDialog(props: any) {
         console.log(res);
         // Check if calculated hash matches stored hash
         console.log("Checking hash...");
-        if (res === computeHash()) {
+        if (res === computeHash(firstName, lastName, birthday)) {
           console.log("Hashes are equal");
 
           const patientInfo = {
@@ -119,7 +112,7 @@ function LogInDialog(props: any) {
           }
 
           // Direct to patient page
-          navigate( `/patient-page/${Buffer.from(JSON.stringify(patientInfo)).toString('base64')}`)
+          navigate(`/patient-page/${Buffer.from(JSON.stringify(patientInfo)).toString('base64')}`)
         } else {
           setAlert(true);
           console.log("Hashes are not equal!")

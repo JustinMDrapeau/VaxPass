@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import UserDataService from '../services/UserDataService';
-import { sha256 } from 'js-sha256';
+import { computeHash } from "../helpers/hashingHelper"
 import Cookies from 'universal-cookie';
 
 function ConfirmUserInformationPopup(props: any) {
@@ -15,13 +15,6 @@ function ConfirmUserInformationPopup(props: any) {
         onClose()
     };
 
-    const computeHash = () => {
-        const hashValue = `${firstName.toUpperCase()}-${lastName.toUpperCase()}-${birthday
-            ?.toISOString()
-            .slice(0, 10)}`;
-        return sha256(hashValue);
-    };
-
     const handleSubmit = () => {
         // Create a wallet address
         setLoading(true);
@@ -30,7 +23,7 @@ function ConfirmUserInformationPopup(props: any) {
         const clinicPublic = cookies.get("clinicPublic")
         const clinicPrivate = cookies.get("clinicPrivate")
         // Compute hash
-        const hash = computeHash();
+        const hash = computeHash(firstName, lastName, birthday);
         console.log("hash: " + hash)
         // Insert hash in walletIdToPatientHash map in the smart contract
         UserDataService.setPatientHash(patientPublic, clinicPublic, clinicPrivate, hash)

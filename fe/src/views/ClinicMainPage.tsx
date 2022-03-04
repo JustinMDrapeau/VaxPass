@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, TextField, Toolbar, Typography } from "@mui/material";
+import { computeHash } from "../helpers/hashingHelper"
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import ClinicDataService from "../services/ClinicDataService";
 import UserDataService from "../services/UserDataService";
-import { sha256 } from "js-sha256";
 import Cookies from 'universal-cookie';
 import UserSignUpPage from "../components/UserSignUpPage";
 
@@ -44,20 +44,13 @@ export default function ClinicMainPage(props: any) {
       .catch((err: any) => console.log(err));
   }, [clinicPublic]);
 
-  const computeHash = () => {
-    const hashValue = `${firstName.toUpperCase()}-${lastName.toUpperCase()}-${birthday
-      ?.toISOString()
-      .slice(0, 10)}`;
-    return sha256(hashValue);
-  };
-
   const verifyPatient = () => {
     UserDataService.getPatientHash(walletAddress)
       .then((res: any) => {
         console.log(res);
         // create logic for local hash
         console.log("CHECKING HASH...");
-        if (res === computeHash()) {
+        if (res === computeHash(firstName, lastName, birthday)) {
           // if (res == computeHash()) {
           console.log("HASHES ARE EQUAL");
           setVaccineDisabled(false);
