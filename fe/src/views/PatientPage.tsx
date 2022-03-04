@@ -29,6 +29,8 @@ function PatientPage() {
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
   const [tokens, setToken] = useState<any[]>(Array())
+  const [allTokens, setAllTokens] = useState<any[]>(Array()) // a cached set of the tokens
+  const [fetched, setFetched] = useState(false)
 
   const [whitelistAddresses, setWhitelistAddresses] = useState(Array());
 
@@ -42,17 +44,25 @@ function PatientPage() {
   }, [])
 
   const getTokens = () => {
-    UserDataService.getUserTokens(walletAddress).then((response) => {
-      setToken(response)
-      console.log("THESE ARE THE TOKENS")
-      console.log(response)
-      console.log("WHITELISTLINKS")
-      console.log(whitelistLinks)
+    if (fetched) {
+      console.log("GETTING FROM CACHE")
+      // setToken(allTokens)
       if (whitelistLinks.length >= 1) {
-        console.log("THIS HAPPENS")
         fetchWhitelistClinicAddresses()
       }
-    })
+    } else {
+      UserDataService.getUserTokens(walletAddress).then((response) => {
+        console.log("GETTING FROM BLOCKCHAIN")
+        setToken(response)
+        setAllTokens(response)
+        console.log("THESE ARE THE TOKENS")
+        console.log(response)
+        if (whitelistLinks.length >= 1) {
+          fetchWhitelistClinicAddresses()
+        }
+      })
+      setFetched(true) // set to true so that we don't query the blockchain anymore
+    }
   }
 
   const updateWhiteListLink = (e: any, index: any) => {
@@ -65,9 +75,6 @@ function PatientPage() {
       newWhiteListLinks[index].errorMessage = "Please ensure the link is valid";
       setWhitelistLinks(newWhiteListLinks);
     }
-
-    // get the whitelist addresses and store it in the state
-
   }
 
   const handleAddWhitelistField = () => {
@@ -91,43 +98,40 @@ function PatientPage() {
   const handleSubmitFilter = () => {
     // Do something with whitelistLinks (Justin and Russell's part)
     setIsWhitelistFilterOpen(false)
-    console.log(whitelistLinks)
     getTokens()
   }
 
   const fetchWhitelistClinicAddresses = () => {
-    console.log("GETTING THE ADDRESSES")
-    // axios.get("https://api.npoint.io/febe0ed13744ce28a5a0").then(res => console.log(res)).catch()
-    // setWhitelistAddresses(Array())
-    let tempArray = Array()
-    // whitelistLinks.forEach((url) => {
+    let addresses = Array()
+    let promises = Array()
     for (const url of whitelistLinks){
       if (url.link === "") return;
-      axios.get(url.link).then(res => {
-        tempArray.push(...res.data.addresses)
-        console.log("temp array is: ")
-        console.log(tempArray)
-        setWhitelistAddresses(tempArray)
-        console.log("WHITE LIST ADDRESSES IS: ")
-        console.log(whitelistAddresses)
-        filterTokensUsingWhitelist(tempArray)})
-        .catch(err => console.log(err))
+
+      promises.push(
+      axios.get(url.link)
+        .then(res => addresses.push(...res.data.addresses))
+        .catch(err => console.log(err)))
     }
 
+    Promise.all(promises).then(() => filterTokensUsingWhitelist(addresses))
   }
 
-  const filterTokensUsingWhitelist = (vaccines: any) => {
-    // check if this vaccine is within the whitelist
-    // go through the tokens and filter if they are not in the list
+  /**
+   * Go through all of the vaccines that the user has and filter using the whitelisted blockchain addresses
+   * @param whitelistAddresses 
+   * @returns 
+   */
+  const filterTokensUsingWhitelist = (whitelistAddresses: any) => {
     console.log("FILTERING THE TOKENS")
-    if (vaccines.length === 0){
+    console.log("THE WHITELISTS ARE: ")
+    console.log(whitelistAddresses)
+    if (whitelistAddresses.length === 0){
       console.log("LENGTH IS 0")
       return;
     } 
-    const newTokens = tokens.filter(token => vaccines.includes(token.issuer))
+
+    const newTokens = allTokens.filter(token => whitelistAddresses.includes(token.issuer))
     setToken(newTokens)
-    console.log("THE TOKENS ARE")
-    console.log(tokens)
   }
 
   return (
