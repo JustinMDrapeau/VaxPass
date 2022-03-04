@@ -34,9 +34,6 @@ function VerifyFlow(props: any) {
     const [isStepTwoOpen, setIsStepTwoOpen] = useState(false)
     const [isStepThreeOpen, setIsStepThreeOpen] = useState(false)
 
-    const navigate = useNavigate()
-    const cookies = new Cookies();
-
     useEffect(() => {
         setIsStepOneOpen(isOpen);
     }, [isOpen]);

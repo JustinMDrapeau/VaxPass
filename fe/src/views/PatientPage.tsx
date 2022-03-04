@@ -104,14 +104,19 @@ function PatientPage() {
   const fetchWhitelistClinicAddresses = () => {
     let addresses = Array()
     let promises = Array()
+    console.log("ABOUT TO QUERY ALL ADDRESES")
     for (const url of whitelistLinks){
       if (url.link === "") return;
+      console.log("URL IS: ")
+      console.log(url)
 
       promises.push(
       axios.get(url.link)
         .then(res => addresses.push(...res.data.addresses))
         .catch(err => console.log(err)))
     }
+
+    console.log("ABOUT TO EXECUTE ALL")
 
     Promise.all(promises).then(() => filterTokensUsingWhitelist(addresses))
   }
