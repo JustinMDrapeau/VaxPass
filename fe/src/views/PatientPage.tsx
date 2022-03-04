@@ -10,10 +10,10 @@ import QRCode from 'react-qr-code'
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import WhitelistLinkData from '../types/WhitelistLinkData';
 import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
+import axios from 'axios';
 
 function PatientPage() {
   const { patientInfo } = useParams()
-
   const decryptedPatientInfo: PatientInfo = patientInfo === undefined ?
     {
       firstName: "",
@@ -28,18 +28,45 @@ function PatientPage() {
   const url = JSON.stringify(window.location.origin + "/patient-page/" + Buffer.from(JSON.stringify(decryptedPatientInfo)).toString('base64'));
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
-  const [tokens, setToken] = useState([])
+  const [tokens, setToken] = useState<any[]>(Array())
+  const [allTokens, setAllTokens] = useState<any[]>(Array()) // a cached set of the tokens
+  const [fetched, setFetched] = useState(false)
+
+  const [whitelistAddresses, setWhitelistAddresses] = useState(Array());
+
+  // console.log(cookies.get('firstName'))
+  // console.log(cookies.get('lastName'))
+  // console.log(cookies.get('birthday'))
+  // console.log(cookies.get('walletAddress'))
 
   useEffect(() => {
-    UserDataService.getUserTokens(walletAddress).then((response) => {
-      setToken(response)
-      console.log(response)
-    })
+    getTokens()
+  }, [])
 
-  }, [walletAddress])
+  const getTokens = () => {
+    if (fetched) {
+      console.log("GETTING FROM CACHE")
+      setToken(allTokens)
+      if (whitelistLinks.length >= 1) {
+        fetchWhitelistClinicAddresses()
+      }
+    } else {
+      UserDataService.getUserTokens(walletAddress).then((response) => {
+        console.log("GETTING FROM BLOCKCHAIN")
+        setToken(response)
+        setAllTokens(response)
+        console.log("THESE ARE THE TOKENS")
+        console.log(response)
+        if (whitelistLinks.length >= 1) {
+          fetchWhitelistClinicAddresses()
+        }
+      })
+      setFetched(true) // set to true so that we don't query the blockchain anymore
+    }
+  }
 
   const updateWhiteListLink = (e: any, index: any) => {
-    let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks];
+    let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks]; // an array of whitelist links
     if (isValidLink(e.target.value) === true || e.target.value === "") {
       newWhiteListLinks[index].link = e.target.value;
       newWhiteListLinks[index].errorMessage = "";
@@ -71,6 +98,45 @@ function PatientPage() {
   const handleSubmitFilter = () => {
     // Do something with whitelistLinks (Justin and Russell's part)
     setIsWhitelistFilterOpen(false)
+    getTokens()
+  }
+
+  const fetchWhitelistClinicAddresses = () => {
+    let addresses = Array()
+    let promises = Array()
+    console.log("ABOUT TO QUERY ALL ADDRESES")
+    for (const url of whitelistLinks){
+      if (url.link === "") return;
+      console.log("URL IS: ")
+      console.log(url)
+
+      promises.push(
+      axios.get(url.link)
+        .then(res => addresses.push(...res.data.addresses))
+        .catch(err => console.log(err)))
+    }
+
+    console.log("ABOUT TO EXECUTE ALL")
+
+    Promise.all(promises).then(() => filterTokensUsingWhitelist(addresses))
+  }
+
+  /**
+   * Go through all of the vaccines that the user has and filter using the whitelisted blockchain addresses
+   * @param whitelistAddresses 
+   * @returns 
+   */
+  const filterTokensUsingWhitelist = (whitelistAddresses: any) => {
+    console.log("FILTERING THE TOKENS")
+    console.log("THE WHITELISTS ARE: ")
+    console.log(whitelistAddresses)
+    if (whitelistAddresses.length === 0){
+      console.log("LENGTH IS 0")
+      return;
+    } 
+
+    const newTokens = allTokens.filter(token => whitelistAddresses.includes(token.issuer))
+    setToken(newTokens)
   }
 
   return (
