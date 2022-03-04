@@ -46,7 +46,7 @@ function PatientPage() {
   const getTokens = () => {
     if (fetched) {
       console.log("GETTING FROM CACHE")
-      // setToken(allTokens)
+      setToken(allTokens)
       if (whitelistLinks.length >= 1) {
         fetchWhitelistClinicAddresses()
       }
