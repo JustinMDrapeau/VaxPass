@@ -136,7 +136,7 @@ function VerifyFlow(props: any) {
             cookies.set('birthday', birthday);
             cookies.set('walletAddress', walletAddress);
             // Direct to patient page
-            navigate('/patient-page')
+            navigate('patient-page', { state: whitelistLinks} )
           } else {
             // setAlert(true);
             console.log("Hashes are not equal!")

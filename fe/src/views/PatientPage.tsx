@@ -7,6 +7,9 @@ import UserDataService from '../services/UserDataService';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import WhitelistLinkData from '../types/WhitelistLinkData';
 import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
+import {useLocation} from 'react-router-dom';
+
+import CircularProgress from '@mui/material/CircularProgress';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
 
@@ -14,6 +17,7 @@ function PatientPage() {
   // console.log("Patient Page")
   const cookies = new Cookies();
 
+  const [loading, setLoading] = useState(false);
   const [walletAddress, setWalletAddress] = useState(cookies.get('walletAddress'))
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
@@ -25,12 +29,18 @@ function PatientPage() {
   // console.log(cookies.get('lastName'))
   // console.log(cookies.get('birthday'))
   // console.log(cookies.get('walletAddress'))
+  const location = useLocation();
 
   useEffect(() => {
+    const state = location.state === null ? [{ link: "", errorMessage: ""}] : location.state
+    setLoading(true)
+    setWhitelistLinks(state as WhitelistLinkData[])
     getTokens()
   }, [])
 
   const getTokens = () => {
+    
+    
     UserDataService.getUserTokens(walletAddress).then((response) => {
       setToken(response)
       console.log("THESE ARE THE TOKENS")
@@ -70,11 +80,13 @@ function PatientPage() {
   }
 
   const handleClickFilter = () => {
+    setLoading(false)
     setIsWhitelistFilterOpen(true)
   }
 
   const handleCloseFilter = () => {
     setIsWhitelistFilterOpen(false)
+    setLoading(true)
   }
 
   const handleSubmitFilter = () => {
@@ -82,6 +94,7 @@ function PatientPage() {
     setIsWhitelistFilterOpen(false)
     console.log(whitelistLinks)
     getTokens()
+    setLoading(true)
   }
 
   const fetchWhitelistClinicAddresses = () => {
@@ -160,23 +173,45 @@ function PatientPage() {
               <Grid item xs={4}>
                 <Typography variant='h4'> My Vaccinations </Typography>
               </Grid>
-              <Grid item xs={3} direction="row-reverse">
+              <Grid item xs={4}>
                 <Typography variant='h4'>
                   <Tooltip title="Filter">
                     <IconButton onClick={handleClickFilter}>
-                      <FilterAltIcon fontSize="large" />
+                      <FilterAltIcon style={(whitelistLinks[0].link.length >= 1) ? {color: "black"}: {color:"slategray"}} fontSize="large" />
                     </IconButton>
                   </Tooltip>
                 </Typography>
               </Grid>
             </Grid>
-            <Grid item >
-              <Box display='flex' sx={{ flexWrap: 'wrap' }}>
-                {tokens.map((token, index) => {
-                  return <VaccineCard key={index} token={token} />
-                })}
-              </Box>
+            <Grid
+              container
+              spacing={0}
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Grid item >
+                {loading ? (
+                  <Box display='flex' sx={{ flexWrap: 'wrap' }}>
+                    {tokens.map((token, index) => {
+                      return <VaccineCard key={index} token={token} />
+                    })}
+                  </Box>
+                ) : (
+                  <Box display='flex' sx={{
+                    flexWrap: 'wrap',
+                    alignItems: { xs: 'center', md: 'flex-start' },
+                  }}>
+                    <CircularProgress />
+                  </Box>
+                )
+                }
+
+              </Grid>
+
+
             </Grid>
+
           </Grid>
         </Grid>
       </Box>

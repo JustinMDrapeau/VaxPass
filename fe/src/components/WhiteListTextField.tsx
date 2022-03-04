@@ -40,7 +40,7 @@ function WhiteListTextField(props: any) {
 }
 
 WhiteListTextField.propTypes = {
-    whitelistLinkDetails: PropTypes.object.isRequired,
+    whitelistLinkDetails: PropTypes.array.isRequired,
     handleAdd: PropTypes.func.isRequired,
     handleRemove: PropTypes.func.isRequired,
     updateWhiteListLinksDetails: PropTypes.func.isRequired
