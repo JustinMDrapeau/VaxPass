@@ -12,8 +12,8 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage isDialogOpen={false} />} />
           <Route path="/clinic-sign-up" element={<ClinicSignUpPage />} />
-          <Route path="/patient-page" element={<PatientPage/>} />
-          <Route path="/clinic-main-page" element={<ClinicMainPage/>} />
+          <Route path="/patient-page/:patientInfo" element={<PatientPage />} />
+          <Route path="/clinic-main-page" element={<ClinicMainPage />} />
         </Routes>
       </Router>
     </div>

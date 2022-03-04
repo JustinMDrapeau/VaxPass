@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isValidLink, isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
-import PatientInfo from '../types/PatientInfo';
 import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
 import VerifyFlowSelector from "../components/VerifyFlowSelector"
 import VerifyFlowQrScan from "../components/VerifyFlowQrScan"
 import VerifyFlowSubmitWalletAddress from "../components/VerifyFlowSubmitWalletAddress"
 import WhitelistLinkData from '../types/WhitelistLinkData';
-import Cookies from 'universal-cookie';
 import { useNavigate } from 'react-router-dom';
 
 function VerifyFlow(props: any) {
-    const cookies = new Cookies();
     const navigate = useNavigate();
 
     const { isOpen, handleClose } = props
@@ -114,7 +111,14 @@ function VerifyFlow(props: any) {
     const handleSubmitStepThree = () => {
         setIsStepThreeOpen(false)
         handleClose()
-        // Navigate to user page
+
+        const patientInfo = {
+            firstName,
+            lastName,
+            birthday,
+            walletAddress
+        }
+        navigate( `/patient-page/${Buffer.from(JSON.stringify(patientInfo)).toString('base64')}`)
     }
 
     const handleBackStepTwo = () => {
@@ -158,17 +162,12 @@ function VerifyFlow(props: any) {
     const handleScan = (data: any) => {
         if (data) {
             // Data represents the data extracted from the QR code
-            const patientInfo: PatientInfo = JSON.parse(data)
-            cookies.set('firstName', patientInfo.firstName, { path: 'patient-page' });
-            cookies.set('lastName', patientInfo.lastName, { path: 'patient-page' });
-            cookies.set('birthday', patientInfo.birthday, { path: 'patient-page' });
-            cookies.set('walletAddress', patientInfo.walletAddress, { path: 'patient-page' });
+            const url = JSON.parse(data).replace(window.location.origin,"")
 
             setIsCameraOpen(false)
             handleClose()
 
-            //navigate to user page
-            navigate('/patient-page')
+            navigate(url)
         }
     }
 

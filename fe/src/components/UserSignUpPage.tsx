@@ -4,11 +4,13 @@ import { isValidName } from "../helpers/inputValidationHelpers";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import UserInformationFields from './UserInformationFields'
 import ConfirmUserInformationPopup from './ConfirmUserInformationPopup'
+import PatientSignUpInfo from './PatientSignUpInfo'
 
 function UserSignUpPage(props: any){
   const today = new Date()
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [birthday, setBirthday] = useState(today);
@@ -42,9 +44,14 @@ function UserSignUpPage(props: any){
     props.onClose()
   };
 
-  const handleDialogClose = () => {
+  const handleConfirmationDialogClose = () => {
+    setIsInfoOpen(true)
+    setIsConfirmationOpen(false)
+  }
+
+  const handleInfoDialogClose = () => {
     props.onClose()
-    setIsOpen(false)
+    setIsInfoOpen(false)
   }
 
   const noMissingInformation = () => {
@@ -64,7 +71,7 @@ function UserSignUpPage(props: any){
   const handleSubmit = () => {
     if (noMissingInformation() === true) {
       // Open the information confirmation dialog
-      setIsOpen(true)
+      setIsConfirmationOpen(true)
     }
   }
 
@@ -93,18 +100,28 @@ function UserSignUpPage(props: any){
         firstName={firstName}
         lastName={lastName}
         birthday={birthday}
-        isOpen={isOpen}
-        onClose={handleDialogClose}
+        isOpen={isConfirmationOpen}
+        onClose={handleConfirmationDialogClose}
         setBirthday={props.setBirthday}
         setFirstName={props.setFirstName}
         setLastName={props.setLastName}
         setWalletAddress={props.setWalletAddress}
+      />
+
+      <PatientSignUpInfo
+        firstName={firstName}
+        lastName={lastName}
+        birthday={birthday}
+        walletAddress={props.walletAddress}
+        isOpen={isInfoOpen}
+        onClose={handleInfoDialogClose}
       />
     </Dialog>
   );
 }
 
 UserSignUpPage.propTypes = {
+  walletAddress: PropTypes.string.isRequired,
   setBirthday: PropTypes.func.isRequired,
   setFirstName: PropTypes.func.isRequired,
   setLastName: PropTypes.func.isRequired,

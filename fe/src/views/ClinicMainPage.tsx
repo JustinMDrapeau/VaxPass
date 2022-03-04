@@ -45,7 +45,7 @@ export default function ClinicMainPage(props: any) {
   }, [clinicPublic]);
 
   const computeHash = () => {
-    const hashValue = `${firstName}-${lastName}-${birthday
+    const hashValue = `${firstName.toUpperCase()}-${lastName.toUpperCase()}-${birthday
       ?.toISOString()
       .slice(0, 10)}`;
     return sha256(hashValue);
@@ -69,6 +69,7 @@ export default function ClinicMainPage(props: any) {
   };
 
   const handleClose = () => {
+    // Open qr code dialog
     setSignUpPatientOpen(false);
   }
 
@@ -247,6 +248,7 @@ export default function ClinicMainPage(props: any) {
                     Signup Patient
                   </Button>
                   <UserSignUpPage
+                    walletAddress={walletAddress}
                     setBirthday={setBirthday}
                     setFirstName={setFirstName}
                     setLastName={setLastName}

@@ -15,7 +15,7 @@ function WhiteListTextField(props: any) {
                 </IconButton>
             </InputAdornment>)
             : (<InputAdornment position="end">
-                <IconButton edge="end" color="default" onClick={() => handleRemove(value)}>
+                <IconButton edge="end" color="default" onClick={() => handleRemove(index)}>
                     <RemoveCircleOutlineIcon fontSize="small" />
                 </IconButton>
             </InputAdornment>)
