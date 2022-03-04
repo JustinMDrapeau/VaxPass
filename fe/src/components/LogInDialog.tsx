@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Alert, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
+import { computeHash } from "../helpers/hashingHelper"
 import UserInformationFields from '../components/UserInformationFields'
 import UserDataService from '../services/UserDataService';
 import Wallet from 'ethereumjs-wallet'
-import {sha256} from 'js-sha256';
 import Cookies from 'universal-cookie';
 
 function LogInDialog(props: any) {
@@ -85,7 +85,7 @@ function LogInDialog(props: any) {
         noMissingInfo = false
       }
     }
-    if (walletAddress === ""){
+    if (walletAddress === "") {
       setWalletAddressErrorMessage("Please enter a valid address");
       noMissingInfo = false
     }
@@ -94,29 +94,25 @@ function LogInDialog(props: any) {
 
   }
 
-  const computeHash = () => {
-    const hashValue = `${firstName}-${lastName}-${birthday
-      ?.toISOString()
-      .slice(0, 10)}`;
-    return sha256(hashValue);
-  };
-
   const handleSubmit = () => {
     if (isUser === true && userNoMissingInformation() === true) {
       // Call smart contract method to retrieve patientHash from the walletIdToPatientHash map
-        UserDataService.getPatientHash(walletAddress).then((res: any) => {
+      UserDataService.getPatientHash(walletAddress).then((res: any) => {
         console.log(res);
         // Check if calculated hash matches stored hash
         console.log("Checking hash...");
-        if (res === computeHash()) {
+        if (res === computeHash(firstName, lastName, birthday)) {
           console.log("Hashes are equal");
-          // Set cookies
-          cookies.set('firstName', firstName);
-          cookies.set('lastName', lastName);
-          cookies.set('birthday', birthday);
-          cookies.set('walletAddress', walletAddress);
+
+          const patientInfo = {
+            firstName,
+            lastName,
+            birthday,
+            walletAddress
+          }
+
           // Direct to patient page
-          navigate('/patient-page')
+          navigate(`/patient-page/${Buffer.from(JSON.stringify(patientInfo)).toString('base64')}`)
         } else {
           setAlert(true);
           console.log("Hashes are not equal!")
@@ -124,7 +120,7 @@ function LogInDialog(props: any) {
       }).catch((err: any) => console.log(err))
     } else if (isUser === false) {
       if (isValidWalletAddress(walletAddress)) {
-        if (Wallet.fromPrivateKey(Buffer.from(privateKey, 'hex')).getAddress().toString('hex') === walletAddress.toLowerCase().substring(2)){
+        if (Wallet.fromPrivateKey(Buffer.from(privateKey, 'hex')).getAddress().toString('hex') === walletAddress.toLowerCase().substring(2)) {
           console.log("Logged in")
           // Set cookies
           cookies.set('clinicPublic', walletAddress);
@@ -180,7 +176,7 @@ function LogInDialog(props: any) {
                 label="Private Key"
                 type="password"
                 variant="filled"
-                onChange={(e) => {setPrivateKey(e.target.value)}}
+                onChange={(e) => { setPrivateKey(e.target.value) }}
               />
               <Button variant="text" sx={{ textTransform: 'capitalize', paddingLeft: 0.2 }} onClick={handleSignUp}>Don't have an account? </Button>
             </>

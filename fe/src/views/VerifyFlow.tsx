@@ -6,8 +6,11 @@ import VerifyFlowSelector from "../components/VerifyFlowSelector"
 import VerifyFlowQrScan from "../components/VerifyFlowQrScan"
 import VerifyFlowSubmitWalletAddress from "../components/VerifyFlowSubmitWalletAddress"
 import WhitelistLinkData from '../types/WhitelistLinkData';
+import { useNavigate } from 'react-router-dom';
 
 function VerifyFlow(props: any) {
+    const navigate = useNavigate();
+
     const { isOpen, handleClose } = props
 
     const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
@@ -21,7 +24,6 @@ function VerifyFlow(props: any) {
     const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
     const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
     const [walletAddressErrorMessage, setWalletAddressErrorMessage] = useState("")
-
 
     const [isQR, setIsQR] = useState(false)
 
@@ -85,8 +87,8 @@ function VerifyFlow(props: any) {
                 }
                 /* @ts-ignore */
                 setWhitelistLinks(noDupesWhitelistLinks)
-            } 
-            
+            }
+
             setIsStepTwoOpen(true)
             setIsStepOneOpen(false)
         }
@@ -109,7 +111,14 @@ function VerifyFlow(props: any) {
     const handleSubmitStepThree = () => {
         setIsStepThreeOpen(false)
         handleClose()
-        // Navigate to user page
+
+        const patientInfo = {
+            firstName,
+            lastName,
+            birthday,
+            walletAddress
+        }
+        navigate( `/patient-page/${Buffer.from(JSON.stringify(patientInfo)).toString('base64')}`)
     }
 
     const handleBackStepTwo = () => {
@@ -153,9 +162,12 @@ function VerifyFlow(props: any) {
     const handleScan = (data: any) => {
         if (data) {
             // Data represents the data extracted from the QR code
+            const url = JSON.parse(data).replace(window.location.origin,"")
+
             setIsCameraOpen(false)
             handleClose()
-            //navigate to user page
+
+            navigate(url)
         }
     }
 

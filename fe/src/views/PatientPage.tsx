@@ -3,31 +3,39 @@ import { AppBar, Box, Card, Container, Grid, IconButton, Stack, Toolbar, Typogra
 import { isValidLink } from "../helpers/inputValidationHelpers";
 import VaccineCard from './VaccineCard';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
+import { useParams } from 'react-router-dom'
 import UserDataService from '../services/UserDataService';
+import PatientInfo from '../types/PatientInfo';
+import QRCode from 'react-qr-code'
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import WhitelistLinkData from '../types/WhitelistLinkData';
 import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
-import Cookies from 'universal-cookie';
 
 function PatientPage() {
-  console.log("Patient Page")
-  const cookies = new Cookies();
+  const { patientInfo } = useParams()
 
-  const walletAddress = cookies.get('walletAddress')
+  const decryptedPatientInfo: PatientInfo = patientInfo === undefined ?
+    {
+      firstName: "",
+      lastName: "",
+      birthday: "",
+      walletAddress: ""
+    } :
+    JSON.parse(Buffer.from(patientInfo, 'base64').toString('ascii')) as PatientInfo;
+
+  const { firstName, lastName, birthday, walletAddress } = decryptedPatientInfo
+
+  const url = JSON.stringify(window.location.origin + "/patient-page/" + Buffer.from(JSON.stringify(decryptedPatientInfo)).toString('base64'));
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
   const [tokens, setToken] = useState([])
-
-  console.log(cookies.get('firstName'))
-  console.log(cookies.get('lastName'))
-  console.log(cookies.get('birthday'))
-  console.log(cookies.get('walletAddress'))
 
   useEffect(() => {
     UserDataService.getUserTokens(walletAddress).then((response) => {
       setToken(response)
       console.log(response)
     })
+
   }, [walletAddress])
 
   const updateWhiteListLink = (e: any, index: any) => {
@@ -88,14 +96,15 @@ function PatientPage() {
             <Container sx={{ pt: '36px' }} style={{ height: '100%' }}>
               <Card style={{ padding: '24px', height: '100%' }}>
                 <Stack alignItems="center" spacing={2}>
+                  <QRCode value={url} />
                   <Typography variant="h2" align="center" >
-                    {cookies.get('firstName')} {cookies.get('lastName')}
+                    {firstName.charAt(0).toUpperCase() + firstName.toLowerCase().slice(1)} {lastName.charAt(0).toUpperCase() + lastName.toLowerCase().slice(1)}
                   </Typography>
                   <Typography variant="h6" align="center" >
-                    {cookies.get('walletAddress')}
+                    {walletAddress}
                   </Typography>
                   <Typography variant="h6" align="center" >
-                    {cookies.get('birthday')}
+                    {birthday}
                   </Typography>
                 </Stack>
               </Card>
