@@ -32,7 +32,6 @@ function PatientPage() {
   const url = JSON.stringify(window.location.origin + "/patient-page/" + Buffer.from(JSON.stringify(decryptedPatientInfo)).toString('base64'));
 
   const [loading, setLoading] = useState(false);
-  const [walletAddress, setWalletAddress] = useState(cookies.get('walletAddress'))
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
   const [tokens, setToken] = useState<any[]>(Array())
