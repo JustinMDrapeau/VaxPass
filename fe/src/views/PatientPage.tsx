@@ -200,7 +200,7 @@ function PatientPage() {
           <Grid item xs={isMobile ? undefined : 8}>
             <Grid container justifyContent="space-between" sx={{ pt: '36px' }}>
               <Grid pl={isMobile ? 3 : 0} item xs={4}>
-                <Typography variant='h4'> Vaccinations </Typography>
+                <Typography variant='h4' textAlign={"left"}> Vaccinations </Typography>
               </Grid>
               <Grid item xs={4}>
                 <Typography variant='h4'>
