@@ -226,7 +226,7 @@ function PatientPage() {
                     })}
                   </Box>
                 ) : (
-                  <Box display='flex' sx={{
+                  <Box display='flex' justifyContent={"center"} sx={{
                     flexWrap: 'wrap',
                     alignItems: { xs: 'center', md: 'flex-start' },
                   }}>
