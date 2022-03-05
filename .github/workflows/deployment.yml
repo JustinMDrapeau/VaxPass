@@ -23,7 +23,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build Front End Distribution
-        run: npm run build
+        run: CI=false npm run build
       - name: Deploy Front End Build to S3 Bucket
         run: aws s3 sync ./build/ s3://vaxpass-platform --delete
       - name: Invalidate CloudFront CDN Cache
