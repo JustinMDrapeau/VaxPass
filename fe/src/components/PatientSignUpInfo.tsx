@@ -36,7 +36,7 @@ function PatientSignUpInfo(props: any) {
 PatientSignUpInfo.propTypes = {
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
-    birthday: PropTypes.instanceOf(Date).isRequired,
+    birthday: PropTypes.instanceOf(Date),
     walletAddress: PropTypes.string.isRequired,
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired

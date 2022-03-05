@@ -71,7 +71,7 @@ ConfirmUserInformationPopup.propTypes = {
     setWalletAddress: PropTypes.func.isRequired,
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
-    birthday: PropTypes.instanceOf(Date).isRequired,
+    birthday: PropTypes.instanceOf(Date),
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired
 };
