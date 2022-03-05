@@ -27,7 +27,7 @@ function VerifyFlowSubmitWalletAddress(props: any) {
             <DialogContent sx={{ paddingBottom: 0, marginTop: 2 }}>
                 <Stack spacing={1}>
                     {/* @ts-ignore */}
-                    <Typography variant="h7" paddingBottom="15px">Enter the patient's informations:</Typography>
+                    <Typography variant="h7" paddingBottom="15px">Enter the patient's information:</Typography>
                     <UserInformationFields
                         handleFirstNameChange={handleFirstNameChange}
                         handleLastNameChange={handleLastNameChange}

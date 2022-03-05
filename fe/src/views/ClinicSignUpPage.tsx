@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { isValidAddress, isValidEmail, isValidName, isValidPostalCode } from "../helpers/inputValidationHelpers";
+import { isValidAddress, isValidEmail, isValidName, isValidPostalCode, isValidClinicName } from "../helpers/inputValidationHelpers";
 import { Alert, Box, Button, Card, Checkbox, Container, FormGroup, FormControlLabel, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { CountryDropdown } from 'react-country-region-selector';
@@ -12,7 +12,7 @@ import ClinicAccountCreationPopup from '../components/ClinicAccountCreationPopup
 function ClinicSignUpPage() {
   const [clinicName, setClinicName] = useState("");
   const [address, setAddress] = useState("");
-  const [zipCode, setZipCode] = useState("");
+  const [postCode, setpostCode] = useState("");
   const [city, setCity] = useState("");
   const [email, setEmail] = useState("");
   const [country, setCountry] = useState("");
@@ -23,7 +23,7 @@ function ClinicSignUpPage() {
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [clinicNameErrorMessage, setClinicNameErrorMessage] = useState("");
   const [addressErrorMessage, setAddressErrorMessage] = useState("");
-  const [zipCodeErrorMessage, setZipCodeErrorMessage] = useState("");
+  const [postCodeErrorMessage, setpostCodeErrorMessage] = useState("");
   const [cityErrorMessage, setCityErrorMessage] = useState("");
   const [countryErrorMessage, setCountryErrorMessage] = useState("");
   const [publicAddressErrorMessage, setPublicAddressErrorMessage] = useState("");
@@ -39,7 +39,7 @@ function ClinicSignUpPage() {
   const navigate = useNavigate();
 
   const handleClinicNameChange = (e: any) => {
-    if (isValidName(e.target.value) === true) {
+    if (isValidClinicName(e.target.value) === true) {
       setClinicName(e.target.value)
       setClinicNameErrorMessage("")
     } else {
@@ -56,13 +56,13 @@ function ClinicSignUpPage() {
     }
   }
 
-  const handleZipCodeChange = (e: any) => {
+  const handlepostCodeChange = (e: any) => {
     // Only checking for postal code since only allowing Canada for now
     if (isValidPostalCode(e.target.value) === true) {
-      setZipCode(e.target.value)
-      setZipCodeErrorMessage("")
+      setpostCode(e.target.value)
+      setpostCodeErrorMessage("")
     } else {
-      setZipCodeErrorMessage("Please enter a valid zip code")
+      setpostCodeErrorMessage("Please enter a valid post code")
     }
   }
 
@@ -108,8 +108,8 @@ function ClinicSignUpPage() {
       setEmailErrorMessage("Please enter an email")
     } else if (address === "") {
       setAddressErrorMessage("Please enter an address")
-    } else if (zipCode === "") {
-      setZipCodeErrorMessage("Please enter a zip code")
+    } else if (postCode === "") {
+      setpostCodeErrorMessage("Please enter a postcode")
     } else if (city === "") {
       setCityErrorMessage("Please enter a city")
     } else if (walletExists && publicAddress === "") {
@@ -126,7 +126,7 @@ function ClinicSignUpPage() {
   }
 
   const concatAddress = () => {
-    return address.trim()+", "+city.trim()+" "+zipCode
+    return address.trim()+", "+city.trim()+" "+postCode
   }
 
   const handleSubmit = async() => {
@@ -197,13 +197,13 @@ return (
               <Stack direction="row" justifyContent="center" mt={2} spacing={2}>
                 <TextField
                   required
-                  error={zipCodeErrorMessage !== ""}
-                  helperText={zipCodeErrorMessage}
-                  id="zip-code-field"
-                  label="Zip Code"
+                  error={postCodeErrorMessage !== ""}
+                  helperText={postCodeErrorMessage}
+                  id="post-code-field"
+                  label="Post Code"
                   type="text"
                   variant="filled"
-                  onChange={handleZipCodeChange}
+                  onChange={handlepostCodeChange}
                 />
                 <TextField
                   required

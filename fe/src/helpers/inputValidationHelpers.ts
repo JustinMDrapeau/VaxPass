@@ -6,6 +6,14 @@ export function isValidEmail(email: string) {
   && email !== "";
 };
 
+export function isValidClinicName(name: string) {
+  const regex = new RegExp(/^\w+(\s\w+)*/i)
+
+  // Non empty && only letters
+  return name !== "" &&
+    regex.test(name.toLowerCase())
+};
+
 export function isValidName(name: string) {
   const regex = new RegExp(/^[a-zàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð][a-zàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð,.'-]+$/u)
 
