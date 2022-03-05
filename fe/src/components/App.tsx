@@ -4,7 +4,7 @@ import LandingPage from '../views/LandingPage';
 import ClinicMainPage from "../views/ClinicMainPage";
 import './App.css';
 import PatientPage from '../views/PatientPage';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({ });
 function App() {

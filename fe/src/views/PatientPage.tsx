@@ -35,11 +35,9 @@ function PatientPage() {
   const [loading, setLoading] = useState(false);
   const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
-  const [tokens, setToken] = useState<any[]>(Array())
-  const [allTokens, setAllTokens] = useState<any[]>(Array()) // a cached set of the tokens
+  const [tokens, setToken] = useState<any[]>([])
+  const [allTokens, setAllTokens] = useState<any[]>([]) // a cached set of the tokens
   const [fetched, setFetched] = useState(false)
-
-  const [whitelistAddresses, setWhitelistAddresses] = useState(Array());
 
   const formattedBirthday = moment(birthday).format('MMMM Do YYYY')
 
@@ -79,6 +77,11 @@ function PatientPage() {
       setFetched(true) // set to true so that we don't query the blockchain anymore
     }
   }
+
+
+  useEffect(() => {
+    getTokens()
+  }, [])
 
   const updateWhiteListLink = (e: any, index: any) => {
     let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks]; // an array of whitelist links
@@ -120,8 +123,8 @@ function PatientPage() {
   }
 
   const fetchWhitelistClinicAddresses = () => {
-    let addresses = Array()
-    let promises = Array()
+    let addresses : any = []
+    let promises : any = []
     console.log("ABOUT TO QUERY ALL ADDRESES")
     for (const url of whitelistLinks){
       if (url.link === "") return;
@@ -158,7 +161,7 @@ function PatientPage() {
   }
 
   return (
-    <div className="PatientPage" style={{ backgroundColor: '#D3D3D3', height: "100vh", width: "100vw" }} >
+    <div className="PatientPage" style={{ height: "100vh", width: "100vw" }} >
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
@@ -175,8 +178,8 @@ function PatientPage() {
         </AppBar>
       </Box>
       <Box style={{ height: '100%' }}>
-        <Grid container spacing={2} style={{ height: '80%' }}>
-          <Grid item xs={4} style={{ height: '100%' }}>
+        <Grid container spacing={2} style={{display: 'flex', flexDirection: isMobile ? 'column' : 'row'}}>
+          <Grid item xs={isMobile ? undefined : 4} style={{ height: '100%' }}>
             <Container sx={{ pt: '36px' }} style={{ height: '100%' }}>
               <Card style={{ padding: '24px', height: '100%' }}>
                 <Stack alignItems="center" spacing={2}>
@@ -194,10 +197,10 @@ function PatientPage() {
               </Card>
             </Container>
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={isMobile ? undefined : 8}>
             <Grid container justifyContent="space-between" sx={{ pt: '36px' }}>
-              <Grid item xs={4}>
-                <Typography variant='h4'> My Vaccinations </Typography>
+              <Grid pl={isMobile ? 3 : 0} item xs={4}>
+                <Typography variant='h4'> Vaccinations </Typography>
               </Grid>
               <Grid item xs={4}>
                 <Typography variant='h4'>
