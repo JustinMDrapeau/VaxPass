@@ -29,6 +29,9 @@ class ClinicDataService {
     return ContractService.getContract().methods.walletIdToClinic(clinicPublicKey).call();
   }
 
+  testFn() {
+    return 3;
+  }
   async createAccount(name: string, address: string, email: string, publicAddress: string, privateAddress: string) {
 
     let transactionPublicAddress, transactionPrivateAddress;
