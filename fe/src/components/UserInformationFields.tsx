@@ -36,6 +36,7 @@ function UserInformationFields(props : any) {
                     value={birthday}
                     onChange={handleBirthdayChange}
                     renderInput={(params) => <TextField {...params} />}
+                    disableFuture={true}
                 />
             </LocalizationProvider>
         </Stack>

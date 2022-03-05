@@ -53,9 +53,10 @@ function UserSignUpPage(props: any){
   }
 
   const handleClose = () => {
-    if (noMissingInformation() === true) {
-      props.onClose()
-    }
+    setFirstName("")
+    setLastName("")
+    setBirthday(new Date())
+    props.onClose()
   };
 
   return (

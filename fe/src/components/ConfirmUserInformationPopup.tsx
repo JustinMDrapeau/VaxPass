@@ -57,7 +57,7 @@ function ConfirmUserInformationPopup(props: any) {
 
             </DialogContent>
             <DialogActions sx={{ paddingRight: 3, paddingBottom: 2 }}>
-                <Button onClick={handleClose}>CANCEL</Button>
+                <Button disabled={loading} onClick={handleClose}>CANCEL</Button>
                 <LoadingButton loading={loading} variant="contained" onClick={handleSubmit}>CONFIRM</LoadingButton>
             </DialogActions>
         </Dialog>

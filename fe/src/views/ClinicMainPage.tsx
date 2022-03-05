@@ -225,15 +225,15 @@ export default function ClinicMainPage(props: any) {
                     onChange={(e) => setLastName(e.target.value)}
                   />
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
-
-                          <DesktopDatePicker
-          label="Date of Birth"
-          inputFormat="MM/dd/yyyy"
-          value={birthday}
-          onChange={setBirthday}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        </LocalizationProvider>
+                    <DesktopDatePicker
+                      label="Date of Birth"
+                      inputFormat="MM/dd/yyyy"
+                      value={birthday}
+                      onChange={setBirthday}
+                      renderInput={(params) => <TextField {...params} />}
+                      disableFuture={true}
+                    />
+                  </LocalizationProvider>
 
                   <TextField
                     required
@@ -328,6 +328,7 @@ export default function ClinicMainPage(props: any) {
                       value={dateAdministered}
                       renderInput={(params) => <TextField {...params} />}
                       disabled={vaccineDisabled}
+                      disableFuture={true}
                     />
                   </LocalizationProvider>
                   <Button
