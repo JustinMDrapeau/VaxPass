@@ -7,7 +7,7 @@ import { computeHash } from "../helpers/hashingHelper"
 import Cookies from 'universal-cookie';
 
 function ConfirmUserInformationPopup(props: any) {
-    const { firstName, lastName, birthday, isOpen, onClose } = props;
+    const { firstName, lastName, birthday, isOpen, onClose, onSubmit } = props;
     const [loading, setLoading] = useState(false);
     const cookies = new Cookies();
 
@@ -35,7 +35,7 @@ function ConfirmUserInformationPopup(props: any) {
                 props.setLastName(lastName)
                 props.setWalletAddress(patientPublic);
                 setLoading(false);
-                handleClose();
+                onSubmit();
             })
     };
 
@@ -73,7 +73,8 @@ ConfirmUserInformationPopup.propTypes = {
     lastName: PropTypes.string.isRequired,
     birthday: PropTypes.instanceOf(Date),
     isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
 };
 
 export default ConfirmUserInformationPopup;

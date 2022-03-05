@@ -13,7 +13,6 @@ import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkSt
 import {useLocation} from 'react-router-dom';
 
 import CircularProgress from '@mui/material/CircularProgress';
-import Cookies from 'universal-cookie';
 import axios from 'axios';
 import moment from 'moment';
 
