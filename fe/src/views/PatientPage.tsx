@@ -216,12 +216,11 @@ function PatientPage() {
               container
               spacing={0}
               direction="column"
-              alignItems="center"
               justifyContent="center"
             >
               <Grid item >
                 {loading ? (
-                  <Box display='flex' sx={{ flexWrap: 'wrap' }}>
+                  <Box display='flex' justifyContent={isMobile ? "center" : "inherit"} sx={{ flexWrap: 'wrap' }}>
                     {tokens.map((token, index) => {
                       return <VaccineCard key={index} token={token} />
                     })}
