@@ -7,8 +7,6 @@ import VerifyFlowQrScan from "../components/VerifyFlowQrScan"
 import VerifyFlowSubmitWalletAddress from "../components/VerifyFlowSubmitWalletAddress"
 import WhitelistLinkData from '../types/WhitelistLinkData';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'universal-cookie';
-import UserDataService from '../services/UserDataService';
 import {sha256} from 'js-sha256';
 
 function VerifyFlow(props: any) {

@@ -9,12 +9,17 @@ import ClinicDataService from "../services/ClinicDataService";
 import UserDataService from "../services/UserDataService";
 import Cookies from 'universal-cookie';
 import UserSignUpPage from "../components/UserSignUpPage";
+import ConfirmUserInformationPopup from '../components/ConfirmUserInformationPopup'
+import PatientSignUpInfo from '../components/PatientSignUpInfo'
 
 export default function ClinicMainPage(props: any) {
   const cookies = new Cookies();
 
   const [birthday, setBirthday] = React.useState<Date | null>(new Date());
   const [dateAdministered, setDateAdministered] = React.useState<Date | null>(new Date());
+
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   const [clinicName, setClinicName] = useState("");
   const [clinicPhysicalAddress, setClinicPhysicalAddress] = useState("");
@@ -62,8 +67,22 @@ export default function ClinicMainPage(props: any) {
   };
 
   const handleClose = () => {
-    // Open qr code dialog
-    setSignUpPatientOpen(false);
+      setSignUpPatientOpen(false);
+  }
+
+  const handleConfirmationDialogClose = () => {
+    setSignUpPatientOpen(true);
+    setIsConfirmationOpen(false)
+  }
+
+  const handleInfoDialogClose = () => {
+    setIsInfoOpen(false)
+  }
+
+  const handleSignUpSubmit = () => {
+      // Open the information confirmation dialog
+      setSignUpPatientOpen(false);
+      setIsConfirmationOpen(true)
   }
 
   const handleAssign = () => {
@@ -242,12 +261,16 @@ export default function ClinicMainPage(props: any) {
                   </Button>
                   <UserSignUpPage
                     walletAddress={walletAddress}
+                    birthday={birthday}
+                    firstName={firstName}
+                    lastName={lastName}
                     setBirthday={setBirthday}
                     setFirstName={setFirstName}
                     setLastName={setLastName}
                     setWalletAddress={setWalletAddress}
                     onClose={handleClose}
                     isOpen={signUpPatientOpen}
+                    onSubmit={handleSignUpSubmit}
                   />
                 </Box>
 
@@ -329,6 +352,27 @@ export default function ClinicMainPage(props: any) {
           </Grid>
         </Grid>
       </Box>
+
+      <ConfirmUserInformationPopup
+        firstName={firstName}
+        lastName={lastName}
+        birthday={birthday}
+        isOpen={isConfirmationOpen}
+        onClose={handleConfirmationDialogClose}
+        setBirthday={props.setBirthday}
+        setFirstName={props.setFirstName}
+        setLastName={props.setLastName}
+        setWalletAddress={props.setWalletAddress}
+      />
+
+      <PatientSignUpInfo
+        firstName={firstName}
+        lastName={lastName}
+        birthday={birthday}
+        walletAddress={props.walletAddress}
+        isOpen={isInfoOpen}
+        onClose={handleInfoDialogClose}
+      />
     </div>
   );
 }

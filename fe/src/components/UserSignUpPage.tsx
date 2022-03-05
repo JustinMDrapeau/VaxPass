@@ -2,18 +2,10 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { isValidName } from "../helpers/inputValidationHelpers";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
-import UserInformationFields from './UserInformationFields'
-import ConfirmUserInformationPopup from './ConfirmUserInformationPopup'
-import PatientSignUpInfo from './PatientSignUpInfo'
+import UserInformationFields from './UserInformationFields';
 
 function UserSignUpPage(props: any){
-  const today = new Date()
-
-  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [birthday, setBirthday] = useState(today);
+  const { onSubmit, setFirstName, setLastName, setBirthday, birthday, firstName, lastName } = props
 
   const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
   const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
@@ -36,24 +28,6 @@ function UserSignUpPage(props: any){
     }
   }
 
-  const handleBirthdayChange = (e: any) => {
-    setBirthday(e)
-  }
-
-  const handleClose = () => {
-    props.onClose()
-  };
-
-  const handleConfirmationDialogClose = () => {
-    setIsInfoOpen(true)
-    setIsConfirmationOpen(false)
-  }
-
-  const handleInfoDialogClose = () => {
-    props.onClose()
-    setIsInfoOpen(false)
-  }
-
   const noMissingInformation = () => {
     let noMissingInfo = true;
     if (firstName === "") {
@@ -68,12 +42,21 @@ function UserSignUpPage(props: any){
     return noMissingInfo
   }
 
-  const handleSubmit = () => {
+  const handleOnSubmit = () => {
     if (noMissingInformation() === true) {
-      // Open the information confirmation dialog
-      setIsConfirmationOpen(true)
+      onSubmit()
     }
   }
+
+  const handleBirthdayChange = (e: any) => {
+    setBirthday(e)
+  }
+
+  const handleClose = () => {
+    if (noMissingInformation() === true) {
+      props.onClose()
+    }
+  };
 
   return (
     <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={props.isOpen} >
@@ -93,40 +76,24 @@ function UserSignUpPage(props: any){
       </DialogContent>
       <DialogActions sx={{ paddingRight: 3, paddingBottom: 2 }}>
         <Button onClick={handleClose}>CANCEL</Button>
-        <Button variant="contained" onClick={handleSubmit}>SIGNUP</Button>
+        <Button variant="contained" onClick={handleOnSubmit}>SIGNUP</Button>
       </DialogActions>
 
-      <ConfirmUserInformationPopup
-        firstName={firstName}
-        lastName={lastName}
-        birthday={birthday}
-        isOpen={isConfirmationOpen}
-        onClose={handleConfirmationDialogClose}
-        setBirthday={props.setBirthday}
-        setFirstName={props.setFirstName}
-        setLastName={props.setLastName}
-        setWalletAddress={props.setWalletAddress}
-      />
-
-      <PatientSignUpInfo
-        firstName={firstName}
-        lastName={lastName}
-        birthday={birthday}
-        walletAddress={props.walletAddress}
-        isOpen={isInfoOpen}
-        onClose={handleInfoDialogClose}
-      />
     </Dialog>
   );
 }
 
 UserSignUpPage.propTypes = {
   walletAddress: PropTypes.string.isRequired,
+  birthday: PropTypes.instanceOf(Date),
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
   setBirthday: PropTypes.func.isRequired,
   setFirstName: PropTypes.func.isRequired,
   setLastName: PropTypes.func.isRequired,
   setWalletAddress: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired
 };
 
