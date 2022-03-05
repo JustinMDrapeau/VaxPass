@@ -7,7 +7,7 @@ export function isValidEmail(email: string) {
 };
 
 export function isValidClinicName(name: string) {
-  const regex = new RegExp(/^[a-z\u00C0-\u02AB'´`]+\.?\s([a-z\u00C0-\u02AB'´`]+\.?\s?)+$/i)
+  const regex = new RegExp(/^\w+(\s\w+)*/i)
 
   // Non empty && only letters
   return name !== "" &&
