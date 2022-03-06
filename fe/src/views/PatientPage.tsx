@@ -5,8 +5,10 @@ import { useLocation } from 'react-router-dom';
 import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, Tooltip, useMediaQuery } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CircularProgress from '@mui/material/CircularProgress';
+
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
 import QRCode from 'react-qr-code'
+
 import axios from 'axios';
 import moment from 'moment';
 
@@ -165,7 +167,7 @@ function PatientPage() {
   }
 
   return (
-    <div className="PatientPage" style={{ height: "100vh", width: "100vw" }} >
+    <div className="PatientPage" style={{ width: "100vw" }} >
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
