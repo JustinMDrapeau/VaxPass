@@ -266,10 +266,7 @@ export default function ClinicMainPage(props: any) {
                     onChange={(e) => setLastName(e.target.value)}
                     disabled={patientDisabled}
                   />
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DesktopDatePicker
                       label="Date of Birth"
@@ -277,11 +274,8 @@ export default function ClinicMainPage(props: any) {
                       value={birthday}
                       onChange={setBirthday}
                       renderInput={(params) => <TextField {...params} />}
-<<<<<<< Updated upstream
                       disableFuture={true}
-=======
                       disabled={patientDisabled}
->>>>>>> Stashed changes
                     />
                   </LocalizationProvider>
 
