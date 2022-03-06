@@ -1,21 +1,28 @@
 import { useEffect, useState } from 'react';
+<<<<<<< Updated upstream
 import { AppBar, Box, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, Tooltip, useMediaQuery } from '@mui/material';
 import { isValidLink } from "../helpers/inputValidationHelpers";
 import VaccineCard from './VaccineCard';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
+=======
+import { useNavigate } from 'react-router-dom';
+>>>>>>> Stashed changes
 import { useParams } from 'react-router-dom'
-import UserDataService from '../services/UserDataService';
-import PatientInfo from '../types/PatientInfo';
-import QRCode from 'react-qr-code'
+import { useLocation } from 'react-router-dom';
+import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, Tooltip } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import WhitelistLinkData from '../types/WhitelistLinkData';
-import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
-import {useLocation} from 'react-router-dom';
-
 import CircularProgress from '@mui/material/CircularProgress';
-import Cookies from 'universal-cookie';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
+import QRCode from 'react-qr-code'
 import axios from 'axios';
 import moment from 'moment';
+
+import { isValidLink } from "../helpers/inputValidationHelpers";
+import PatientInfo from '../types/PatientInfo';
+import WhitelistLinkData from '../types/WhitelistLinkData';
+import VaccineCard from './VaccineCard';
+import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
+import UserDataService from '../services/UserDataService';
 
 function PatientPage() {
   const { patientInfo } = useParams()
@@ -30,6 +37,8 @@ function PatientPage() {
 
   const { firstName, lastName, birthday, walletAddress } = decryptedPatientInfo
 
+  const navigate = useNavigate();
+
   const url = JSON.stringify(window.location.origin + "/patient-page/" + Buffer.from(JSON.stringify(decryptedPatientInfo)).toString('base64'));
 
   const [loading, setLoading] = useState(false);
@@ -39,12 +48,15 @@ function PatientPage() {
   const [allTokens, setAllTokens] = useState<any[]>([]) // a cached set of the tokens
   const [fetched, setFetched] = useState(false)
 
+<<<<<<< Updated upstream
   const formattedBirthday = moment(birthday).format('MMMM Do YYYY')
 
   // console.log(cookies.get('firstName'))
   // console.log(cookies.get('lastName'))
   // console.log(cookies.get('birthday'))
   // console.log(cookies.get('walletAddress'))
+=======
+>>>>>>> Stashed changes
   const location = useLocation();
 
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
@@ -93,6 +105,12 @@ function PatientPage() {
       newWhiteListLinks[index].errorMessage = "Please ensure the link is valid";
       setWhitelistLinks(newWhiteListLinks);
     }
+  }
+
+  const signOut = () => {
+    console.log("Signed out")
+    // Direct to landing page
+    navigate('/');
   }
 
   const handleAddWhitelistField = () => {
@@ -174,6 +192,15 @@ function PatientPage() {
             >
               <MedicalServicesIcon />
             </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Patient Page
+            </Typography>
+            <Button
+              color="inherit"
+              onClick={signOut}
+            >
+              Signout
+            </Button>
           </Toolbar>
         </AppBar>
       </Box>

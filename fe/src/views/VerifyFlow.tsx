@@ -7,7 +7,6 @@ import VerifyFlowQrScan from "../components/VerifyFlowQrScan"
 import VerifyFlowSubmitWalletAddress from "../components/VerifyFlowSubmitWalletAddress"
 import WhitelistLinkData from '../types/WhitelistLinkData';
 import { useNavigate } from 'react-router-dom';
-import {sha256} from 'js-sha256';
 
 function VerifyFlow(props: any) {
     const navigate = useNavigate();
@@ -70,13 +69,6 @@ function VerifyFlow(props: any) {
     const updateIsQR = (value: string) => {
         setIsQR(value === "QR")
     }
-
-    const computeHash = () => {
-      const hashValue = `${firstName}-${lastName}-${birthday
-        ?.toISOString()
-        .slice(0, 10)}`;
-      return sha256(hashValue);
-    };
 
     const handleNextStepOne = () => {
         let newWhitelistLinksArr: Array<WhitelistLinkData> = [...whitelistLinks]
