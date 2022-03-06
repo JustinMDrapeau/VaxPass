@@ -44,7 +44,7 @@ export default function ClinicMainPage(props: any) {
 
   const [loading, setLoading] = useState(false);
 
-  const [creationErrorMessage, setCreationErrorMessage] = useState("");
+  const [lowFundsErrorMessage, setLowFundsErrorMessage] = useState("");
   const [verificationErrorMessage, setVerificationErrorMessage] = useState(false);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function ClinicMainPage(props: any) {
 
     async function verifyClinicBalance() {
       const res = await ClinicDataService.getClinicBalance(clinicPublic);
-      setCreationErrorMessage(res);
+      setLowFundsErrorMessage(res);
       res === "" ? setPatientDisabled(false) : setPatientDisabled(true);
     }
 
@@ -175,8 +175,8 @@ export default function ClinicMainPage(props: any) {
                   borderRadius: "8px",
                 }}
               >
-                {creationErrorMessage && (
-                  <Alert sx={{marginTop: 2}} severity="error">{creationErrorMessage}</Alert>
+                {lowFundsErrorMessage && (
+                  <Alert sx={{marginTop: 2}} severity="error">{lowFundsErrorMessage}</Alert>
                 )}
                 <Stack alignItems="left" spacing={2}>
                   <br />
