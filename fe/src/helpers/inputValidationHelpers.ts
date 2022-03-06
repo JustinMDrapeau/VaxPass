@@ -52,3 +52,11 @@ export function isValidWalletAddress(walletAddress: string) {
   return walletAddress !== "" && 
     regex.test(walletAddress)
 }
+
+export function isValidPrivateKey(privateKey: string) { 
+  const regex = new RegExp(/^[a-fA-F0-9]{64}$/i)
+
+  // Non empty && postal code format
+  return privateKey !== "" && 
+    regex.test(privateKey)
+}
