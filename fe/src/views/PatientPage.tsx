@@ -13,7 +13,6 @@ import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkSt
 import {useLocation} from 'react-router-dom';
 
 import CircularProgress from '@mui/material/CircularProgress';
-import Cookies from 'universal-cookie';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -161,7 +160,7 @@ function PatientPage() {
   }
 
   return (
-    <div className="PatientPage" style={{ height: "100vh", width: "100vw" }} >
+    <div className="PatientPage" style={{ width: "100vw" }} >
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
