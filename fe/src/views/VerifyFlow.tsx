@@ -7,7 +7,6 @@ import VerifyFlowQrScan from "../components/VerifyFlowQrScan"
 import VerifyFlowSubmitWalletAddress from "../components/VerifyFlowSubmitWalletAddress"
 import WhitelistLinkData from '../types/WhitelistLinkData';
 import { useNavigate } from 'react-router-dom';
-import {sha256} from 'js-sha256';
 
 function VerifyFlow(props: any) {
     const navigate = useNavigate();
@@ -71,29 +70,21 @@ function VerifyFlow(props: any) {
         setIsQR(value === "QR")
     }
 
-    const computeHash = () => {
-      const hashValue = `${firstName}-${lastName}-${birthday
-        ?.toISOString()
-        .slice(0, 10)}`;
-      return sha256(hashValue);
-    };
-
     const handleNextStepOne = () => {
         let newWhitelistLinksArr: Array<WhitelistLinkData> = [...whitelistLinks]
         if ((newWhitelistLinksArr.filter((element) => element.errorMessage !== "")).length === 0) {
             // All fields have no errors
+            let noDupesWhitelistLinks = newWhitelistLinksArr.filter((value, index, self) =>
+                index === self.findIndex((t) => (
+                    t.link === value.link && t.errorMessage === value.errorMessage
+                ))
+            )
 
-            let noDupesWhitelistLinks = Array.from(new Set(newWhitelistLinksArr.map(a => a.link)))
-                .map(link => {
-                    return newWhitelistLinksArr.find(a => a.link === link)
-                })
-                
-            if (noDupesWhitelistLinks !== undefined){
-                if(noDupesWhitelistLinks.length > 1) {
-                    /* @ts-ignore */
+            if (noDupesWhitelistLinks !== undefined) {
+                if (noDupesWhitelistLinks.length > 1) {
+
                     noDupesWhitelistLinks = noDupesWhitelistLinks.filter(element => element.link !== "")
                 }
-                /* @ts-ignore */
                 setWhitelistLinks(noDupesWhitelistLinks)
             }
 
@@ -126,7 +117,7 @@ function VerifyFlow(props: any) {
             birthday,
             walletAddress
         }
-        navigate( `/patient-page/${Buffer.from(JSON.stringify(patientInfo)).toString('base64')}`)
+        navigate(`/patient-page/${Buffer.from(JSON.stringify(patientInfo)).toString('base64')}`, { state: whitelistLinks })
     }
 
     const handleBackStepTwo = () => {
@@ -170,12 +161,12 @@ function VerifyFlow(props: any) {
     const handleScan = (data: any) => {
         if (data) {
             // Data represents the data extracted from the QR code
-            const url = JSON.parse(data).replace(window.location.origin,"")
+            const url = JSON.parse(data).replace(window.location.origin, "")
 
             setIsCameraOpen(false)
             handleClose()
 
-            navigate(url)
+            navigate(url, { state: whitelistLinks })
         }
     }
 
