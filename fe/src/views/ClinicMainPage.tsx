@@ -113,6 +113,11 @@ export default function ClinicMainPage(props: any) {
       setIsConfirmationOpen(true)
   }
 
+  const handleConfirmationDialog = () => {
+    setIsConfirmationOpen(false)
+    setIsInfoOpen(true)
+  }
+
   const handleAssign = () => {
     setLoading(true);
     const vaccineAdministeredDate = dateAdministered?.toDateString();
@@ -421,17 +426,18 @@ export default function ClinicMainPage(props: any) {
         birthday={birthday}
         isOpen={isConfirmationOpen}
         onClose={handleConfirmationDialogClose}
-        setBirthday={props.setBirthday}
-        setFirstName={props.setFirstName}
-        setLastName={props.setLastName}
-        setWalletAddress={props.setWalletAddress}
+        setBirthday={setBirthday}
+        setFirstName={setFirstName}
+        setLastName={setLastName}
+        setWalletAddress={setWalletAddress}
+        onSubmit={handleConfirmationDialog}
       />
 
       <PatientSignUpInfo
         firstName={firstName}
         lastName={lastName}
         birthday={birthday}
-        walletAddress={props.walletAddress}
+        walletAddress={walletAddress}
         isOpen={isInfoOpen}
         onClose={handleInfoDialogClose}
       />

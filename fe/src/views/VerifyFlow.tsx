@@ -74,18 +74,17 @@ function VerifyFlow(props: any) {
         let newWhitelistLinksArr: Array<WhitelistLinkData> = [...whitelistLinks]
         if ((newWhitelistLinksArr.filter((element) => element.errorMessage !== "")).length === 0) {
             // All fields have no errors
+            let noDupesWhitelistLinks = newWhitelistLinksArr.filter((value, index, self) =>
+                index === self.findIndex((t) => (
+                    t.link === value.link && t.errorMessage === value.errorMessage
+                ))
+            )
 
-            let noDupesWhitelistLinks = Array.from(new Set(newWhitelistLinksArr.map(a => a.link)))
-                .map(link => {
-                    return newWhitelistLinksArr.find(a => a.link === link)
-                })
-                
-            if (noDupesWhitelistLinks !== undefined){
-                if(noDupesWhitelistLinks.length > 1) {
-                    /* @ts-ignore */
+            if (noDupesWhitelistLinks !== undefined) {
+                if (noDupesWhitelistLinks.length > 1) {
+
                     noDupesWhitelistLinks = noDupesWhitelistLinks.filter(element => element.link !== "")
                 }
-                /* @ts-ignore */
                 setWhitelistLinks(noDupesWhitelistLinks)
             }
 
@@ -118,7 +117,7 @@ function VerifyFlow(props: any) {
             birthday,
             walletAddress
         }
-        navigate( `/patient-page/${Buffer.from(JSON.stringify(patientInfo)).toString('base64')}`)
+        navigate(`/patient-page/${Buffer.from(JSON.stringify(patientInfo)).toString('base64')}`, { state: whitelistLinks })
     }
 
     const handleBackStepTwo = () => {
@@ -162,12 +161,12 @@ function VerifyFlow(props: any) {
     const handleScan = (data: any) => {
         if (data) {
             // Data represents the data extracted from the QR code
-            const url = JSON.parse(data).replace(window.location.origin,"")
+            const url = JSON.parse(data).replace(window.location.origin, "")
 
             setIsCameraOpen(false)
             handleClose()
 
-            navigate(url)
+            navigate(url, { state: whitelistLinks })
         }
     }
 

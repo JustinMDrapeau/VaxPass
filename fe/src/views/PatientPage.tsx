@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom'
-import { useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, Tooltip, useMediaQuery } from '@mui/material';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CircularProgress from '@mui/material/CircularProgress';
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
 import QRCode from 'react-qr-code'
 import axios from 'axios';
 import moment from 'moment';
@@ -34,8 +32,10 @@ function PatientPage() {
 
   const url = JSON.stringify(window.location.origin + "/patient-page/" + Buffer.from(JSON.stringify(decryptedPatientInfo)).toString('base64'));
 
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
-  const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>([{ link: "", errorMessage: "" }])
+  const state: Array<WhitelistLinkData> = location.state === null ? [{ link: "", errorMessage: ""}] : location.state as WhitelistLinkData[]
+  const [whitelistLinks, setWhitelistLinks] = useState<Array<WhitelistLinkData>>(state)
   const [isWhitelistFilterOpen, setIsWhitelistFilterOpen] = useState(false)
   const [tokens, setToken] = useState<any[]>([])
   const [allTokens, setAllTokens] = useState<any[]>([]) // a cached set of the tokens
@@ -43,18 +43,9 @@ function PatientPage() {
 
   const formattedBirthday = moment(birthday).format('MMMM Do YYYY')
 
-  const location = useLocation();
-
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
 
-  useEffect(() => {
-    const state = location.state === null ? [{ link: "", errorMessage: ""}] : location.state
-    setLoading(true)
-    setWhitelistLinks(state as WhitelistLinkData[])
-    getTokens()
-  }, [])
-
-  const getTokens = () => {
+  const getTokens = useCallback(() => {
     if (fetched) {
       console.log("GETTING FROM CACHE")
       setToken(allTokens)
@@ -74,12 +65,13 @@ function PatientPage() {
       })
       setFetched(true) // set to true so that we don't query the blockchain anymore
     }
-  }
-
+  }, [])
 
   useEffect(() => {
+    setLoading(true)
     getTokens()
-  }, [])
+  }, [getTokens])
+
 
   const updateWhiteListLink = (e: any, index: any) => {
     let newWhiteListLinks: Array<WhitelistLinkData> = [...whitelistLinks]; // an array of whitelist links
@@ -165,7 +157,7 @@ function PatientPage() {
   }
 
   return (
-    <div className="PatientPage" style={{ height: "100vh", width: "100vw" }} >
+    <div className="PatientPage" style={{ width: "100vw" }} >
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
