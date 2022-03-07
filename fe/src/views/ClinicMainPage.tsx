@@ -131,6 +131,13 @@ export default function ClinicMainPage(props: any) {
     });
   }
 
+  const handleMail = () => {
+    const subject = "VaxPass Clinic Approval Request"
+    const body = `To whom it may concern,\n\nOur clinic ${clinicName} would like to be added to your govenment's vaccination approval list. Here is our clinic's information: \n\nClinic Name: ${clinicName}\nClinic Location/Address: ${clinicPhysicalAddress}\nClinic Email: ${clinicEmail}\nPublic Wallet Address: ${clinicPublic}\n\nThanks,\n${clinicName}`
+    const mailString = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    window.open(mailString, '_blank');
+  }
+
   return (
     <div
       className="ClinicMainPage"
@@ -218,6 +225,7 @@ export default function ClinicMainPage(props: any) {
                     {clinicPublic}
                   </Typography>
                   <br />
+                  <Button variant="contained" onClick={handleMail}>REQUEST GOVERNMENT APPROVAL</Button>
                 </Stack>
               </Card>
             </Container>
