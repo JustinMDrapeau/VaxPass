@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, TextField, Toolbar, Typography } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
+import { Alert, AppBar, Box, Button, Card, Collapse, Container, Grid, IconButton, Stack, TextField, Toolbar, Typography } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
 import { computeHash } from "../helpers/hashingHelper"
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
@@ -14,10 +16,12 @@ import PatientSignUpInfo from '../components/PatientSignUpInfo'
 
 export default function ClinicMainPage(props: any) {
   const cookies = new Cookies();
+  const navigate = useNavigate();
 
   const [birthday, setBirthday] = React.useState<Date | null>(new Date());
   const [dateAdministered, setDateAdministered] = React.useState<Date | null>(new Date());
 
+  const [signUpPatientOpen, setSignUpPatientOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
@@ -35,9 +39,13 @@ export default function ClinicMainPage(props: any) {
   const [lotNumber, setLotNumber] = useState<string>("");
   const [phaseNumber, setPhaseNumber] = useState<number>(1);
 
+  const [patientDisabled, setPatientDisabled] = useState<boolean | undefined>(true);
   const [vaccineDisabled, setVaccineDisabled] = useState<boolean | undefined>(true);
 
-  const [signUpPatientOpen, setSignUpPatientOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [lowFundsErrorMessage, setLowFundsErrorMessage] = useState("");
+  const [verificationErrorMessage, setVerificationErrorMessage] = useState(false);
 
   useEffect(() => {
     ClinicDataService.getClinicInfo(clinicPublic)
@@ -47,6 +55,14 @@ export default function ClinicMainPage(props: any) {
         setClinicPhysicalAddress(res.p_address);
       })
       .catch((err: any) => console.log(err));
+
+    async function verifyClinicBalance() {
+      const res = await ClinicDataService.getClinicBalance(clinicPublic);
+      setLowFundsErrorMessage(res);
+      res === "" ? setPatientDisabled(false) : setPatientDisabled(true);
+    }
+
+    verifyClinicBalance();
   }, [clinicPublic]);
 
   const verifyPatient = () => {
@@ -58,13 +74,25 @@ export default function ClinicMainPage(props: any) {
         if (res === computeHash(firstName, lastName, birthday)) {
           // if (res == computeHash()) {
           console.log("HASHES ARE EQUAL");
+          setVerificationErrorMessage(false);
           setVaccineDisabled(false);
         } else {
           console.log("HASHES ARE NOT EQUAL!");
+          setVerificationErrorMessage(true);
+          setVaccineDisabled(true);
         }
       })
       .catch((err: any) => console.log(err));
-  };
+  }
+
+  const signOut = () => {
+    console.log("Signed out")
+    // Remove cookies
+    cookies.remove('clinicPublic');
+    cookies.remove('clinicPrivate');
+    // Direct to landing page
+    navigate('/');
+  }
 
   const handleClose = () => {
       setSignUpPatientOpen(false);
@@ -91,6 +119,7 @@ export default function ClinicMainPage(props: any) {
   }
 
   const handleAssign = () => {
+    setLoading(true);
     const vaccineAdministeredDate = dateAdministered?.toDateString();
     ClinicDataService.mintAndTransfer(
       clinicPublic,
@@ -103,8 +132,16 @@ export default function ClinicMainPage(props: any) {
     ).then((res) => {
       console.log(res);
       console.log("Vaccine administered");
+      setLoading(false);
     });
-  };
+  }
+
+  const handleMail = () => {
+    const subject = "VaxPass Clinic Approval Request"
+    const body = `To whom it may concern,\n\nOur clinic ${clinicName} would like to be added to your govenment's vaccination approval list. Here is our clinic's information: \n\nClinic Name: ${clinicName}\nClinic Location/Address: ${clinicPhysicalAddress}\nClinic Email: ${clinicEmail}\nPublic Wallet Address: ${clinicPublic}\n\nThanks,\n${clinicName}`
+    const mailString = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    window.open(mailString, '_blank');
+  }
 
   return (
     <div
@@ -121,12 +158,17 @@ export default function ClinicMainPage(props: any) {
               aria-label="menu"
               sx={{ mr: 2 }}
             >
-              <MedicalServicesIcon />
+            <MedicalServicesIcon />
             </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Clinic Page
             </Typography>
-            {/* <Button color="inherit">Verify Clinic</Button> */}
+            <Button
+              color="inherit"
+              onClick={signOut}
+            >
+              Signout
+            </Button>
           </Toolbar>
         </AppBar>
       </Box>
@@ -145,9 +187,11 @@ export default function ClinicMainPage(props: any) {
                   borderRadius: "8px",
                 }}
               >
+                {lowFundsErrorMessage && (
+                  <Alert sx={{marginTop: 2}} severity="error">{lowFundsErrorMessage}</Alert>
+                )}
                 <Stack alignItems="left" spacing={2}>
                   <br />
-
                   <Typography
                     variant="h4"
                     align="center"
@@ -186,6 +230,7 @@ export default function ClinicMainPage(props: any) {
                     {clinicPublic}
                   </Typography>
                   <br />
+                  <Button variant="contained" onClick={handleMail}>REQUEST GOVERNMENT APPROVAL</Button>
                 </Stack>
               </Card>
             </Container>
@@ -203,7 +248,10 @@ export default function ClinicMainPage(props: any) {
                 <Typography variant="h3" align="left">
                   Verify Patient
                 </Typography>
-
+                <br />
+                <Collapse in={verificationErrorMessage}>
+                  <Alert severity="warning" sx={{ marginBottom: 2 }}>Patient information failed to verify. Please verify their credentials and try again!</Alert>
+                </Collapse>
                 <Box
                   component="form"
                   sx={{
@@ -218,6 +266,7 @@ export default function ClinicMainPage(props: any) {
                     type="text"
                     variant="outlined"
                     onChange={(e) => setFirstName(e.target.value)}
+                    disabled={patientDisabled}
                   />
 
                   <TextField
@@ -228,7 +277,9 @@ export default function ClinicMainPage(props: any) {
                     type="text"
                     variant="outlined"
                     onChange={(e) => setLastName(e.target.value)}
+                    disabled={patientDisabled}
                   />
+
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DesktopDatePicker
                       label="Date of Birth"
@@ -237,6 +288,7 @@ export default function ClinicMainPage(props: any) {
                       onChange={setBirthday}
                       renderInput={(params) => <TextField {...params} />}
                       disableFuture={true}
+                      disabled={patientDisabled}
                     />
                   </LocalizationProvider>
 
@@ -249,11 +301,18 @@ export default function ClinicMainPage(props: any) {
                     variant="outlined"
                     onChange={(e) => setWalletAddress(e.target.value)}
                     style={{ minWidth: "45%" }}
+                    disabled={patientDisabled}
                   />
                   <Button
                     variant="contained"
                     style={{ minHeight: "53px" }}
                     onClick={verifyPatient}
+                    disabled={
+                      !firstName ||
+                      !lastName ||
+                      !birthday ||
+                      !walletAddress
+                    }
                   >
                     Verify Patient
                   </Button>
@@ -261,6 +320,7 @@ export default function ClinicMainPage(props: any) {
                     variant="contained"
                     style={{ minHeight: "53px" }}
                     onClick={()=>setSignUpPatientOpen(true)}
+                    disabled={patientDisabled}
                   >
                     Signup Patient
                   </Button>
@@ -336,7 +396,8 @@ export default function ClinicMainPage(props: any) {
                       disableFuture={true}
                     />
                   </LocalizationProvider>
-                  <Button
+                  <LoadingButton
+                    loading={loading}
                     variant="contained"
                     style={{ minHeight: "53px" }}
                     disabled={
@@ -351,7 +412,7 @@ export default function ClinicMainPage(props: any) {
                     onClick={handleAssign}
                   >
                     Assign
-                  </Button>
+                  </LoadingButton>
                 </Box>
               </Card>
             </Container>

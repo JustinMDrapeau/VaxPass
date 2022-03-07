@@ -29,6 +29,11 @@ class ClinicDataService {
     return ContractService.getContract().methods.walletIdToClinic(clinicPublicKey).call();
   }
 
+  async getClinicBalance(clinicPublicKey: string) {
+    const accountBalance : number = await ContractService.getBalance(clinicPublicKey);
+    return accountBalance < MINIMUM_ACCOUNT_BALANCE ? "Insufficent ETH balance for wallet. Please load more ETH and try again." : "";
+  }
+
   async createAccount(name: string, address: string, email: string, publicAddress: string, privateAddress: string) {
 
     let transactionPublicAddress, transactionPrivateAddress;

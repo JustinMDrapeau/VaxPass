@@ -1,20 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
-import { AppBar, Box, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, Tooltip, useMediaQuery } from '@mui/material';
-import { isValidLink } from "../helpers/inputValidationHelpers";
-import VaccineCard from './VaccineCard';
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
-import { useParams } from 'react-router-dom'
-import UserDataService from '../services/UserDataService';
-import PatientInfo from '../types/PatientInfo';
-import QRCode from 'react-qr-code'
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { AppBar, Box, Button, Card, Container, Grid, IconButton, Stack, Toolbar, Typography, Tooltip, useMediaQuery } from '@mui/material';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import WhitelistLinkData from '../types/WhitelistLinkData';
-import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
-import {useLocation} from 'react-router-dom';
-
 import CircularProgress from '@mui/material/CircularProgress';
+import QRCode from 'react-qr-code'
 import axios from 'axios';
 import moment from 'moment';
+
+import { isValidLink } from "../helpers/inputValidationHelpers";
+import PatientInfo from '../types/PatientInfo';
+import WhitelistLinkData from '../types/WhitelistLinkData';
+import VaccineCard from './VaccineCard';
+import VerifyFlowWhitelistLinkStep from "../components/VerifyFlowWhitelistLinkStep"
+import UserDataService from '../services/UserDataService';
 
 function PatientPage() {
   const { patientInfo } = useParams()
@@ -28,6 +27,8 @@ function PatientPage() {
     JSON.parse(Buffer.from(patientInfo, 'base64').toString('ascii')) as PatientInfo;
 
   const { firstName, lastName, birthday, walletAddress } = decryptedPatientInfo
+
+  const navigate = useNavigate();
 
   const url = JSON.stringify(window.location.origin + "/patient-page/" + Buffer.from(JSON.stringify(decryptedPatientInfo)).toString('base64'));
 
@@ -82,6 +83,12 @@ function PatientPage() {
       newWhiteListLinks[index].errorMessage = "Please ensure the link is valid";
       setWhitelistLinks(newWhiteListLinks);
     }
+  }
+
+  const signOut = () => {
+    console.log("Signed out")
+    // Direct to landing page
+    navigate('/');
   }
 
   const handleAddWhitelistField = () => {
@@ -163,6 +170,15 @@ function PatientPage() {
             >
               <MedicalServicesIcon />
             </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Patient Page
+            </Typography>
+            <Button
+              color="inherit"
+              onClick={signOut}
+            >
+              Signout
+            </Button>
           </Toolbar>
         </AppBar>
       </Box>
