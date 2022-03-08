@@ -49,7 +49,7 @@ UserInformationFields.propTypes = {
     handleBirthdayChange: PropTypes.func.isRequired,
     firstNameErrorMessage: PropTypes.string.isRequired,
     lastNameErrorMessage: PropTypes.string.isRequired,
-    birthday: PropTypes.instanceOf(Date).isRequired
+    birthday: PropTypes.instanceOf(Date)
   };
 
 export default UserInformationFields;
