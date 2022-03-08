@@ -50,7 +50,7 @@ function ConfirmUserInformationPopup(props: any) {
                     Last Name: <b>{lastName.toLowerCase().charAt(0).toUpperCase()+lastName.slice(1)}</b>
                 </Typography>
                 <Typography align="center" marginBottom="25px" >
-                    Birthday: <b>{birthday.toDateString()}</b>
+                    Birthday: <b>{birthday ? birthday.toDateString(): ""}</b>
                 </Typography>
 
                 <Alert severity="warning">Any mismatch with the information present on your government IDs will prevent you from registering vaccines on your account.</Alert>
