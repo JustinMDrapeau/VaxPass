@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Alert, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { isValidName, isValidWalletAddress } from "../helpers/inputValidationHelpers";
+import { isValidName, isValidWalletAddress, isValidPrivateKey } from "../helpers/inputValidationHelpers";
 import { computeHash } from "../helpers/hashingHelper"
 import UserInformationFields from '../components/UserInformationFields'
 import UserDataService from '../services/UserDataService';
@@ -52,14 +52,26 @@ function LogInDialog(props: any) {
   const [privateKey, setPrivateKey] = useState("");
 
   const [walletAddressErrorMessage, setWalletAddressErrorMessage] = useState("")
-
+  const [privateKeyErrorMessage, setprivateKeyErrorMessage] = useState("")
 
   const handleWalletAddressChange = (e: any) => {
     if (isValidWalletAddress(e.target.value)) {
+      setAlert(false);
       setWalletAddress(e.target.value)
       setWalletAddressErrorMessage("")
     } else {
       setWalletAddressErrorMessage("Please enter a valid wallet address")
+    }
+  }
+
+  const handlePrivateKeyChange = (e: any) => {
+    if (isValidPrivateKey(e.target.value)) {
+      setAlert(false);
+      setPrivateKey(e.target.value)
+      setprivateKeyErrorMessage("")
+    } 
+    else {
+      setprivateKeyErrorMessage("Please enter a valid 64 character long private key that does not begin with 0x")
     }
   }
 
@@ -119,7 +131,7 @@ function LogInDialog(props: any) {
         }
       }).catch((err: any) => console.log(err))
     } else if (isUser === false) {
-      if (isValidWalletAddress(walletAddress)) {
+      if (isValidWalletAddress(walletAddress) && isValidPrivateKey(privateKey)) {
         if (Wallet.fromPrivateKey(Buffer.from(privateKey, 'hex')).getAddress().toString('hex') === walletAddress.toLowerCase().substring(2)) {
           console.log("Logged in")
           // Set cookies
@@ -127,9 +139,16 @@ function LogInDialog(props: any) {
           cookies.set('clinicPrivate', privateKey);
           // Direct to clinic page
           navigate('/clinic-main-page')
+        } else {
+          setAlert(true);
         }
       } else {
-        setWalletAddressErrorMessage("Please enter a valid wallet Address")
+        if (!isValidWalletAddress(walletAddress)){
+          setWalletAddressErrorMessage("Please enter a valid wallet address")
+        }
+        if (!isValidPrivateKey(privateKey)){
+          setprivateKeyErrorMessage("Please enter a valid 64 character long private key that does not begin with 0x")
+        }
       }
     }
   };
@@ -172,11 +191,13 @@ function LogInDialog(props: any) {
             <>
               <TextField
                 required
+                error={privateKeyErrorMessage !== ""}
+                helperText={privateKeyErrorMessage}
                 id="private-key-field"
                 label="Private Key"
                 type="password"
                 variant="filled"
-                onChange={(e) => { setPrivateKey(e.target.value) }}
+                onChange={handlePrivateKeyChange}
               />
               <Button variant="text" sx={{ textTransform: 'capitalize', paddingLeft: 0.2 }} onClick={handleSignUp}>Don't have an account? </Button>
             </>

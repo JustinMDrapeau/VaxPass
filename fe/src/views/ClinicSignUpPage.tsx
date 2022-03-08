@@ -148,7 +148,7 @@ function ClinicSignUpPage() {
 
     setLoading(false);
     setPublicAddress(res[0]);
-    setPrivateAddress(res[1]);
+    setPrivateAddress(res[1].substring(2));
     setAccountCreated(true);
   }
 
