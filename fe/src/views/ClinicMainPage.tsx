@@ -37,7 +37,7 @@ export default function ClinicMainPage(props: any) {
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [product, setProduct] = useState<string>("");
   const [lotNumber, setLotNumber] = useState<string>("");
-  const [phaseNumber, setPhaseNumber] = useState<number>(1);
+  const [phaseNumber, setPhaseNumber] = useState<number | null>(null);
 
   const [patientDisabled, setPatientDisabled] = useState<boolean | undefined>(true);
   const [vaccineDisabled, setVaccineDisabled] = useState<boolean | undefined>(true);
@@ -126,7 +126,7 @@ export default function ClinicMainPage(props: any) {
       clinicPrivate,
       product,
       lotNumber,
-      phaseNumber,
+      phaseNumber as number,
       vaccineAdministeredDate as string,
       walletAddress
     ).then((res) => {
@@ -139,8 +139,9 @@ export default function ClinicMainPage(props: any) {
       setWalletAddress("")
       setProduct("")
       setLotNumber("")
-      setPhaseNumber(1)
+      setPhaseNumber(null)
       setDateAdministered(new Date())
+      setVaccineDisabled(true)
       setLoading(false);
     });
   }
@@ -367,6 +368,7 @@ export default function ClinicMainPage(props: any) {
                     label="Product"
                     type="text"
                     variant="outlined"
+                    value={product}
                     onChange={(e) => setProduct(e.target.value)}
                     style={{ minWidth: "40%" }}
                     disabled={vaccineDisabled}
@@ -378,6 +380,7 @@ export default function ClinicMainPage(props: any) {
                     label="Lot #"
                     type="text"
                     variant="outlined"
+                    value={lotNumber}
                     onChange={(e) => setLotNumber(e.target.value)}
                     style={{ maxWidth: "20%" }}
                     disabled={vaccineDisabled}
@@ -387,8 +390,9 @@ export default function ClinicMainPage(props: any) {
                     required
                     id="vaccine-phase-number"
                     label="Phase #"
-                    type="text"
+                    type="number"
                     variant="outlined"
+                    value={phaseNumber}
                     onChange={(e) => setPhaseNumber(parseInt(e.target.value))}
                     style={{ maxWidth: "20%" }}
                     disabled={vaccineDisabled}
