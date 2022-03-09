@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Card, Container, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Container, Stack, Typography } from '@mui/material';
 import LogInDialog from '../components/LogInDialog';
 import VerifyFlow from './VerifyFlow'
 import PropTypes from 'prop-types';
@@ -34,23 +34,25 @@ function LandingPage(props: any) {
 
   return (
     <div className="LandingPage" style={{ backgroundColor: '#D3D3D3', height: '100vh'}}>
-      <Container maxWidth='xs' sx={{ pt: '212px' }}>
-        <Card style={{ padding: '24px' }}>
-          <Stack alignItems="center" spacing={4}>
-            <Typography variant="h2" align="center" >
-              VaxPass
-            </Typography>
-            <Typography align="center" >
-              What kind of user are you?
-            </Typography>
-            <Stack spacing={3} width="50%">
-              <Button variant="contained" onClick={handleClickOpenUser}>PATIENT</Button>
-              <Button variant="contained" onClick={handleClickOpen}>CLINIC</Button>
-              <Button onClick={handleClickVerify} >VERIFY</Button>
+      <Box display="flex" alignItems="center" minHeight="100vh">
+        <Container maxWidth='xs'>
+          <Card style={{ padding: '24px' }}>
+            <Stack alignItems="center" spacing={4}>
+              <Typography variant="h2" align="center">
+                VaxPass
+              </Typography>
+              <Typography align="center" >
+                What kind of user are you?
+              </Typography>
+              <Stack spacing={3} width="50%">
+                <Button variant="contained" onClick={handleClickOpenUser}>PATIENT</Button>
+                <Button variant="contained" onClick={handleClickOpen}>CLINIC</Button>
+                <Button onClick={handleClickVerify} >VERIFY</Button>
+              </Stack>
             </Stack>
-          </Stack>
-        </Card>
-      </Container>
+          </Card>
+        </Container>
+      </Box>
 
       <LogInDialog
         isUser={isUser}
