@@ -45,12 +45,12 @@ function PatientPage() {
 
   const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
 
-  const getTokens = useCallback(() => {
+  const getTokens = () => {
     if (fetched) {
       console.log("GETTING FROM CACHE")
       setToken(allTokens)
       if (whitelistLinks.length >= 1) {
-        fetchWhitelistClinicAddresses()
+        fetchWhitelistClinicAddresses(allTokens)
       }
     } else {
       UserDataService.getUserTokens(walletAddress).then((response) => {
@@ -58,19 +58,21 @@ function PatientPage() {
         setToken(response)
         setAllTokens(response)
         console.log("THESE ARE THE TOKENS")
-        console.log(response)
+        console.log(allTokens)
         if (whitelistLinks.length >= 1) {
-          fetchWhitelistClinicAddresses()
+          fetchWhitelistClinicAddresses(response)
         }
       })
       setFetched(true) // set to true so that we don't query the blockchain anymore
     }
-  }, [])
+  }
 
   useEffect(() => {
+    console.log("USE EFFECT IS HAPPENING")
+
     setLoading(true)
     getTokens()
-  }, [getTokens])
+  }, [])
 
 
   const updateWhiteListLink = (e: any, index: any) => {
@@ -118,7 +120,7 @@ function PatientPage() {
     setLoading(true)
   }
 
-  const fetchWhitelistClinicAddresses = () => {
+  const fetchWhitelistClinicAddresses = (allTokens: any) => {
     let addresses : any = []
     let promises : any = []
     console.log("ABOUT TO QUERY ALL ADDRESES")
@@ -135,15 +137,16 @@ function PatientPage() {
 
     console.log("ABOUT TO EXECUTE ALL")
 
-    Promise.all(promises).then(() => filterTokensUsingWhitelist(addresses))
+    Promise.all(promises).then(() => filterTokensUsingWhitelist(addresses, allTokens))
   }
 
   /**
    * Go through all of the vaccines that the user has and filter using the whitelisted blockchain addresses
    * @param whitelistAddresses 
+   * @param tokens
    * @returns 
    */
-  const filterTokensUsingWhitelist = (whitelistAddresses: any) => {
+  const filterTokensUsingWhitelist = (whitelistAddresses: any, tokens: any) => {
     console.log("FILTERING THE TOKENS")
     console.log("THE WHITELISTS ARE: ")
     console.log(whitelistAddresses)
@@ -152,7 +155,7 @@ function PatientPage() {
       return;
     } 
 
-    const newTokens = allTokens.filter(token => whitelistAddresses.includes(token.issuer))
+    const newTokens = tokens.filter((token: any) => whitelistAddresses.includes(token.issuer))
     setToken(newTokens)
   }
 
