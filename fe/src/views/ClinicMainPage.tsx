@@ -132,6 +132,15 @@ export default function ClinicMainPage(props: any) {
     ).then((res) => {
       console.log(res);
       console.log("Vaccine administered");
+
+      setFirstName("")
+      setLastName("")
+      setBirthday(new Date())
+      setWalletAddress("")
+      setProduct("")
+      setLotNumber("")
+      setPhaseNumber(1)
+      setDateAdministered(new Date())
       setLoading(false);
     });
   }
