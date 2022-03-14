@@ -62,7 +62,7 @@ function VerifyFlow(props: any) {
             setWalletAddress(e.target.value)
             setWalletAddressErrorMessage("")
         } else {
-            setWalletAddressErrorMessage("Please enter a valid wallet address")
+            setWalletAddressErrorMessage("Please enter a valid password")
         }
     }
 
@@ -144,7 +144,7 @@ function VerifyFlow(props: any) {
             setLastNameErrorMessage("Please enter a last name")
             noMissingInfo = false
         } else if (walletAddress === "") {
-            setWalletAddressErrorMessage("Please enter a valid address")
+            setWalletAddressErrorMessage("Please enter a valid password")
             noMissingInfo = false
         }
 

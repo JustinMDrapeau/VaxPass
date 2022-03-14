@@ -60,7 +60,7 @@ function LogInDialog(props: any) {
       setWalletAddress(e.target.value)
       setWalletAddressErrorMessage("")
     } else {
-      setWalletAddressErrorMessage("Please enter a valid wallet address")
+      setWalletAddressErrorMessage("Please enter a valid passport id")
     }
   }
 
@@ -71,7 +71,7 @@ function LogInDialog(props: any) {
       setprivateKeyErrorMessage("")
     } 
     else {
-      setprivateKeyErrorMessage("Please enter a valid 64 character long private key that does not begin with 0x")
+      setprivateKeyErrorMessage("Please enter a valid 64 character long password that does not begin with 0x")
     }
   }
 
@@ -144,10 +144,10 @@ function LogInDialog(props: any) {
         }
       } else {
         if (!isValidWalletAddress(walletAddress)){
-          setWalletAddressErrorMessage("Please enter a valid wallet address")
+          setWalletAddressErrorMessage("Please enter a valid passport id")
         }
         if (!isValidPrivateKey(privateKey)){
-          setprivateKeyErrorMessage("Please enter a valid 64 character long private key that does not begin with 0x")
+          setprivateKeyErrorMessage("Please enter a valid 64 character long password that does not begin with 0x")
         }
       }
     }
@@ -181,8 +181,8 @@ function LogInDialog(props: any) {
             required
             error={walletAddressErrorMessage !== ""}
             helperText={walletAddressErrorMessage}
-            id="wallet-address-field"
-            label="Wallet Address"
+            id="passport-id-field"
+            label="Passport id"
             type="text"
             variant="filled"
             onChange={handleWalletAddressChange}
@@ -193,8 +193,8 @@ function LogInDialog(props: any) {
                 required
                 error={privateKeyErrorMessage !== ""}
                 helperText={privateKeyErrorMessage}
-                id="private-key-field"
-                label="Private Key"
+                id="password-field"
+                label="Password"
                 type="password"
                 variant="filled"
                 onChange={handlePrivateKeyChange}
