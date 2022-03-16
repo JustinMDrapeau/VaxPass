@@ -40,8 +40,8 @@ function VerifyFlowSubmitWalletAddress(props: any) {
                         required
                         error={walletAddressErrorMessage !== ""}
                         helperText={walletAddressErrorMessage}
-                        id="password-field"
-                        label="Password"
+                        id="passport-id-field"
+                        label="Passport ID"
                         type="text"
                         variant="filled"
                         onChange={handleWalletAddressChange}

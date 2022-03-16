@@ -21,10 +21,10 @@ function PatientSignUpInfo(props: any) {
                     <QRCode size={180} value={url} />
                 </Box>
                 <Typography align="center" paddingBottom={2}>
-                    Password: <b>{walletAddress}</b>
+                    Passport ID: <b>{walletAddress}</b>
                 </Typography>
 
-                <Alert severity="info"> <b>Save your password!</b> You will need it to view your vaccines and your QR code on the platform. Please note you won't be able to change your password </Alert>
+                <Alert severity="info"> <b>Save your passport ID!</b> You will need it to view your vaccines and your QR code on the platform </Alert>
             </DialogContent>
             <DialogActions sx={{ paddingRight: 3, paddingBottom: 2 }}>
                 <Button onClick={handleClose}>DONE</Button>

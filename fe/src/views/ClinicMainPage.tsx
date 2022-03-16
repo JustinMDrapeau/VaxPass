@@ -230,7 +230,7 @@ export default function ClinicMainPage(props: any) {
                     align="center"
                     style={{ wordBreak: "break-word" }}
                   >
-                    Passport Id:
+                    Account ID:
                   </Typography>
                   <Typography
                     variant="body1"

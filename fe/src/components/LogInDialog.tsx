@@ -60,7 +60,7 @@ function LogInDialog(props: any) {
       setWalletAddress(e.target.value)
       setWalletAddressErrorMessage("")
     } else {
-      setWalletAddressErrorMessage("Please enter a valid passport id")
+      setWalletAddressErrorMessage("Please enter a valid passport ID")
     }
   }
 
@@ -144,7 +144,7 @@ function LogInDialog(props: any) {
         }
       } else {
         if (!isValidWalletAddress(walletAddress)){
-          setWalletAddressErrorMessage("Please enter a valid passport id")
+          setWalletAddressErrorMessage("Please enter a valid account ID")
         }
         if (!isValidPrivateKey(privateKey)){
           setprivateKeyErrorMessage("Please enter a valid 64 character long password that does not begin with 0x")
@@ -181,8 +181,8 @@ function LogInDialog(props: any) {
             required
             error={walletAddressErrorMessage !== ""}
             helperText={walletAddressErrorMessage}
-            id="passport-id-field"
-            label="Passport id"
+            id="account-id-field"
+            label={isUser ? "Passport ID" : "Account ID"}
             type="text"
             variant="filled"
             onChange={handleWalletAddressChange}
