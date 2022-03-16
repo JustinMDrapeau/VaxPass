@@ -181,8 +181,8 @@ function LogInDialog(props: any) {
             required
             error={walletAddressErrorMessage !== ""}
             helperText={walletAddressErrorMessage}
-            id="passport-id-field"
-            label="Passport id"
+            id="passport-ID-field"
+            label={isUser ? "Passport ID" : "Account ID"}
             type="text"
             variant="filled"
             onChange={handleWalletAddressChange}

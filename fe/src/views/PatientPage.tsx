@@ -196,10 +196,10 @@ function PatientPage() {
                     {firstName.charAt(0).toUpperCase() + firstName.toLowerCase().slice(1)} {lastName.charAt(0).toUpperCase() + lastName.toLowerCase().slice(1)}
                   </Typography>
                   <Typography variant="body1" align="center" style={{ wordBreak: "break-word" }} >
-                    Password: {walletAddress}
+                    <b>Passport ID:</b> {walletAddress}
                   </Typography>
-                  <Typography variant="h6" align="center" style={{ wordBreak: "break-word" }} >
-                    DOB: {formattedBirthday}
+                  <Typography variant="body1" align="center" style={{ wordBreak: "break-word" }} >
+                    <b>DOB:</b> {formattedBirthday}
                   </Typography>
                 </Stack>
               </Card>

@@ -230,7 +230,7 @@ export default function ClinicMainPage(props: any) {
                     align="center"
                     style={{ wordBreak: "break-word" }}
                   >
-                    Passport Id:
+                    Account ID:
                   </Typography>
                   <Typography
                     variant="body1"
@@ -305,7 +305,7 @@ export default function ClinicMainPage(props: any) {
                   <TextField
                     required
                     id="wallet-address-field"
-                    label="Passport Id"
+                    label="Passport ID"
                     value={walletAddress}
                     type="text"
                     variant="outlined"
