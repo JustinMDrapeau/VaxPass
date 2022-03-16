@@ -25,6 +25,7 @@ function PatientSignUpInfo(props: any) {
                 </Typography>
 
                 <Alert severity="info"> <b>Save your passport ID!</b> You will need it to view your vaccines and your QR code on the platform </Alert>
+
             </DialogContent>
             <DialogActions sx={{ paddingRight: 3, paddingBottom: 2 }}>
                 <Button onClick={handleClose}>DONE</Button>
